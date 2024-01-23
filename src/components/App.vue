@@ -1,18 +1,5 @@
 <script lang="ts" setup>
-import Total from '@components/App/Total.vue'
-import {
-  Document,
-  Menu as IconMenu,
-  Location,
-  Setting,
-  WarnTriangleFilled,
-  UserFilled,
-  CameraFilled,
-  KnifeFork,
-  Stamp,
-  Comment,
-  PhoneFilled,
-} from '@element-plus/icons-vue'
+import { defineAsyncComponent, ref, computed } from 'vue'
 import lc from '@libs/lc'
 
 function initPrepare() {
@@ -27,88 +14,101 @@ function initPrepare() {
 
 initPrepare()
 
-const handleOpen = (key: string, keyPath: string[]) => {
+const Total = defineAsyncComponent(() =>
+  import('@components/App/Total.vue')
+)
+const Area = defineAsyncComponent(() =>
+  import('@components/App/Area.vue')
+)
+const Complaint = defineAsyncComponent(() =>
+  import('@components/App/Complaint.vue')
+)
+const Shop = defineAsyncComponent(() =>
+  import('@components/App/Shop.vue')
+)
+const Driver = defineAsyncComponent(() =>
+  import('@components/App/Driver.vue')
+)
+const Hotel = defineAsyncComponent(() =>
+  import('@components/App/Hotel.vue')
+)
+const Restaurant = defineAsyncComponent(() =>
+  import('@components/App/Restaurant.vue')
+)
+const Toilet = defineAsyncComponent(() =>
+  import('@components/App/Toilet.vue')
+)
+const TravelAgency = defineAsyncComponent(() =>
+  import('@components/App/TravelAgency.vue')
+)
+const User = defineAsyncComponent(() =>
+  import('@components/App/User.vue')
+)
+const Setting = defineAsyncComponent(() =>
+  import('@components/App/Setting.vue')
+)
+
+// TODO:
+// 这一块数据来自服务端
+const menu = [{
+  component: Total,
+  name: '信息管理'
+}, {
+  component: Area,
+  name: '景点管理'
+}, {
+  component: Shop,
+  name: '商户管理'
+}, {
+  component: Driver,
+  name: '司机管理'
+}, {
+  component: Hotel,
+  name: '酒店管理'
+}, {
+  component: Restaurant,
+  name: '饭店管理'
+}, {
+  component: Toilet,
+  name: '厕所管理'
+}, {
+  component: TravelAgency,
+  name: '旅行社管理'
+}, {
+  component: User,
+  name: '人员管理'
+}, {
+  component: Complaint,
+  name: '投诉管理'
+},]
+
+const cIndex = ref(0)
+const c = computed(() => {
+  const menuItem = menu[cIndex.value]
+  return menuItem ? menuItem.component : Setting
+})
+
+const onMenuSelect = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
+  cIndex.value = +key
 }
-const handleClose = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
-console.log(lc)
 </script>
 
 <template>
   <el-row class=" h-full">
     <el-col :span="4">
-      <el-menu default-active="1" class="" @open="handleOpen" @close="handleClose">
-        <el-menu-item index="1">
-          <el-icon>
-            <document />
-          </el-icon>
-          <span>信息管理</span>
+      <el-menu default-active="0" class=" h-full overflow-y-auto" @select="onMenuSelect">
+        <el-menu-item v-for="(m, index) of menu" :index="'' + index">
+          <span>{{ m.name }}</span>
         </el-menu-item>
-        <el-menu-item index="2">
-          <el-icon>
-            <CameraFilled />
-          </el-icon>
-          <span>景点管理</span>
-        </el-menu-item>
-        <el-menu-item index="3">
-          <el-icon>
-            <Stamp />
-          </el-icon>
-          <span>商户管理</span>
-        </el-menu-item>
-        <el-menu-item index="4">
-          <el-icon>
-            <UserFilled />
-          </el-icon>
-          <span>人员管理</span>
-        </el-menu-item>
-        <el-menu-item index="5">
-          <el-icon>
-            <Comment />
-          </el-icon>
-          <span>旅行社管理</span>
-        </el-menu-item>
-        <el-menu-item index="6">
-          <el-icon>
-            <PhoneFilled />
-          </el-icon>
-          <span>司机管理</span>
-        </el-menu-item>
-        <el-menu-item index="7">
-          <el-icon>
-            <KnifeFork />
-          </el-icon>
-          <span>饭店管理</span>
-        </el-menu-item>
-        <el-menu-item index="8">
-          <el-icon><icon-menu /></el-icon>
-          <span>酒店管理</span>
-        </el-menu-item>
-        <el-menu-item index="9">
-          <el-icon>
-            <location />
-          </el-icon>
-          <span>厕所管理</span>
-        </el-menu-item>
-        <el-menu-item index="10">
-          <el-icon>
-            <WarnTriangleFilled />
-          </el-icon>
-          <span>投诉管理</span>
-        </el-menu-item>
-        <el-menu-item index="0">
-          <el-icon>
-            <setting />
-          </el-icon>
+        <el-menu-item index="999">
           <span>设置</span>
         </el-menu-item>
       </el-menu>
     </el-col>
     <el-col :span="20">
       <KeepAlive>
-        <Total></Total>
+        <component :is="c"></component>
       </KeepAlive>
     </el-col>
   </el-row>
