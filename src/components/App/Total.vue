@@ -106,9 +106,9 @@ function chart1() {
       },
       axisLabel: {
         interval: 0,
-        textStyle: {
-          color: '#556677'
-        },
+        // textStyle: {
+        //   color: '#556677'
+        // },
         // 默认x轴字体大小
         fontSize: 12,
         // margin:文字到x轴的距离
@@ -180,9 +180,9 @@ padding[2]的10:
         }
       },
       axisLabel: {
-        textStyle: {
-          color: '#556677'
-        }
+        // textStyle: {
+        //   color: '#556677'
+        // }
       },
       splitLine: {
         show: false
@@ -194,9 +194,9 @@ padding[2]的10:
         show: false
       },
       axisLabel: {
-        textStyle: {
-          color: '#556677'
-        },
+        // textStyle: {
+        //   color: '#556677'
+        // },
         formatter: '{value}'
       },
       axisLine: {
@@ -234,10 +234,10 @@ padding[2]的10:
         shadowOffsetY: 20
       },
       itemStyle: {
-        normal: {
-          color: colorList[0],
-          borderColor: colorList[0]
-        }
+        // normal: {
+        //   color: colorList[0],
+        //   borderColor: colorList[0]
+        // }
       }
     }, {
       name: 'Nike',
@@ -264,10 +264,10 @@ padding[2]的10:
         shadowOffsetY: 20
       },
       itemStyle: {
-        normal: {
-          color: colorList[1],
-          borderColor: colorList[1]
-        }
+        // normal: {
+        //   color: colorList[1],
+        //   borderColor: colorList[1]
+        // }
       }
     },
     {
@@ -295,10 +295,10 @@ padding[2]的10:
         shadowOffsetY: 20
       },
       itemStyle: {
-        normal: {
-          color: colorList[2],
-          borderColor: colorList[2]
-        }
+        // normal: {
+        //   color: colorList[2],
+        //   borderColor: colorList[2]
+        // }
       }
     }
     ]
