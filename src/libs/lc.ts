@@ -9,11 +9,11 @@ if (!(AV.applicationId && AV.applicationKey)) {
 }
 
 const isDev = process.env.NODE_ENV === 'development'
-console.log({isDev})
+console.log({ isDev })
 // isDev && console.log('调用的是测试环境云函数')
 AV.setProduction(true || !isDev)
 
-type LCQueryCallback = (q: AV.Query<AV.Object>) => AV.Query<AV.Object> | void
+type LCQueryCallback = (q: AV.Query<AV.Queriable>) => AV.Query<AV.Object> | void
 
 const lc = {
   AV,
@@ -21,28 +21,28 @@ const lc = {
    * 批量创建
    * @param {array} objects
    */
-  createAll(objects: AV.Object[]): Promise<AV.Object[]> {
+  createAll(objects: AV.Object[]): Promise<(AV.Object | AV.Error)[]> {
     return AV.Object.saveAll(objects)
   },
   /**
    * 批量删除
    * @param {array} objects
    */
-  deleteAll(objects: AV.Object[]): void {
+  deleteAll(objects: AV.Object[]): Promise<(void | AV.Error)[]> {
     return AV.Object.destroyAll(objects)
   },
   /**
    * 批量更新
    * @param {array} objects
    */
-  updateAll(objects: AV.Object[]): Promise<AV.Object[]> {
+  updateAll(objects: AV.Object[]): Promise<(AV.Object | AV.Error)[]> {
     return AV.Object.fetchAll(objects)
   },
   /**
    * 批量保存
    * @param {array} objects
    */
-  saveAll(objects: AV.Object[]): Promise<AV.Object[]> {
+  saveAll(objects: AV.Object[]): Promise<(AV.Object | AV.Error)[]> {
     return AV.Object.saveAll(objects)
   },
   /**
@@ -73,13 +73,13 @@ const lc = {
    * @param {string} classs 搜索类名
    * @param {function} cbForQuery 设置查询条件的中介函数
    */
-  read(classs: string, cbForQuery?: LCQueryCallback): Promise<AV.Object[]> {
+  read(classs: string, cbForQuery?: LCQueryCallback): Promise<AV.Queriable[]> {
     return this.queryHandler(classs, cbForQuery).find()
   },
-  query(classs: string, cbForQuery?: LCQueryCallback): Promise<AV.Object[]> {
+  query(classs: string, cbForQuery?: LCQueryCallback): Promise<AV.Queriable[]> {
     return this.read(classs, cbForQuery)
   },
-  one(classs: string, cbForQuery?: LCQueryCallback): Promise<AV.Object> {
+  one(classs: string, cbForQuery?: LCQueryCallback): Promise<AV.Queriable | undefined> {
     return this.queryHandler(classs, cbForQuery).first()
   },
   /**
@@ -110,7 +110,7 @@ const lc = {
    * 上传资源文件
    * @param {string} pat 文件路径
    */
-  upload(base64: string, filename = new Date().getTime() / 1000 + '.png'): Promise<AV.Object> {
+  upload(base64: string, filename = new Date().getTime() / 1000 + '.png'): Promise<AV.File> {
     return new AV.File(filename, {
       base64,
     }).save()
@@ -119,7 +119,7 @@ const lc = {
    * 上传小程序资源文件
    * @param {string} pat 文件路径
    */
-  uploadMpFile(path: string): Promise<AV.Object> {
+  uploadMpFile(path: string): Promise<AV.File> {
     return new AV.File(path, {
       blob: {
         uri: path,
@@ -130,10 +130,10 @@ const lc = {
    * 上传资源文件
    * @param {string} pat 文件路径
    */
-  uploadBase64(base64: string, file_name: string): Promise<AV.Object> {
+  uploadBase64(base64: string, file_name: string): Promise<AV.File> {
     return this.upload(base64, file_name)
   },
-  uploadFile(file: File, file_name = new Date().getTime() / 1000 + '.png'): Promise<AV.Object> {
+  uploadFile(file: File, file_name = new Date().getTime() / 1000 + '.png'): Promise<AV.File> {
     return new AV.File(file_name, file).save()
   },
   /**
