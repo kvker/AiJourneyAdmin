@@ -3,14 +3,24 @@ import Layout from '../layouts/Layout.astro'
 ---
 
 <Layout title="Welcome to Astro.">
-  <div id="main" class="w-full h-full"></div>
+  <div id="app" class="w-full h-full"></div>
 
   <script>
     import { createApp } from 'vue'
+    import ElementPlus from 'element-plus'
+    import 'element-plus/dist/index.css'
     import App from '../components/App.vue'
 
-    createApp(App).mount('#main')
+    const app = createApp(App)
+    app.use(ElementPlus)
+    app.mount('#app')
   </script>
 </Layout>
 
-<style></style>
+<style>
+  html,
+  body,
+  #app {
+    height: 100%;
+  }
+</style>
