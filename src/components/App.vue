@@ -14,6 +14,19 @@ import {
   PhoneFilled,
 } from '@element-plus/icons-vue'
 import lc from '@libs/lc'
+
+function initPrepare() {
+  // 匿名用户，如果本地持有则取用本地
+  // 匿名用户是用来解决数据安全问题，如果没有匿名用户，无法访问数据，且可以追踪非法操作
+  if (!lc.currentUser()) {
+    lc.AV.User.loginAnonymously().then((user) => {
+      console.log('新建匿名用户')
+    })
+  }
+}
+
+initPrepare()
+
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
 }
