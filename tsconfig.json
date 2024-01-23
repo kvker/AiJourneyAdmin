@@ -1,8 +1,31 @@
 {
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
+    "forceConsistentCasingInFileNames": false,
+    "baseUrl": ".",
     "jsx": "preserve",
-    "types": ["element-plus/global"]
+    "types": [
+      "element-plus/global"
+    ],
+    "paths": {
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@layouts/*": [
+        "src/layouts/*"
+      ],
+      "@libs/*": [
+        "src/libs/*"
+      ],
+      "@pages/*": [
+        "src/pages/*"
+      ]
+    }
   },
-  "include": ["src/**/*.ts", "types/**/*.ts"]
+  "include": [
+    "src/**/*.ts",
+    "types/**/*.ts",
+    "src/**/*.vue",
+    "src/**/*.astro"
+  ]
 }
