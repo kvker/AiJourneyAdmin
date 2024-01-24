@@ -15,6 +15,13 @@ function ll2lnglat(ll: LL) {
   }
 }
 
+function lnglat2ll(lnglat: Lnglat) {
+  return {
+    longitude: lnglat.lng,
+    latitude: lnglat.lat,
+  }
+}
+
 function doReviewLnglat(ll: LL) {
   console.log(ll)
   defaultLnglat.value = ll2lnglat(ll)
@@ -39,7 +46,7 @@ function doChooseLnglat(lnglat: Lnglat) {
 </script>
 
 <template>
-  <main>
+  <main class=" flex flex-col h-full">
     <Query />
     <List @lnglat="doReviewLnglat" />
     <!-- <Edit /> -->

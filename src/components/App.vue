@@ -122,4 +122,9 @@ const onMenuSelect = (key: string, keyPath: string[]) => {
   </el-row>
 </template>
 
-<style></style>
+<style>
+/* 表格的底部横线处理掉 */
+.el-table__inner-wrapper::before {
+  display: none;
+}
+</style>
