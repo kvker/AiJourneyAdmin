@@ -17,6 +17,9 @@
       "@libs/*": [
         "src/libs/*"
       ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
       "@pages/*": [
         "src/pages/*"
       ]

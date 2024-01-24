@@ -4,23 +4,21 @@ import Query from '@components/App/Area/Query.vue'
 import List from '@components/App/Area/List.vue'
 import Edit from '@components/App/Area/Edit.vue'
 import Map from '@components/App/Common/Map.vue'
+import { ll2lnglat, lnglat2ll } from '@utils/map'
 
+// 搜索
+function onSearch(e: { name: string }) {
+  console.log('onSearch')
+  console.log(e)
+}
+
+function onAdd() {
+  console.log('onAdd')
+}
+
+// 地图
 const dialogMapVisible = ref(false)
 const defaultLnglat = ref<Lnglat | null>(null)
-
-function ll2lnglat(ll: LL) {
-  return {
-    lng: ll.longitude,
-    lat: ll.latitude,
-  }
-}
-
-function lnglat2ll(lnglat: Lnglat) {
-  return {
-    longitude: lnglat.lng,
-    latitude: lnglat.lat,
-  }
-}
 
 function doReviewLnglat(ll: LL) {
   console.log(ll)
@@ -47,7 +45,7 @@ function doChooseLnglat(lnglat: Lnglat) {
 
 <template>
   <main class=" flex flex-col h-full">
-    <Query />
+    <Query @search="onSearch" @add="onAdd" />
     <List @lnglat="doReviewLnglat" />
     <!-- <Edit /> -->
     <Map v-if="dialogMapVisible" @choose="doChooseLnglat" @close="doMapClose" :defaultLnglat="defaultLnglat" />
