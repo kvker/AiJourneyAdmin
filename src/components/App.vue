@@ -5,10 +5,15 @@ import lc from '@libs/lc'
 function initPrepare() {
   // 匿名用户，如果本地持有则取用本地
   // 匿名用户是用来解决数据安全问题，如果没有匿名用户，无法访问数据，且可以追踪非法操作
+  // 匿名用户放到用户端去，这里必须要求登录
+  // if (!lc.currentUser()) {
+  //   lc.AV.User.loginAnonymously().then((user) => {
+  //     console.log('新建匿名用户')
+  //   })
+  // }
+  console.log('当前用户：', lc.currentUser())
   if (!lc.currentUser()) {
-    lc.AV.User.loginAnonymously().then((user) => {
-      console.log('新建匿名用户')
-    })
+    location.href = '/login.html'
   }
 }
 
@@ -111,7 +116,7 @@ const onMenuSelect = (key: string, keyPath: string[]) => {
     </el-col>
     <el-col :span="20">
       <KeepAlive>
-        <component :is="c"></component>
+        <component :is="c" class=" p-2"></component>
       </KeepAlive>
     </el-col>
   </el-row>
