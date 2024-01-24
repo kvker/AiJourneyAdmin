@@ -82,7 +82,9 @@ const menu = [{
   name: '投诉管理'
 },]
 
-const cIndex = ref(0)
+let hash = location.hash || '#' + 0 // 简易路由
+
+const cIndex = ref(+hash.replace('#', '') || 0)
 const c = computed(() => {
   const menuItem = menu[cIndex.value]
   return menuItem ? menuItem.component : Setting
@@ -91,13 +93,14 @@ const c = computed(() => {
 const onMenuSelect = (key: string, keyPath: string[]) => {
   console.log(key, keyPath)
   cIndex.value = +key
+  location.hash = key
 }
 </script>
 
 <template>
   <el-row class=" h-full">
     <el-col :span="4">
-      <el-menu default-active="0" class=" h-full overflow-y-auto" @select="onMenuSelect">
+      <el-menu :default-active="cIndex + ''" class=" h-full overflow-y-auto" @select="onMenuSelect">
         <el-menu-item v-for="(m, index) of menu" :index="'' + index">
           <span>{{ m.name }}</span>
         </el-menu-item>
