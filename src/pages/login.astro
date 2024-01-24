@@ -49,6 +49,7 @@ import Empty from '../layouts/Empty.astro'
 
 <script>
   import lc from '../libs/lc'
+  //@ts-ignore
   import md5 from 'md5'
 
   const formLogin = document.querySelector('#formLogin') as HTMLFormElement
@@ -57,7 +58,7 @@ import Empty from '../layouts/Empty.astro'
     try {
       await doLogin()
       window.location.href = '/'
-    } catch (error) {
+    } catch (error: any) {
       alert(error.rawMessage)
     }
   }
