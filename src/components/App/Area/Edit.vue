@@ -96,7 +96,7 @@ async function onSubmit(formEl: FormInstance | undefined) {
 }
 
 function onCheckLocation() {
-  emit('showmap')
+  emit('showmap', form.value.lnglat)
 }
 
 function onAddCoverImage() {

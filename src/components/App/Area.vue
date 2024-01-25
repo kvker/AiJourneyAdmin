@@ -16,7 +16,6 @@ function onSearch(e: { name: string }) {
 }
 
 function onAdd() {
-  console.log('onAdd')
   editVisible.value = true
 }
 
@@ -25,23 +24,22 @@ const dialogMapVisible = ref(false)
 const defaultLnglat = ref<Lnglat | null>(null)
 
 function onReviewLnglat(ll: LL) {
-  console.log(ll)
   defaultLnglat.value = ll2lnglat(ll)
   onShowMap()
 }
 
-function onShowMap() {
-  console.log('onShowMap')
+function onShowMap(lnglat?: Lnglat) {
   dialogMapVisible.value = true
+  if(lnglat) {
+    defaultLnglat.value = lnglat
+  }
 }
 
 function onCloseMap() {
-  console.log('onCloseMap')
   dialogMapVisible.value = false
 }
 
 function doChooseLnglat(lnglat: Lnglat) {
-  console.log(lnglat)
   currentLnglat.value = lnglat
   dialogMapVisible.value = false
 }
@@ -54,8 +52,6 @@ function onEditConfirm(e: any) {
 }
 
 function onCellEdit(data: Area) {
-  console.log('onCellEdit')
-  console.log(data)
   editVisible.value = true
   editData.value = data
 }
@@ -65,8 +61,8 @@ function onCellEdit(data: Area) {
   <main class=" flex flex-col h-full">
     <Query @search="onSearch" @add="onAdd" />
     <List @lnglat="onReviewLnglat" @edit="onCellEdit" />
-    <Edit v-model:visible="editVisible" v-model:lnglat="currentLnglat"
-   :editData="editData" @confim="onEditConfirm" @showmap="onShowMap" />
+    <Edit v-model:visible="editVisible" v-model:lnglat="currentLnglat" :editData="editData" @confim="onEditConfirm"
+      @showmap="onShowMap" />
     <Map :visible="dialogMapVisible" :defaultLnglat="defaultLnglat" @choose="doChooseLnglat" @close="onCloseMap" />
   </main>
 </template>
