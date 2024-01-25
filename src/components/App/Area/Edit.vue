@@ -81,10 +81,10 @@ async function onSubmit(formEl: FormInstance | undefined) {
       if (form.value.attraction) {
         await lc.update('Area', form.value.objectId, uploadForm)
       } else {
+        const attraction = JSON.parse(localStorage.getItem('attraction') as string)
         await lc.create('Area', {
           ...uploadForm,
-          // TODO：这里的id是临时用的,需要从本地或链接获取
-          attraction: lc.createObject('Attraction', '659e75a84700c26fdeda7874'),
+          attraction: lc.createObject('Attraction', attraction.objectId),
         })
       }
       loading.close()
@@ -139,7 +139,7 @@ function onDeleteCoverImage(index: number) {
         <el-button @click="onAddCoverImage" class=" ml-4">新增</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit(ruleFormRef)">{{form.attraction ? '更新' : '创建'}}</el-button>
+        <el-button type="primary" @click="onSubmit(ruleFormRef)">{{ form.attraction ? '更新' : '创建' }}</el-button>
         <el-button @click="visible = false">取消</el-button>
       </el-form-item>
     </el-form>

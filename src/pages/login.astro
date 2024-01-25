@@ -52,6 +52,10 @@ import Empty from '../layouts/Empty.astro'
   //@ts-ignore
   import md5 from 'md5'
 
+  if (lc.currentUser()) {
+    window.location.href = '/'
+  }
+
   const formLogin = document.querySelector('#formLogin') as HTMLFormElement
   formLogin.onsubmit = async function (e) {
     e.preventDefault()
@@ -59,14 +63,31 @@ import Empty from '../layouts/Empty.astro'
       await doLogin()
       window.location.href = '/'
     } catch (error: any) {
-      alert(error.rawMessage)
+      alert(error.rawMessage || error.message)
     }
   }
 
   async function doLogin() {
     const username = (document.querySelector('#login-with-bg-username') as HTMLInputElement).value
     const password = (document.querySelector('#login-with-bg-password') as HTMLInputElement).value
-    await lc.login(username, md5(password) as string)
+    const user = await lc.login(username, md5(password) as string)
+    const roles = await user.getRoles()
+    const roleName = roles[0].get('name')
+    console.log(roleName)
+    if (roleName === 'attractionOperator' || roleName === 'attractionAdmin') {
+      const aum = await lc.one('AttractionUserMap', (q) => {
+        q.equalTo('user', lc.currentUser())
+        q.include('attraction')
+      })
+      if (aum && aum.get('attraction')) {
+        const attraction = aum.get('attraction').toJSON()
+        localStorage.setItem('attraction', JSON.stringify(attraction))
+      } else {
+        throw new ReferenceError('未绑定景区, 请联系管理人员')
+      }
+    } else {
+      throw new ReferenceError('无权访问, 请重新登录')
+    }
   }
 </script>
 
