@@ -5,7 +5,7 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { chooseFile } from '@/utils/fileHandler'
 import lc from '@/libs/lc';
 import type AV from 'leancloud-storage'
-import { ll2lnglat } from '@/utils/map'
+import { ll2Lnglat } from '@/utils/map'
 
 const props = defineProps(['editData'])
 const emit = defineEmits(['showmap', 'confim'])
@@ -48,7 +48,7 @@ watch(() => props.editData, val => {
     let valNew = {
       ...val,
     }
-    valNew.lnglat = ll2lnglat(valNew.lnglat)
+    valNew.lnglat = ll2Lnglat(valNew.lnglat)
     form.value = valNew
   }
 })
