@@ -20,15 +20,12 @@ onMounted(() => {
 })
 
 watch(() => props.visible, (val) => {
-  console.log('watch visible')
-  console.log(val)
   if (val === true) {
     loading.value = true
     navigator.geolocation.getCurrentPosition(function (position) {
       const { latitude, longitude } = position.coords
       map.centerAndZoom(new T.LngLat(longitude, latitude), 16)
       if (props.defaultLnglat) {
-        console.log(props.defaultLnglat.lng)
         addMarker(props.defaultLnglat)
       }
       loading.value = false
@@ -45,7 +42,6 @@ onUnmounted(() => {
 
 function onMapClick({ lnglat }: { lnglat: Lnglat }) {
   // emit('choose', e.lnglat)
-  console.log('onMapClick')
   addMarker(lnglat)
 }
 
@@ -59,7 +55,6 @@ function addMarker(lnglat: Lnglat) {
 }
 
 function doChoose() {
-  console.log('doChoose')
   if (!marker) {
     alert('请选择一个坐标点')
     return
