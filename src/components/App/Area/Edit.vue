@@ -8,7 +8,7 @@ import type AV from 'leancloud-storage'
 import { ll2lnglat } from '@/utils/map'
 
 const props = defineProps(['editData'])
-const emit = defineEmits(['showmap'])
+const emit = defineEmits(['showmap', 'confim'])
 const visible = defineModel('visible', { type: Boolean, default: false, })
 const lnglat = defineModel('lnglat')
 
@@ -89,8 +89,8 @@ async function onSubmit(formEl: FormInstance | undefined) {
       }
       loading.close()
       visible.value = false
+      emit('confim')
       form.value = { ...obj }
-    } else {
     }
   })
 }

@@ -12,8 +12,6 @@ const searchParams = ref<AreaSearchParams>({ name: '' })
 
 // 搜索
 function onSearch(e: { name: string }) {
-  console.log('onSearch')
-  console.log(e.name)
   searchParams.value.name = e.name
 }
 
