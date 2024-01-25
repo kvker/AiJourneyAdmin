@@ -8,20 +8,8 @@
       "element-plus/global"
     ],
     "paths": {
-      "@components/*": [
-        "src/components/*"
-      ],
-      "@layouts/*": [
-        "src/layouts/*"
-      ],
-      "@libs/*": [
-        "src/libs/*"
-      ],
-      "@utils/*": [
-        "src/utils/*"
-      ],
-      "@pages/*": [
-        "src/pages/*"
+      "@/*": [
+        "src/*"
       ]
     }
   },
