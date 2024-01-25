@@ -18,6 +18,7 @@ type Attraction = {
 }
 
 type Area = {
+  objectId: string
   attraction?: AV.Object
   coverImageList: url[]
   description: string
