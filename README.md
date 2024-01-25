@@ -10,7 +10,7 @@
 
 本应用为AI导游大师个人项目后台管理端。
 
-技术栈目前为：Astro + Vue3 + Vitest + Element Plus + LeanCloud（Serverless） + TypeScript。
+技术栈目前为：Astro + Vue3 + Vitest + Element Plus + LeanCloud（Serverless） + TypeScript + Tailwind CSS。
 
 目前的 Serverless 是测试版，已经处理好权限，请使用 leghair + aa123456 登录系统进行开发。
 
