@@ -1,6 +1,6 @@
 # AI导游大师
 
-后台管理 + 小程序 + H5 + Web门户 + APP（含鸿蒙） + Serverless + 大模型（ChatGLM） + 天地图。
+后台管理 + 小程序 + H5 + Web门户 + APP（含鸿蒙） + Serverless + 大模型（ChatGLM） + 天地图 + TypeScript。
 
 希望感兴趣的小伙伴一起开发，一个人实在精力有限。
 
@@ -10,7 +10,7 @@
 
 本应用为AI导游大师个人项目后台管理端。
 
-技术栈目前为：Astro + Vue3 + Vitest + Element Plus + LeanCloud（Serverless）。
+技术栈目前为：Astro + Vue3 + Vitest + Element Plus + LeanCloud（Serverless） + TypeScript。
 
 目前的 Serverless 是测试版，已经处理好权限，请使用 leghair + aa123456 登录系统进行开发。
 
