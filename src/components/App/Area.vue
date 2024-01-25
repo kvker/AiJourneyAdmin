@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-import Query from '@components/App/Area/Query.vue'
-import List from '@components/App/Area/List.vue'
-import Edit from '@components/App/Area/Edit.vue'
-import Map from '@components/App/Common/Map.vue'
-import { ll2lnglat, lnglat2ll } from '@utils/map'
+import Query from '@/components/App/Area/Query.vue'
+import List from '@/components/App/Area/List.vue'
+import Edit from '@/components/App/Area/Edit.vue'
+import Map from '@/components/App/Common/Map.vue'
+import { ll2lnglat, lnglat2ll } from '@/utils/map'
 
 // 搜索
 function onSearch(e: { name: string }) {

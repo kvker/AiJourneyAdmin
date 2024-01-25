@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, ref, computed } from 'vue'
-import lc from '@libs/lc'
+import lc from '@/libs/lc'
 
 function initPrepare() {
   // 匿名用户，如果本地持有则取用本地
@@ -20,37 +20,37 @@ function initPrepare() {
 initPrepare()
 
 const Total = defineAsyncComponent(() =>
-  import('@components/App/Total.vue')
+  import('@/components/App/Total.vue')
 )
 const Area = defineAsyncComponent(() =>
-  import('@components/App/Area.vue')
+  import('@/components/App/Area.vue')
 )
 const Complaint = defineAsyncComponent(() =>
-  import('@components/App/Complaint.vue')
+  import('@/components/App/Complaint.vue')
 )
 const Shop = defineAsyncComponent(() =>
-  import('@components/App/Shop.vue')
+  import('@/components/App/Shop.vue')
 )
 const Driver = defineAsyncComponent(() =>
-  import('@components/App/Driver.vue')
+  import('@/components/App/Driver.vue')
 )
 const Hotel = defineAsyncComponent(() =>
-  import('@components/App/Hotel.vue')
+  import('@/components/App/Hotel.vue')
 )
 const Restaurant = defineAsyncComponent(() =>
-  import('@components/App/Restaurant.vue')
+  import('@/components/App/Restaurant.vue')
 )
 const Toilet = defineAsyncComponent(() =>
-  import('@components/App/Toilet.vue')
+  import('@/components/App/Toilet.vue')
 )
 const TravelAgency = defineAsyncComponent(() =>
-  import('@components/App/TravelAgency.vue')
+  import('@/components/App/TravelAgency.vue')
 )
 const User = defineAsyncComponent(() =>
-  import('@components/App/User.vue')
+  import('@/components/App/User.vue')
 )
 const Setting = defineAsyncComponent(() =>
-  import('@components/App/Setting.vue')
+  import('@/components/App/Setting.vue')
 )
 
 // TODO:

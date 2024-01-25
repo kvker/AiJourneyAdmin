@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import AV from 'leancloud-storage'
-import lc from '@libs/lc'
+import lc from '@/libs/lc'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 onMounted(() => {
@@ -112,9 +112,9 @@ function doChangePage(p: number) {
   <div class="flex-1 flex flex-col justify-around">
     <el-table :data="tableData" class=" w-full" style="height: 560px;" :row-class-name="tableRowClassName">
       <el-table-column prop="name" label="景点名" width="180" />
-      <el-table-column label="经纬度" width="180">
+      <el-table-column label="坐标" width="180">
         <template #default="scope">
-          <el-button @click="doReviewLnglat(scope.row)">经纬度</el-button>
+          <el-button @click="doReviewLnglat(scope.row)">查看</el-button>
         </template>
       </el-table-column>
       <el-table-column label="修改时间">
