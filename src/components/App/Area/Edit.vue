@@ -14,13 +14,15 @@ type AreaForm = Omit<Area, 'coverImageList'> & {
   coverImageList: File[]
 }
 
-const ruleFormRef = ref<FormInstance>()
-const form = ref<AreaForm>({
+const obj = {
+  objectId: '',
   name: '',
   description: '',
   lnglat: null,
   coverImageList: [],
-})
+}
+const ruleFormRef = ref<FormInstance>()
+const form = ref<AreaForm>({ ...obj })
 
 const rules = reactive<FormRules<AreaForm>>({
   name: [
@@ -69,6 +71,7 @@ async function onSubmit(formEl: FormInstance | undefined) {
       })
       loading.close()
       visible.value = false
+      form.value = { ...obj }
     } else {
       console.log('error submit!', fields)
     }
