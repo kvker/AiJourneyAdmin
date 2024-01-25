@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { reactive, ref, watch } from 'vue'
-import { ElLoading } from 'element-plus'
+import { ElLoading, ElMessage } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import { chooseFile } from '@/utils/fileHandler'
 import lc from '@/libs/lc';
@@ -82,9 +82,17 @@ function onCheckLocation() {
 
 function onAddCoverImage() {
   console.log('onAddCoverImage')
+  if (form.value.coverImageList.length >= 3) {
+    ElMessage.error('最多只能上传3张图片')
+    return
+  }
   chooseFile(files => {
     console.log(files)
     if (files) {
+      if (form.value.coverImageList.length + files.length >= 3) {
+        ElMessage.error('最多只能上传3张图片')
+        return
+      }
       form.value.coverImageList = [...form.value.coverImageList, ...files]
     }
   })
