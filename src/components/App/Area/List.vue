@@ -8,7 +8,7 @@ onMounted(() => {
   getCount()
 })
 
-const emit = defineEmits(['lnglat'])
+const emit = defineEmits(['lnglat', 'edit'])
 const page = ref(0)
 const tableData = ref<Area[]>([])
 
@@ -65,6 +65,7 @@ function doReviewLnglat(data: Area) {
 function doEdit(data: Area, index: number) {
   console.log('doEdit')
   console.log(data, index)
+  emit('edit', data)
 }
 
 function doDelete(data: Area, index: number) {
@@ -107,8 +108,7 @@ function doChangePage(p: number) {
       <el-table-column label="封面图">
         <template #default="scope">
           <el-image v-for="(image, index) of scope.row.coverImageList" :src="image"
-            :preview-src-list="scope.row.coverImageList" :preview-teleported="true" :initial-index="index"
-            fit="contain"
+            :preview-src-list="scope.row.coverImageList" :preview-teleported="true" :initial-index="index" fit="contain"
             class=" w-10 h-10 mr-1"></el-image>
         </template>
       </el-table-column>

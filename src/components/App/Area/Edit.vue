@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { reactive, ref, watch } from 'vue'
+import { ref, watch, toRef } from 'vue'
 import { ElLoading, ElMessage } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import { chooseFile } from '@/utils/fileHandler'
 import lc from '@/libs/lc';
 import type AV from 'leancloud-storage'
+import { ll2lnglat } from '@/utils/map'
 
+const props = defineProps(['editData'])
 const emit = defineEmits(['showmap'])
 const visible = defineModel('visible', { type: Boolean, default: false, })
 const lnglat = defineModel('lnglat')
@@ -24,7 +26,7 @@ const obj = {
 const ruleFormRef = ref<FormInstance>()
 const form = ref<AreaForm>({ ...obj })
 
-const rules = reactive<FormRules<AreaForm>>({
+const rules = ref<FormRules<AreaForm>>({
   name: [
     { required: true, message: '请输入景点名称', trigger: 'blur' },
     // { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
@@ -39,10 +41,20 @@ const rules = reactive<FormRules<AreaForm>>({
 
 watch(lnglat, (val) => {
   form.value.lnglat = val as Lnglat
-  console.log(form.value.lnglat)
 })
 
-function file2BlobUrl(file: File) {
+watch(() => props.editData, val => {
+  if (val) {
+    let valNew = {
+      ...val,
+    }
+    valNew.lnglat = ll2lnglat(valNew.lnglat)
+    form.value = valNew
+  }
+})
+
+function file2BlobUrl(file: File | url) {
+  if (typeof file === 'string') return file
   return URL.createObjectURL(file)
 }
 
@@ -50,47 +62,49 @@ async function onSubmit(formEl: FormInstance | undefined) {
   if (!formEl) return
 
   await formEl.validate(async (valid, fields) => {
-    console.log({ valid, fields })
     if (valid) {
-      console.log('submit!')
       const coverImageList = []
 
       let loading = ElLoading.service({ text: '上传图片中', fullscreen: true })
       let ret: AV.File | null = null
       for (const file of form.value.coverImageList) {
+        if (typeof file === 'string') continue // 链接不需要再传
         ret = await lc.uploadFile(file)
         coverImageList.push(ret.get('url'))
       }
-      await lc.create('Area', {
-        // TODO：这里的id是临时用的,需要从本地或链接获取
-        attraction: lc.createObject('Attraction', '659e75a84700c26fdeda7874'),
+      const uploadForm = {
         name: form.value.name,
         description: form.value.description,
         lnglat: new lc.AV.GeoPoint({ latitude: form.value.lnglat!.lat, longitude: form.value.lnglat!.lng }),
         coverImageList,
-      })
+      }
+      if (form.value.attraction) {
+        await lc.update('Area', form.value.objectId, uploadForm)
+      } else {
+        await lc.create('Area', {
+          ...uploadForm,
+          // TODO：这里的id是临时用的,需要从本地或链接获取
+          attraction: lc.createObject('Attraction', '659e75a84700c26fdeda7874'),
+        })
+      }
       loading.close()
       visible.value = false
       form.value = { ...obj }
     } else {
-      console.log('error submit!', fields)
     }
   })
 }
 
 function onCheckLocation() {
-  console.log('onCheckLocation')
   emit('showmap')
 }
 
 function onAddCoverImage() {
-  console.log('onAddCoverImage')
   if (form.value.coverImageList.length >= 3) {
     ElMessage.error('最多只能上传3张图片')
     return
   }
   chooseFile(files => {
-    console.log(files)
     if (files) {
       if (form.value.coverImageList.length + files.length >= 3) {
         ElMessage.error('最多只能上传3张图片')
@@ -102,8 +116,6 @@ function onAddCoverImage() {
 }
 
 function onDeleteCoverImage(index: number) {
-  console.log('onDeleteCoverImage')
-  console.log(index)
   form.value.coverImageList.splice(index, 1)
 }
 </script>
@@ -127,7 +139,7 @@ function onDeleteCoverImage(index: number) {
         <el-button @click="onAddCoverImage" class=" ml-4">新增</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit(ruleFormRef)">创建</el-button>
+        <el-button type="primary" @click="onSubmit(ruleFormRef)">{{form.attraction ? '更新' : '创建'}}</el-button>
         <el-button @click="visible = false">取消</el-button>
       </el-form-item>
     </el-form>

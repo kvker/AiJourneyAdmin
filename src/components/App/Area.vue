@@ -7,6 +7,7 @@ import Map from '@/components/App/Common/Map.vue'
 import { ll2lnglat } from '@/utils/map'
 
 const currentLnglat = ref<Lnglat | null>(null)
+const editData = ref<Area | null>(null)
 
 // 搜索
 function onSearch(e: { name: string }) {
@@ -52,13 +53,20 @@ function onEditConfirm(e: any) {
   console.log(e)
 }
 
+function onCellEdit(data: Area) {
+  console.log('onCellEdit')
+  console.log(data)
+  editVisible.value = true
+  editData.value = data
+}
 </script>
 
 <template>
   <main class=" flex flex-col h-full">
     <Query @search="onSearch" @add="onAdd" />
-    <List @lnglat="onReviewLnglat" />
-    <Edit v-model:visible="editVisible" v-model:lnglat="currentLnglat" @confim="onEditConfirm" @showmap="onShowMap" />
+    <List @lnglat="onReviewLnglat" @edit="onCellEdit" />
+    <Edit v-model:visible="editVisible" v-model:lnglat="currentLnglat"
+   :editData="editData" @confim="onEditConfirm" @showmap="onShowMap" />
     <Map :visible="dialogMapVisible" :defaultLnglat="defaultLnglat" @choose="doChooseLnglat" @close="onCloseMap" />
   </main>
 </template>
