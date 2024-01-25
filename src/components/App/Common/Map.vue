@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, watch } from 'vue'
+
 let map: any
   , marker: any
 const emit = defineEmits(['choose', 'close'])
@@ -10,6 +11,7 @@ const props = defineProps({
     default: null,
   },
 })
+const loading = ref(false)
 
 onMounted(() => {
   // 地图
@@ -21,6 +23,7 @@ watch(() => props.visible, (val) => {
   console.log('watch visible')
   console.log(val)
   if (val === true) {
+    loading.value = true
     navigator.geolocation.getCurrentPosition(function (position) {
       const { latitude, longitude } = position.coords
       map.centerAndZoom(new T.LngLat(longitude, latitude), 16)
@@ -28,6 +31,10 @@ watch(() => props.visible, (val) => {
         console.log(props.defaultLnglat.lng)
         addMarker(props.defaultLnglat)
       }
+      loading.value = false
+    }, function (error) {
+      console.error(error)
+      loading.value = false
     })
   }
 })
@@ -53,13 +60,19 @@ function addMarker(lnglat: Lnglat) {
 
 function doChoose() {
   console.log('doChoose')
+  if (!marker) {
+    alert('请选择一个坐标点')
+    return
+  }
   emit('choose', marker.getLngLat())
 }
 </script>
 
 <template>
-  <div v-show="visible" class=" fixed left-0 top-0 w-full h-full z-50 mask flex items-center justify-center">
-    <div id="mapDiv"></div>
+  <div v-show="visible" class=" fixed left-0 top-0 w-full h-full mask flex items-center justify-center"
+    style="z-index: 9999;">
+    <div v-loading="loading" element-loading-text="定位中" element-loading-background="rgba(122, 122, 122, 0.8)" id="mapDiv">
+    </div>
     <div class=" ml-10 flex flex-col justify-end">
       <el-button @click="emit('close')">关闭</el-button>
       <el-button class=" mt-8" type="primary" @click="doChoose">确认</el-button>
