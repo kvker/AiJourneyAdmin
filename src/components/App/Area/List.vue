@@ -1,11 +1,19 @@
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
+import type { PropType } from 'vue'
 import AV from 'leancloud-storage'
 import lc from '@/libs/lc'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-onMounted(() => {
-  getCount()
+getCount()
+
+const props = defineProps({
+  searchParams: {
+    type: Object as PropType<AreaSearchParams>,
+    default: () => ({
+      name: ''
+    }),
+  },
 })
 
 const emit = defineEmits(['lnglat', 'edit'])
@@ -16,6 +24,17 @@ watch(page, () => {
   getList()
 }, {
   immediate: true,
+})
+
+watch(() => props.searchParams.name, (val, oldVal) => {
+  if (val !== oldVal && val.trim()) {
+    getList(props.searchParams)
+    getCount(props.searchParams)
+  }
+  if (!val.trim()) {
+    getList()
+    getCount()
+  }
 })
 
 // 列表
@@ -42,17 +61,24 @@ const tableRowClassName = ({
 let sourceList: AV.Queriable[] = []
 let count = ref(0)
 
-async function getList() {
+async function getList(searchParams?: AreaSearchParams) {
   const ret = await lc.read('Area', q => {
     q.limit(10)
     q.skip(10 * page.value)
+    if (searchParams) {
+      q.equalTo('name', searchParams.name)
+    }
   })
   sourceList = ret
   tableData.value = ret.map(i => i.toJSON())
 }
 
-async function getCount() {
-  const ret = await lc.count('Area')
+async function getCount(searchParams?: AreaSearchParams) {
+  const ret = await lc.count('Area', q => {
+    if (searchParams) {
+      q.equalTo('name', searchParams.name)
+    }
+  })
   count.value = ret
 }
 

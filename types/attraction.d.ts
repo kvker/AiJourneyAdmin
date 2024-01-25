@@ -25,3 +25,7 @@ type Area = {
   lnglat: Lnglat | null
   name: string
 }
+
+type AreaSearchParams = {
+  name: string
+}

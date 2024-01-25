@@ -8,11 +8,13 @@ import { ll2lnglat } from '@/utils/map'
 
 const currentLnglat = ref<Lnglat | null>(null)
 const editData = ref<Area | null>(null)
+const searchParams = ref<AreaSearchParams>({ name: '' })
 
 // 搜索
 function onSearch(e: { name: string }) {
   console.log('onSearch')
-  console.log(e)
+  console.log(e.name)
+  searchParams.value.name = e.name
 }
 
 function onAdd() {
@@ -30,7 +32,7 @@ function onReviewLnglat(ll: LL) {
 
 function onShowMap(lnglat?: Lnglat) {
   dialogMapVisible.value = true
-  if(lnglat) {
+  if (lnglat) {
     defaultLnglat.value = lnglat
   }
 }
@@ -60,7 +62,7 @@ function onCellEdit(data: Area) {
 <template>
   <main class=" flex flex-col h-full">
     <Query @search="onSearch" @add="onAdd" />
-    <List @lnglat="onReviewLnglat" @edit="onCellEdit" />
+    <List :searchParams="searchParams" @lnglat="onReviewLnglat" @edit="onCellEdit" />
     <Edit v-model:visible="editVisible" v-model:lnglat="currentLnglat" :editData="editData" @confim="onEditConfirm"
       @showmap="onShowMap" />
     <Map :visible="dialogMapVisible" :defaultLnglat="defaultLnglat" @choose="doChooseLnglat" @close="onCloseMap" />
