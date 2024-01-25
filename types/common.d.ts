@@ -1,4 +1,6 @@
 declare const md5: any
+type url = string
+type link = string
 
 type GlobalProvide = {
   lc : AV.Object

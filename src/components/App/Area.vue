@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import Query from '@/components/App/Area/Query.vue'
 import List from '@/components/App/Area/List.vue'
 import Edit from '@/components/App/Area/Edit.vue'
 import Map from '@/components/App/Common/Map.vue'
-import { ll2lnglat, lnglat2ll } from '@/utils/map'
+import { ll2lnglat } from '@/utils/map'
+
+const currentLnglat = ref<Lnglat | null>(null)
 
 // 搜索
 function onSearch(e: { name: string }) {
@@ -14,6 +16,7 @@ function onSearch(e: { name: string }) {
 
 function onAdd() {
   console.log('onAdd')
+  editVisible.value = true
 }
 
 // 地图
@@ -38,8 +41,12 @@ function onCloseMap() {
 
 function doChooseLnglat(lnglat: Lnglat) {
   console.log(lnglat)
-  onShowMap()
+  currentLnglat.value = lnglat
+  dialogMapVisible.value = false
 }
+
+// 编辑(新增)
+const editVisible = ref(false)
 
 function onEditConfirm(e: any) {
   console.log(e)
@@ -51,7 +58,7 @@ function onEditConfirm(e: any) {
   <main class=" flex flex-col h-full">
     <Query @search="onSearch" @add="onAdd" />
     <List @lnglat="onReviewLnglat" />
-    <Edit @confim="onEditConfirm" @showmap="onShowMap" />
+    <Edit v-model:visible="editVisible" v-model:lnglat="currentLnglat" @confim="onEditConfirm" @showmap="onShowMap" />
     <Map :visible="dialogMapVisible" :defaultLnglat="defaultLnglat" @choose="doChooseLnglat" @close="onCloseMap" />
   </main>
 </template>
