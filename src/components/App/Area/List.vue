@@ -26,7 +26,6 @@ interface User {
 }
 
 const tableRowClassName = ({
-  row,
   rowIndex,
 }: {
   row: User
@@ -38,14 +37,6 @@ const tableRowClassName = ({
     return 'success-row'
   }
   return ''
-}
-
-type Area = {
-  name: string
-  lnglat: AV.GeoPoint
-  description: string
-  coverImageList: string[]
-  updatedAt: string
 }
 
 let sourceList: AV.Queriable[] = []
@@ -88,16 +79,12 @@ function doDelete(data: Area, index: number) {
       type: 'warning',
     }
   )
-    .then(() => {
+    .then(async () => {
+      await lc.delete('Area', data.objectId)
+      tableData.value.splice(index, 1)
       ElMessage({
         type: 'success',
-        message: 'Delete completed',
-      })
-    })
-    .catch(() => {
-      ElMessage({
-        type: 'info',
-        message: 'Delete canceled',
+        message: '删除成功',
       })
     })
 }
@@ -121,6 +108,7 @@ function doChangePage(p: number) {
         <template #default="scope">
           <el-image v-for="(image, index) of scope.row.coverImageList" :src="image"
             :preview-src-list="scope.row.coverImageList" :preview-teleported="true" :initial-index="index"
+            fit="contain"
             class=" w-10 h-10 mr-1"></el-image>
         </template>
       </el-table-column>
