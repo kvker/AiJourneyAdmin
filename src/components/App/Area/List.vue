@@ -117,9 +117,11 @@ function doChangePage(p: number) {
           <el-button @click="doReviewLnglat(scope.row)">查看</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="修改时间">
+      <el-table-column label="封面图">
         <template #default="scope">
-          <p>{{ new Date(scope.row.updatedAt).toLocaleString() }}</p>
+          <el-image v-for="(image, index) of scope.row.coverImageList" :src="image"
+            :preview-src-list="scope.row.coverImageList" :preview-teleported="true" :initial-index="index"
+            class=" w-10 h-10 mr-1"></el-image>
         </template>
       </el-table-column>
       <el-table-column label="操作">
