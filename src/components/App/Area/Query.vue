@@ -1,28 +1,19 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { inject } from 'vue'
+import type { Ref } from 'vue'
+const searchParams = inject('searchParams') as Ref<AreaSearchParams>
 
-const emit = defineEmits(['search', 'add'])
-
-function onSearch() {
-  emit('search', formInline.value)
-}
+const emit = defineEmits(['add'])
 
 function onAdd() {
   emit('add')
 }
-
-const formInline = ref({
-  name: '',
-})
 </script>
 
 <template>
-  <el-form :inline="true" :model="formInline" class="demo-form-inline">
+  <el-form :inline="true" :model="searchParams" class="demo-form-inline">
     <el-form-item label="景点名称">
-      <el-input v-model="formInline.name" placeholder="景点名称" />
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" plain @click="onSearch">搜索</el-button>
+      <el-input v-model="searchParams.name" placeholder="输入自动搜索" />
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="onAdd">新增</el-button>

@@ -1,24 +1,16 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
-import type { PropType } from 'vue'
-import AV from 'leancloud-storage'
+import { ref, watch, inject } from 'vue'
+import type { Ref } from 'vue'
 import lc from '@/libs/lc'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-getCount()
 
-const props = defineProps({
-  searchParams: {
-    type: Object as PropType<AreaSearchParams>,
-    default: () => ({
-      name: ''
-    }),
-  },
-})
+const searchParams = inject('searchParams') as Ref<AreaSearchParams>
 
 const emit = defineEmits(['lnglat', 'edit'])
 const page = ref(0)
 const tableData = ref<Area[]>([])
+getCount()
 
 watch(page, () => {
   getList()
@@ -26,14 +18,19 @@ watch(page, () => {
   immediate: true,
 })
 
-watch(() => props.searchParams.name, (val, oldVal) => {
-  if (val !== oldVal && val.trim()) {
-    getList(props.searchParams)
-    getCount(props.searchParams)
-  }
-  if (!val.trim()) {
-    getList()
-    getCount()
+let timeout: any
+watch(() => searchParams.value.name, (val, oldVal) => {
+  if (val !== oldVal) {
+    if (timeout) {
+      clearTimeout(timeout)
+      timeout = null
+    } else {
+      timeout = setTimeout(() => {
+        getCount()
+        getList()
+        timeout = null
+      }, 1000)
+    }
   }
 })
 
@@ -58,25 +55,23 @@ const tableRowClassName = ({
   return ''
 }
 
-let sourceList: AV.Queriable[] = []
 let count = ref(0)
 
-async function getList(searchParams?: AreaSearchParams) {
+async function getList(params = searchParams.value) {
   const ret = await lc.read('Area', q => {
     q.limit(10)
     q.skip(10 * page.value)
-    if (searchParams) {
-      q.equalTo('name', searchParams.name)
+    if (params.name) {
+      q.equalTo('name', params.name)
     }
   })
-  sourceList = ret
   tableData.value = ret.map(i => i.toJSON())
 }
 
-async function getCount(searchParams?: AreaSearchParams) {
+async function getCount(params = searchParams.value) {
   const ret = await lc.count('Area', q => {
-    if (searchParams) {
-      q.equalTo('name', searchParams.name)
+    if (params.name) {
+      q.equalTo('name', params.name)
     }
   })
   count.value = ret

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, provide } from 'vue'
 import Query from '@/components/App/Area/Query.vue'
 import List from '@/components/App/Area/List.vue'
 import Edit from '@/components/App/Area/Edit.vue'
@@ -8,12 +8,8 @@ import { ll2lnglat } from '@/utils/map'
 
 const currentLnglat = ref<Lnglat | null>(null)
 const editData = ref<Area | null>(null)
-const searchParams = ref<AreaSearchParams>({ name: '' })
 
-// 搜索
-function onSearch(e: { name: string }) {
-  searchParams.value.name = e.name
-}
+provide('searchParams', ref<AreaSearchParams>({ name: '' }))
 
 function onAdd() {
   editVisible.value = true
@@ -59,8 +55,8 @@ function onCellEdit(data: Area) {
 
 <template>
   <main class=" flex flex-col h-full">
-    <Query @search="onSearch" @add="onAdd" />
-    <List :searchParams="searchParams" @lnglat="onReviewLnglat" @edit="onCellEdit" />
+    <Query @add="onAdd" />
+    <List @lnglat="onReviewLnglat" @edit="onCellEdit" />
     <Edit v-model:visible="editVisible" v-model:lnglat="currentLnglat" :editData="editData" @confim="onEditConfirm"
       @showmap="onShowMap" />
     <Map :visible="dialogMapVisible" :defaultLnglat="defaultLnglat" @choose="doChooseLnglat" @close="onCloseMap" />
