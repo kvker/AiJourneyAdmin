@@ -20,7 +20,7 @@ function onAdd() {
 const dialogMapVisible = ref(false)
 const defaultLnglat = ref<Lnglat | null>(null)
 
-function doReviewLnglat(ll: LL) {
+function onReviewLnglat(ll: LL) {
   console.log(ll)
   defaultLnglat.value = ll2lnglat(ll)
   doMapShow()
@@ -41,14 +41,18 @@ function doChooseLnglat(lnglat: Lnglat) {
   doMapShow()
 }
 
+function onEditConfirm(e: any) {
+  console.log(e)
+}
+
 </script>
 
 <template>
   <main class=" flex flex-col h-full">
     <Query @search="onSearch" @add="onAdd" />
-    <List @lnglat="doReviewLnglat" />
-    <!-- <Edit /> -->
-    <Map v-if="dialogMapVisible" @choose="doChooseLnglat" @close="doMapClose" :defaultLnglat="defaultLnglat" />
+    <List @lnglat="onReviewLnglat" />
+    <Edit @confim="onEditConfirm" />
+    <Map :visible="dialogMapVisible" :defaultLnglat="defaultLnglat" @choose="doChooseLnglat" @close="doMapClose" />
   </main>
 </template>
 

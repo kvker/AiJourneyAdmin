@@ -4,6 +4,7 @@ let map: any
   , marker: any
 const emit = defineEmits(['choose', 'close'])
 const props = defineProps({
+  visible: Boolean,
   defaultLnglat: {
     type: Object as () => Lnglat | null,
     default: null,
@@ -13,15 +14,22 @@ const props = defineProps({
 onMounted(() => {
   // 地图
   map = new T.Map('mapDiv')
-  navigator.geolocation.getCurrentPosition(function (position) {
-    const { latitude, longitude } = position.coords
-    map.centerAndZoom(new T.LngLat(longitude, latitude), 16)
-    if (props.defaultLnglat) {
-      console.log(props.defaultLnglat.lng)
-      addMarker(props.defaultLnglat)
-    }
-  })
   map.addEventListener("click", onMapClick)
+})
+
+watch(() => props.visible, (val) => {
+  console.log('watch visible')
+  console.log(val)
+  if (val === true) {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      const { latitude, longitude } = position.coords
+      map.centerAndZoom(new T.LngLat(longitude, latitude), 16)
+      if (props.defaultLnglat) {
+        console.log(props.defaultLnglat.lng)
+        addMarker(props.defaultLnglat)
+      }
+    })
+  }
 })
 
 onUnmounted(() => {
@@ -50,7 +58,7 @@ function doChoose() {
 </script>
 
 <template>
-  <div class=" fixed left-0 top-0 w-full h-full z-50 mask flex items-center justify-center">
+  <div v-show="visible" class=" fixed left-0 top-0 w-full h-full z-50 mask flex items-center justify-center">
     <div id="mapDiv"></div>
     <div class=" ml-10 flex flex-col justify-end">
       <el-button @click="emit('close')">关闭</el-button>
