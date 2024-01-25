@@ -23,22 +23,22 @@ const defaultLnglat = ref<Lnglat | null>(null)
 function onReviewLnglat(ll: LL) {
   console.log(ll)
   defaultLnglat.value = ll2lnglat(ll)
-  doMapShow()
+  onShowMap()
 }
 
-function doMapShow() {
-  console.log('doMapShow')
+function onShowMap() {
+  console.log('onShowMap')
   dialogMapVisible.value = true
 }
 
-function doMapClose() {
-  console.log('doMapClose')
+function onCloseMap() {
+  console.log('onCloseMap')
   dialogMapVisible.value = false
 }
 
 function doChooseLnglat(lnglat: Lnglat) {
   console.log(lnglat)
-  doMapShow()
+  onShowMap()
 }
 
 function onEditConfirm(e: any) {
@@ -51,8 +51,8 @@ function onEditConfirm(e: any) {
   <main class=" flex flex-col h-full">
     <Query @search="onSearch" @add="onAdd" />
     <List @lnglat="onReviewLnglat" />
-    <Edit @confim="onEditConfirm" />
-    <Map :visible="dialogMapVisible" :defaultLnglat="defaultLnglat" @choose="doChooseLnglat" @close="doMapClose" />
+    <Edit @confim="onEditConfirm" @showmap="onShowMap" />
+    <Map :visible="dialogMapVisible" :defaultLnglat="defaultLnglat" @choose="doChooseLnglat" @close="onCloseMap" />
   </main>
 </template>
 
