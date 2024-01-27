@@ -1,11 +1,11 @@
 type GLMResponseJSON = { "id": string, "created": number, "model": string, "choices": { "index": number, "finish_reason"?: "stop", "delta": { "role": "assistant", "content": string } }[], "usage"?: { "prompt_tokens": number, "completion_tokens": number, "total_tokens": number } }
 
-export function completions() {
+export function completions(content: string, SseCB: (result: string) => void, doneCB: (result: string) => void) {
   const raw = JSON.stringify({
     messages: [
       {
         role: "user",
-        content: "作为一名营销专家，请为我的产品创作一个吸引人的slogan"
+        content,
       }
     ]
   })
@@ -32,6 +32,7 @@ export function completions() {
       reader.read().then(function process({ done, value }) {
         if (done) {
           console.log('done!!!')
+          doneCB(result_text)
           return
         }
         text = new TextDecoder('utf-8').decode(value)
@@ -46,7 +47,8 @@ export function completions() {
             chunk = json.choices[0].delta.content
             if (chunk.trim()) {
               result_text += chunk
-              console.log(result_text)
+              // console.log(result_text)
+              SseCB && SseCB(result_text)
             }
           } catch (error: any) {
             temp_text += text

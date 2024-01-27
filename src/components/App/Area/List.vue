@@ -126,7 +126,7 @@ function doChangePage(p: number) {
           <el-button @click="doReviewLnglat(scope.row)">查看</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="坐标" width="180">
+      <el-table-column label="介绍" width="180">
         <template #default="scope">
           <p class=" truncate">{{ scope.row.description }}</p>
         </template>

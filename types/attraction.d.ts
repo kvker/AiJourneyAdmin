@@ -34,4 +34,6 @@ type ChatStyle = {
   name: string
   description: string
   sort: number
+  previousPrompt: string
+  tailPrompt: string
 } & LCBase

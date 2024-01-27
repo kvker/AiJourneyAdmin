@@ -115,8 +115,18 @@ function onDeleteCoverImage(index: number) {
   form.value.coverImageList.splice(index, 1)
 }
 
+type AreaIntroduce = {
+  objectId: string
+  description: string
+  chatStyle: ChatStyle
+  area: Area
+} & LCBase
+
 // 聊天风格区域
 const chatStyles = ref<ChatStyle[]>([])
+const styleVisible = ref(false)
+const currentStyleDescription = ref('')
+let areaIntroduce: AreaIntroduce
 async function getChatStyle() {
   const cs = await lc.read('ChatStyle', q => {
     q.descending('sort')
@@ -126,9 +136,36 @@ async function getChatStyle() {
 
 getChatStyle()
 
-function doGenerateIntroduce(chatStyle: ChatStyle, index: number) {
-  console.log(chatStyle, index)
-  completions()
+async function onGenerateIntroduce(chatStyle: ChatStyle, index: number) {
+  console.log(chatStyle, index, form.value)
+  styleVisible.value = true
+  const ret = await lc.one('AreaIntroduce', q => {
+    q.equalTo('chatStyle', lc.createObject('ChatStyle', chatStyle.objectId))
+    q.equalTo('area', lc.createObject('Area', form.value.objectId))
+  })
+  if (ret) {
+    areaIntroduce = ret.toJSON()
+    currentStyleDescription.value = areaIntroduce.description
+  } else {
+    onUpdateStyleDescription(chatStyle)
+  }
+}
+
+async function onUseStyleDescription() {
+  console.log('onUseStyleDescription')
+  // lc.update()
+}
+
+function onUpdateStyleDescription(chatStyle: ChatStyle) {
+  console.log('onUpdateStyleDescription')
+  currentStyleDescription.value = ''
+  const content = `${chatStyle.previousPrompt}${form.value.description}${chatStyle.tailPrompt}`
+  completions(content, result => {
+    currentStyleDescription.value = result
+  }, (result) => {
+    console.log(result)
+    alert('输出完成')
+  })
 }
 </script>
 
@@ -144,7 +181,7 @@ function doGenerateIntroduce(chatStyle: ChatStyle, index: number) {
             placeholder="杭州西湖景区是......建议300字以上500字以下" type="textarea" />
           <div class="flex mt-2">
             <el-button v-for="(chatStyle, index) of chatStyles" class="mr-2"
-              @click="doGenerateIntroduce(chatStyle, index)" :title="chatStyle.description">{{ chatStyle.name
+              @click="onGenerateIntroduce(chatStyle, index)" :title="chatStyle.description">{{ chatStyle.name
               }}</el-button>
           </div>
         </div>
@@ -163,6 +200,14 @@ function doGenerateIntroduce(chatStyle: ChatStyle, index: number) {
         <el-button @click="visible = false">取消</el-button>
       </el-form-item>
     </el-form>
+    <el-dialog v-model="styleVisible" title="个性化景点介绍">
+      <el-input v-model="currentStyleDescription" :autosize="{ minRows: 2, maxRows: 16 }"
+        placeholder="这里显示的是AI协助生成的各类有趣的景点介绍语录, 来自基础描述" type="textarea" />
+      <div class="flex mt-4">
+        <el-button @click="onUseStyleDescription" class=" mr-4" type="primary">应用</el-button>
+        <el-button @click="onUpdateStyleDescription" class=" mr-4" type="info">刷新</el-button>
+      </div>
+    </el-dialog>
   </el-dialog>
 </template>
 
