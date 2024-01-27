@@ -2,7 +2,7 @@
 import { ref, watch, toRef } from 'vue'
 import { ElLoading, ElMessage } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
-import { chooseFile } from '@/utils/fileHandler'
+import { chooseFile, file2BlobUrl } from '@/utils/fileHandler'
 import lc from '@/libs/lc';
 import type AV from 'leancloud-storage'
 import { ll2Lnglat } from '@/utils/map'
@@ -52,11 +52,6 @@ watch(() => props.editData, val => {
     form.value = valNew
   }
 })
-
-function file2BlobUrl(file: File | url) {
-  if (typeof file === 'string') return file
-  return URL.createObjectURL(file)
-}
 
 async function onSubmit(formEl: FormInstance | undefined) {
   if (!formEl) return
@@ -127,7 +122,14 @@ function onDeleteCoverImage(index: number) {
         <el-input v-model="form.name" placeholder="景区名字" />
       </el-form-item>
       <el-form-item label="介绍" required prop="description">
-        <el-input v-model="form.description" placeholder="杭州西湖景区是......建议300字以上500字以下" type="textarea" />
+        <div class="w-full">
+          <el-input v-model="form.description" :autosize="{ minRows: 2, maxRows: 8 }" placeholder="杭州西湖景区是......建议300字以上500字以下" type="textarea" />
+          <div class="flex mt-2">
+            <el-button class="mr-2" @click="doGenerateIntroduce">可爱</el-button>
+            <el-button class="mr-2" @click="doGenerateIntroduce">常规</el-button>
+            <el-button class="mr-2" @click="doGenerateIntroduce">精简</el-button>
+          </div>
+        </div>
       </el-form-item>
       <el-form-item label="定位位置" required prop="lnglat">
         <p v-if="form.lnglat">{{ form.lnglat.lng + ', ' + form.lnglat.lat }}</p>

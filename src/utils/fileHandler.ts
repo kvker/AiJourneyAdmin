@@ -18,3 +18,8 @@ export function chooseFile(cb: (files?: FileList) => void, multiple = true, acce
     }
   }
 }
+
+export function file2BlobUrl(file: File | url) {
+  if (typeof file === 'string') return file
+  return URL.createObjectURL(file)
+}
