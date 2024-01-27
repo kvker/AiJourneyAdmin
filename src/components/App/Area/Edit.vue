@@ -6,6 +6,7 @@ import { chooseFile, file2BlobUrl } from '@/utils/fileHandler'
 import lc from '@/libs/lc';
 import type AV from 'leancloud-storage'
 import { ll2Lnglat } from '@/utils/map'
+import { completions } from '@/utils/chat'
 
 const props = defineProps(['editData'])
 const emit = defineEmits(['showmap', 'confim'])
@@ -113,6 +114,22 @@ function onAddCoverImage() {
 function onDeleteCoverImage(index: number) {
   form.value.coverImageList.splice(index, 1)
 }
+
+// 聊天风格区域
+const chatStyles = ref<ChatStyle[]>([])
+async function getChatStyle() {
+  const cs = await lc.read('ChatStyle', q => {
+    q.descending('sort')
+  })
+  chatStyles.value = cs.map(i => i.toJSON())
+}
+
+getChatStyle()
+
+function doGenerateIntroduce(chatStyle: ChatStyle, index: number) {
+  console.log(chatStyle, index)
+  completions()
+}
 </script>
 
 <template>
@@ -123,11 +140,12 @@ function onDeleteCoverImage(index: number) {
       </el-form-item>
       <el-form-item label="介绍" required prop="description">
         <div class="w-full">
-          <el-input v-model="form.description" :autosize="{ minRows: 2, maxRows: 8 }" placeholder="杭州西湖景区是......建议300字以上500字以下" type="textarea" />
+          <el-input v-model="form.description" :autosize="{ minRows: 2, maxRows: 8 }"
+            placeholder="杭州西湖景区是......建议300字以上500字以下" type="textarea" />
           <div class="flex mt-2">
-            <el-button class="mr-2" @click="doGenerateIntroduce">可爱</el-button>
-            <el-button class="mr-2" @click="doGenerateIntroduce">常规</el-button>
-            <el-button class="mr-2" @click="doGenerateIntroduce">精简</el-button>
+            <el-button v-for="(chatStyle, index) of chatStyles" class="mr-2"
+              @click="doGenerateIntroduce(chatStyle, index)" :title="chatStyle.description">{{ chatStyle.name
+              }}</el-button>
           </div>
         </div>
       </el-form-item>
