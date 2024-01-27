@@ -1,11 +1,18 @@
 declare const md5: any
 type url = string
 type link = string
+type base64 = string
+type DateString = string
 
 type GlobalProvide = {
   lc : AV.Object
 }
-type base64 = string
+
+type LCBase = {
+  createdAt: DateString
+  updatedAt: DateString
+  objectId: string
+}
 
 type BaseObject = {
   [key : string] : any

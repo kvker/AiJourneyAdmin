@@ -29,3 +29,9 @@ type Area = {
 type AreaSearchParams = {
   name: string
 }
+
+type ChatStyle = {
+  name: string
+  description: string
+  sort: number
+} & LCBase
