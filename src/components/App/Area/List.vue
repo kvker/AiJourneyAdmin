@@ -126,6 +126,11 @@ function doChangePage(p: number) {
           <el-button @click="doReviewLnglat(scope.row)">查看</el-button>
         </template>
       </el-table-column>
+      <el-table-column label="坐标" width="180">
+        <template #default="scope">
+          <p class=" truncate">{{ scope.row.description }}</p>
+        </template>
+      </el-table-column>
       <el-table-column label="封面图">
         <template #default="scope">
           <el-image v-for="(image, index) of scope.row.coverImageList" :src="image"
