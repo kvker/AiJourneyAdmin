@@ -6,7 +6,7 @@ import { chooseFile, file2BlobUrl } from '@/utils/fileHandler'
 import lc from '@/libs/lc';
 import type AV from 'leancloud-storage'
 import { ll2Lnglat } from '@/utils/map'
-import { completions } from '@/utils/chat'
+import { completions } from '@/utils/llm'
 
 const props = defineProps(['editData'])
 const emit = defineEmits(['showmap', 'confim'])
