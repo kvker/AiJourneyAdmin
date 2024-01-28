@@ -2,7 +2,7 @@ type GLMResponseJSON = { "id": string, "created": number, "model": string, "choi
 
 type LLMCB = (result: string) => void
 
-export async function doCompletions(content: string, SseCB: LLMCB, doneCB: LLMCB) {
+export async function doCompletions(content: string, SseCB: LLMCB, doneCB?: LLMCB) {
   const response = await doFetchStream(content)
   if (response.status !== 200) {
     return response.json().then((json: Object) => Promise.reject(json))
@@ -32,7 +32,7 @@ async function doFetchStream(content: string) {
   return response
 }
 
-function doParseStreamChunk(response: Response, SseCB: LLMCB, doneCB: LLMCB) {
+function doParseStreamChunk(response: Response, SseCB: LLMCB, doneCB?: LLMCB) {
   const reader = response.body!.getReader()
   let text = ''
   let chunk = ''
@@ -45,23 +45,28 @@ function doParseStreamChunk(response: Response, SseCB: LLMCB, doneCB: LLMCB) {
     let textList = text.split('\n\n')
     for (text of textList) {
       if (!text.trim()) continue
+      text = (temp_text + text).replace(/data:\s|\[DONE\]/g, '')
       try {
-        text = (temp_text + text).replace(/data:\s|\[DONE\]/g, '')
-        json = JSON.parse(text) as GLMResponseJSON
-        temp_text = ''
-        chunk = json.choices[0].delta.content
-        if (chunk.trim()) {
-          result_text += chunk
-          // console.log(result_text)
-          SseCB && SseCB(result_text)
+        if (text.match(/^{.*}]}$/)) {
+          json = JSON.parse(text) as GLMResponseJSON
+          temp_text = ''
+          chunk = json.choices[0].delta.content
+          if (chunk.trim()) {
+            result_text += chunk
+            // console.log(result_text)
+            SseCB && SseCB(result_text)
+          }
+        } else {
+          temp_text += text
         }
-      } catch (error: any) {
-        temp_text += text
+      } catch (error) {
+        console.log(text)
+        console.error(error)
       }
     }
     if (done) {
       console.log('done!!!')
-      doneCB(result_text)
+      doneCB && doneCB(result_text)
       return
     }
     reader.read().then(process)
