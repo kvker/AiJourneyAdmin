@@ -6,7 +6,7 @@ describe('测试LLM的SSE接口doCompletions', () => {
     await doCompletions('你好啊', (chunk) => {
       // console.log(chunk)
     }, result => {
-      console.log(result)
+      // console.log(result)
       expect(typeof result).toEqual('string')
     })
   })

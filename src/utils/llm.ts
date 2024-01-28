@@ -41,7 +41,7 @@ function doParseStreamChunk(response: Response, SseCB: LLMCB, doneCB?: LLMCB) {
   let result_text = ''
   reader.read().then(function process({ done, value }) {
     text = new TextDecoder('utf-8').decode(value)
-    console.log(text) // 调试用, 有一些奇奇怪怪的问题
+    // console.log(text) // 调试用, 有一些奇奇怪怪的问题
     let textList = text.split('\n\n')
     for (text of textList) {
       if (!text.trim()) continue
