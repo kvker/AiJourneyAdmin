@@ -6,7 +6,7 @@ import { chooseFile, file2BlobUrl } from '@/utils/fileHandler'
 import lc from '@/libs/lc';
 import type AV from 'leancloud-storage'
 import { ll2Lnglat } from '@/utils/map'
-import { completions } from '@/utils/llm'
+import { doCompletions } from '@/utils/llm'
 
 const props = defineProps(['editData'])
 const emit = defineEmits(['showmap', 'confim'])
@@ -30,7 +30,6 @@ const form = ref<AreaForm>({ ...obj })
 const rules = ref<FormRules<AreaForm>>({
   name: [
     { required: true, message: '请输入景点名称', trigger: 'blur' },
-    // { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
   ],
   description: [
     { required: true, message: '请输入景点介绍, 尽可能多点', trigger: 'blur' },
@@ -127,13 +126,13 @@ const chatStyles = ref<ChatStyle[]>([])
 const styleVisible = ref(false)
 const currentStyleDescription = ref('')
 let areaIntroduce: AreaIntroduce
+
 async function getChatStyle() {
   const cs = await lc.read('ChatStyle', q => {
     q.descending('sort')
   })
   chatStyles.value = cs.map(i => i.toJSON())
 }
-
 getChatStyle()
 
 async function onGenerateIntroduce(chatStyle: ChatStyle, index: number) {
@@ -160,11 +159,11 @@ function onUpdateStyleDescription(chatStyle: ChatStyle) {
   console.log('onUpdateStyleDescription')
   currentStyleDescription.value = ''
   const content = `${chatStyle.previousPrompt}${form.value.description}${chatStyle.tailPrompt}`
-  completions(content, result => {
+  doCompletions(content, result => {
     currentStyleDescription.value = result
   }, (result) => {
     console.log(result)
-    alert('输出完成')
+    ElMessage.info('完成输出')
   })
 }
 </script>
