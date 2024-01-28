@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import { ref, watch, toRef } from 'vue'
-import { ElLoading, ElMessage } from 'element-plus'
+import { ref, watch } from 'vue'
+import { ElLoading, ElMessage, ElMessageBox } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import { chooseFile, file2BlobUrl } from '@/utils/fileHandler'
 import lc from '@/libs/lc';
 import type AV from 'leancloud-storage'
 import { ll2Lnglat } from '@/utils/map'
 import { doCompletions } from '@/utils/llm'
+import { text2Voice } from '@/utils/fileHandler'
 
 const props = defineProps(['editData'])
 const emit = defineEmits(['showmap', 'confim'])
@@ -118,7 +119,7 @@ function onDeleteCoverImage(index: number) {
 const chatStyles = ref<ChatStyle[]>([])
 const styleVisible = ref(false)
 const currentStyleDescription = ref('')
-let areaIntroduceQueriable: AV.Queriable
+let areaIntroduceQueriable = ref<AV.Queriable>()
 
 async function getChatStyle() {
   const cs = await lc.read('ChatStyle', q => {
@@ -131,7 +132,7 @@ getChatStyle()
 async function onGenerateIntroduce(chatStyle: ChatStyle) {
   // console.log(chatStyle, index, form.value)
   styleVisible.value = true
-  if (areaIntroduceQueriable && areaIntroduceQueriable.get('chatStyle').id === chatStyle.objectId) return
+  if (areaIntroduceQueriable.value && areaIntroduceQueriable.value.get('chatStyle').id === chatStyle.objectId) return
   const lcChatStyle = lc.createObject('ChatStyle', chatStyle.objectId)
   const lcArea = lc.createObject('Area', form.value.objectId)
   const ret = await lc.one('AreaIntroduce', q => {
@@ -140,26 +141,30 @@ async function onGenerateIntroduce(chatStyle: ChatStyle) {
     q.include('chatStyle')
   })
   if (ret) {
-    areaIntroduceQueriable = ret
-    currentStyleDescription.value = areaIntroduceQueriable.get('description')
+    areaIntroduceQueriable.value = ret
+    currentStyleDescription.value = areaIntroduceQueriable.value.get('description')
   } else {
-    areaIntroduceQueriable = new lc.AV.Object('AreaIntroduce')
-    areaIntroduceQueriable.set('chatStyle', lcChatStyle)
-    areaIntroduceQueriable.set('area', lcArea)
-    areaIntroduceQueriable.set('user', lc.currentUser())
-    onUpdateStyleDescription(chatStyle)
+    areaIntroduceQueriable.value = new lc.AV.Object('AreaIntroduce')
+    areaIntroduceQueriable.value.set('chatStyle', lcChatStyle)
+    areaIntroduceQueriable.value.set('area', lcArea)
+    areaIntroduceQueriable.value.set('user', lc.currentUser())
+    onUpdateStyleDescription()
   }
 }
 
 async function onUseStyleDescription() {
   console.log('onUseStyleDescription')
   // lc.update()
-  areaIntroduceQueriable.set('description', currentStyleDescription.value)
-  await areaIntroduceQueriable.save()
-  ElMessage.success('更新完成')
+  if (areaIntroduceQueriable.value) {
+    areaIntroduceQueriable.value.set('description', currentStyleDescription.value)
+    await areaIntroduceQueriable.value.save()
+    ElMessage.success('更新完成')
+  }
+
 }
 
-function onUpdateStyleDescription(chatStyle: ChatStyle = areaIntroduceQueriable.get('chatStyle').toJSON()) {
+function onUpdateStyleDescription() {
+  const chatStyle = areaIntroduceQueriable.value!.get('chatStyle').toJSON()
   console.log('onUpdateStyleDescription')
   currentStyleDescription.value = ''
   const content = `${chatStyle.previousPrompt}${form.value.description}${chatStyle.tailPrompt}`
@@ -169,6 +174,25 @@ function onUpdateStyleDescription(chatStyle: ChatStyle = areaIntroduceQueriable.
     console.log(result)
     ElMessage.info('完成输出')
   })
+}
+
+async function onGenerateVoice() {
+  console.log('onGenerateVoice')
+  ElMessageBox.confirm('生成语音会覆盖原有语音, 是否继续?', '提示', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(async () => {
+      const loading = ElLoading.service({ text: '生成语音中...', fullscreen: true })
+      areaIntroduceQueriable.value!.set('voice', '')
+      const ret = await text2Voice(currentStyleDescription.value)
+      console.log(ret.url)
+      areaIntroduceQueriable.value!.set('voice', ret.url)
+      await areaIntroduceQueriable.value!.save()
+      loading.close()
+      ElMessage.success('生成语音完成')
+    })
 }
 </script>
 
@@ -207,8 +231,11 @@ function onUpdateStyleDescription(chatStyle: ChatStyle = areaIntroduceQueriable.
       <el-input v-model="currentStyleDescription" :autosize="{ minRows: 2, maxRows: 16 }"
         placeholder="这里显示的是AI协助生成的各类有趣的景点介绍语录, 来自基础描述" type="textarea" />
       <div class="flex mt-4">
-        <el-button @click="onUseStyleDescription" class=" mr-4" type="primary">应用</el-button>
-        <el-button @click="() => onUpdateStyleDescription()" class=" mr-4" type="info">刷新</el-button>
+        <el-button @click="onUseStyleDescription" class=" mr-4" type="primary">应用描述</el-button>
+        <el-button @click="() => onUpdateStyleDescription()" class=" mr-4" type="info">更新描述</el-button>
+        <el-button @click="onGenerateVoice" class=" mr-4" type="info">生成语音</el-button>
+        <audio v-if="areaIntroduceQueriable && areaIntroduceQueriable.get('voice')"
+          :src="areaIntroduceQueriable.get('voice')" class=" h-8" controls></audio>
       </div>
     </el-dialog>
   </el-dialog>
