@@ -1,3 +1,5 @@
+import { serverUrl } from '@/utils/config'
+
 type GLMResponseJSON = { "id": string, "created": number, "model": string, "choices": { "index": number, "finish_reason"?: "stop", "delta": { "role": "assistant", "content": string } }[], "usage"?: { "prompt_tokens": number, "completion_tokens": number, "total_tokens": number } }
 
 type LLMCB = (result: string) => void
@@ -20,7 +22,7 @@ async function doFetchStream(content: string) {
     ]
   })
 
-  const response = await fetch("https://aiguidelcengine.ilovecats.cn/api/chat/sse", {
+  const response = await fetch(serverUrl + "/api/chat/sse", {
     method: 'POST',
     headers: {
       "Content-Type": "application/json",
