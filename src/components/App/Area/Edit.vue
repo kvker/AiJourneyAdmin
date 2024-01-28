@@ -114,18 +114,11 @@ function onDeleteCoverImage(index: number) {
   form.value.coverImageList.splice(index, 1)
 }
 
-type AreaIntroduce = {
-  objectId: string
-  description: string
-  chatStyle: ChatStyle
-  area: Area
-} & LCBase
-
 // 聊天风格区域
 const chatStyles = ref<ChatStyle[]>([])
 const styleVisible = ref(false)
 const currentStyleDescription = ref('')
-let areaIntroduce: AreaIntroduce
+let areaIntroduceQueriable: AV.Queriable
 
 async function getChatStyle() {
   const cs = await lc.read('ChatStyle', q => {
@@ -135,17 +128,25 @@ async function getChatStyle() {
 }
 getChatStyle()
 
-async function onGenerateIntroduce(chatStyle: ChatStyle, index: number) {
-  console.log(chatStyle, index, form.value)
+async function onGenerateIntroduce(chatStyle: ChatStyle) {
+  // console.log(chatStyle, index, form.value)
   styleVisible.value = true
+  if (areaIntroduceQueriable && areaIntroduceQueriable.get('chatStyle').id === chatStyle.objectId) return
+  const lcChatStyle = lc.createObject('ChatStyle', chatStyle.objectId)
+  const lcArea = lc.createObject('Area', form.value.objectId)
   const ret = await lc.one('AreaIntroduce', q => {
-    q.equalTo('chatStyle', lc.createObject('ChatStyle', chatStyle.objectId))
-    q.equalTo('area', lc.createObject('Area', form.value.objectId))
+    q.equalTo('chatStyle', lcChatStyle)
+    q.equalTo('area', lcArea)
+    q.include('chatStyle')
   })
   if (ret) {
-    areaIntroduce = ret.toJSON()
-    currentStyleDescription.value = areaIntroduce.description
+    areaIntroduceQueriable = ret
+    currentStyleDescription.value = areaIntroduceQueriable.get('description')
   } else {
+    areaIntroduceQueriable = new lc.AV.Object('AreaIntroduce')
+    areaIntroduceQueriable.set('chatStyle', lcChatStyle)
+    areaIntroduceQueriable.set('area', lcArea)
+    areaIntroduceQueriable.set('user', lc.currentUser())
     onUpdateStyleDescription(chatStyle)
   }
 }
@@ -153,9 +154,12 @@ async function onGenerateIntroduce(chatStyle: ChatStyle, index: number) {
 async function onUseStyleDescription() {
   console.log('onUseStyleDescription')
   // lc.update()
+  areaIntroduceQueriable.set('description', currentStyleDescription.value)
+  await areaIntroduceQueriable.save()
+  ElMessage.success('更新完成')
 }
 
-function onUpdateStyleDescription(chatStyle: ChatStyle) {
+function onUpdateStyleDescription(chatStyle: ChatStyle = areaIntroduceQueriable.get('chatStyle').toJSON()) {
   console.log('onUpdateStyleDescription')
   currentStyleDescription.value = ''
   const content = `${chatStyle.previousPrompt}${form.value.description}${chatStyle.tailPrompt}`
@@ -179,8 +183,8 @@ function onUpdateStyleDescription(chatStyle: ChatStyle) {
           <el-input v-model="form.description" :autosize="{ minRows: 2, maxRows: 8 }"
             placeholder="杭州西湖景区是......建议300字以上500字以下" type="textarea" />
           <div class="flex mt-2">
-            <el-button v-for="(chatStyle, index) of chatStyles" class="mr-2"
-              @click="onGenerateIntroduce(chatStyle, index)" :title="chatStyle.description">{{ chatStyle.name
+            <el-button v-for="(chatStyle) of chatStyles" class="mr-2" @click="onGenerateIntroduce(chatStyle)"
+              :title="chatStyle.description">{{ chatStyle.name
               }}</el-button>
           </div>
         </div>
@@ -204,7 +208,7 @@ function onUpdateStyleDescription(chatStyle: ChatStyle) {
         placeholder="这里显示的是AI协助生成的各类有趣的景点介绍语录, 来自基础描述" type="textarea" />
       <div class="flex mt-4">
         <el-button @click="onUseStyleDescription" class=" mr-4" type="primary">应用</el-button>
-        <el-button @click="onUpdateStyleDescription" class=" mr-4" type="info">刷新</el-button>
+        <el-button @click="() => onUpdateStyleDescription()" class=" mr-4" type="info">刷新</el-button>
       </div>
     </el-dialog>
   </el-dialog>
