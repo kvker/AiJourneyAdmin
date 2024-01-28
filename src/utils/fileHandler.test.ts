@@ -6,6 +6,6 @@ describe('测试文字转语音', () => {
     const ret = await text2Voice('你好啊', 1010)
     console.log(ret.url)
     expect(ret.url).toMatch(/^http.*\.mp3$/)
-  })
+  }, 60000)
 })
 

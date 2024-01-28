@@ -27,7 +27,7 @@ export function file2BlobUrl(file: File | url) {
   return URL.createObjectURL(file)
 }
 
-export async function text2Voice(text: string, voiceType: number): Promise<{ url: string }> {
+export async function text2Voice(text: string, voiceType?: number): Promise<{ url: string }> {
   const ret = await fetch(serverUrl + '/api/tencent/text2voice', {
     method: 'POST',
     headers: {
@@ -36,7 +36,7 @@ export async function text2Voice(text: string, voiceType: number): Promise<{ url
     body: JSON.stringify({ text, voiceType }),
   }).then(ret => ret.json())
   // console.log(ret.data.Audio)
-  let audioBase64 = ret.data.Audio
+  let audioBase64 = ret.data.base64
   const uploadRet = await lc.uploadBase64(audioBase64, Date.now + '.mp3')
   return { url: uploadRet.get('url') }
 }
