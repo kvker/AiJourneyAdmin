@@ -64,7 +64,10 @@ async function onSubmit(formEl: FormInstance | undefined) {
       let loading = ElLoading.service({ text: '上传图片中', fullscreen: true })
       let ret: AV.File | null = null
       for (const file of form.value.coverImageList) {
-        if (typeof file === 'string') continue // 链接不需要再传
+        if (typeof file === 'string') {
+          coverImageList.push(file)
+          continue
+        } // 链接不需要再传
         ret = await lc.uploadFile(file)
         coverImageList.push(ret.get('url'))
       }
