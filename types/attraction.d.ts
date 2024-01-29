@@ -21,7 +21,7 @@ type Area = {
   objectId: string
   attraction?: AV.Object
   coverImageList: url[]
-  description: string
+  introduce: string
   lnglat: Lnglat | null
   name: string
 }
@@ -32,7 +32,7 @@ type AreaSearchParams = {
 
 type ChatStyle = {
   name: string
-  description: string
+  remind: string
   sort: number
   previousPrompt: string
   tailPrompt: string

@@ -13,7 +13,7 @@ export function useEditStyle(form: Ref<AreaForm>) {
     return chatStylesQueriable.value.map(i => i.toJSON() as ChatStyle)
   })
   const styleVisible = ref(false)
-  const currentStyleDescription = ref('')
+  const currentStyleIntroduce = ref('')
   let areaIntroduceQueriable = ref<AV.Queriable>()
 
   async function getChatStyle() {
@@ -24,7 +24,7 @@ export function useEditStyle(form: Ref<AreaForm>) {
   }
   getChatStyle()
 
-  async function onGenerateStyleDescription(chatStyle: ChatStyle, index: number) {
+  async function onGenerateStyleIntroduce(chatStyle: ChatStyle, index: number) {
     // console.log(chatStyle)
     styleVisible.value = true
     if (areaIntroduceQueriable.value && areaIntroduceQueriable.value.get('chatStyle').id === chatStyle.objectId) return
@@ -36,35 +36,35 @@ export function useEditStyle(form: Ref<AreaForm>) {
     })
     if (ret) {
       areaIntroduceQueriable.value = ret
-      currentStyleDescription.value = areaIntroduceQueriable.value.get('description')
+      currentStyleIntroduce.value = areaIntroduceQueriable.value.get('introduce')
     } else {
       areaIntroduceQueriable.value = new lc.AV.Object('AreaIntroduce')
       areaIntroduceQueriable.value.set('chatStyle', chatStylesQueriable.value[index])
       areaIntroduceQueriable.value.set('area', lcArea)
       areaIntroduceQueriable.value.set('user', lc.currentUser())
-      onUpdateStyleDescription()
+      onUpdateStyleIntroduce()
     }
   }
 
-  async function onUseStyleDescription() {
-    console.log('onUseStyleDescription')
+  async function onUseStyleIntroduce() {
+    console.log('onUseStyleIntroduce')
     // lc.update()
     if (areaIntroduceQueriable.value) {
-      areaIntroduceQueriable.value.set('description', currentStyleDescription.value)
+      areaIntroduceQueriable.value.set('introduce', currentStyleIntroduce.value)
       await areaIntroduceQueriable.value.save()
       ElMessage.success('更新完成')
     }
 
   }
 
-  function onUpdateStyleDescription() {
+  function onUpdateStyleIntroduce() {
     const chatStyle = areaIntroduceQueriable.value!.get('chatStyle').toJSON()
-    console.log('onUpdateStyleDescription')
+    console.log('onUpdateStyleIntroduce')
     console.log(areaIntroduceQueriable.value)
-    currentStyleDescription.value = ''
-    const content = `${chatStyle.previousPrompt}${form.value.description}${chatStyle.tailPrompt}`
+    currentStyleIntroduce.value = ''
+    const content = `${chatStyle.previousPrompt}${form.value.introduce}${chatStyle.tailPrompt}`
     doCompletions(content, result => {
-      currentStyleDescription.value = result
+      currentStyleIntroduce.value = result
     }, (result) => {
       console.log(result)
       ElMessage.info('完成输出')
@@ -81,7 +81,7 @@ export function useEditStyle(form: Ref<AreaForm>) {
       .then(async () => {
         const loading = ElLoading.service({ text: '生成语音中...', fullscreen: true })
         areaIntroduceQueriable.value!.set('voice', '')
-        const ret = await text2Voice(currentStyleDescription.value)
+        const ret = await text2Voice(currentStyleIntroduce.value)
         console.log(ret.url)
         areaIntroduceQueriable.value!.set('voice', ret.url)
         await areaIntroduceQueriable.value!.save()
@@ -93,10 +93,10 @@ export function useEditStyle(form: Ref<AreaForm>) {
   return {
     chatStyles,
     styleVisible,
-    currentStyleDescription,
-    onGenerateStyleDescription,
-    onUpdateStyleDescription,
-    onUseStyleDescription,
+    currentStyleIntroduce,
+    onGenerateStyleIntroduce,
+    onUpdateStyleIntroduce,
+    onUseStyleIntroduce,
     onGenerateVoice,
     areaIntroduceQueriable,
   }

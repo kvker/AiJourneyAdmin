@@ -12,15 +12,15 @@ const lnglat = defineModel<Lnglat>('lnglat', { required: true })
 const obj: AreaForm = {
   objectId: '',
   name: '',
-  description: '',
+  introduce: '',
   lnglat: null,
   coverImageList: [],
 }
 const form = ref<AreaForm>({ ...obj })
 
 const { onCheckLocation, rules, onSubmit, onDeleteCoverImage, onAddCoverImage, ruleFormRef } = useEditForm({ form, obj, props, emit, visible, lnglat })
-const { chatStyles, styleVisible, currentStyleDescription, onUseStyleDescription, onUpdateStyleDescription, onGenerateVoice,
-  onGenerateStyleDescription, areaIntroduceQueriable } = useEditStyle(form)
+const { chatStyles, styleVisible, currentStyleIntroduce, onUseStyleIntroduce, onUpdateStyleIntroduce, onGenerateVoice,
+  onGenerateStyleIntroduce, areaIntroduceQueriable } = useEditStyle(form)
 
 </script>
 
@@ -30,13 +30,13 @@ const { chatStyles, styleVisible, currentStyleDescription, onUseStyleDescription
       <el-form-item label="名称" required prop="name">
         <el-input v-model="form.name" placeholder="景区名字" />
       </el-form-item>
-      <el-form-item label="介绍" required prop="description">
+      <el-form-item label="介绍" required prop="introduce">
         <div class="w-full">
-          <el-input v-model="form.description" :autosize="{ minRows: 2, maxRows: 8 }"
+          <el-input v-model="form.introduce" :autosize="{ minRows: 2, maxRows: 8 }"
             placeholder="杭州西湖景区是......建议300字以上500字以下" type="textarea" />
           <div class="flex mt-2">
             <el-button v-for="(chatStyle, index) of chatStyles" class="mr-2"
-              @click="onGenerateStyleDescription(chatStyle, index)" :title="chatStyle.description">{{ chatStyle.name
+              @click="onGenerateStyleIntroduce(chatStyle, index)" :title="chatStyle.remind">{{ chatStyle.name
               }}</el-button>
           </div>
         </div>
@@ -55,11 +55,11 @@ const { chatStyles, styleVisible, currentStyleDescription, onUseStyleDescription
       </el-form-item>
     </el-form>
     <el-dialog v-model="styleVisible" title="个性化景点介绍">
-      <el-input v-model="currentStyleDescription" :autosize="{ minRows: 2, maxRows: 16 }"
+      <el-input v-model="currentStyleIntroduce" :autosize="{ minRows: 2, maxRows: 16 }"
         placeholder="这里显示的是AI协助生成的各类有趣的景点介绍语录, 来自基础描述" type="textarea" />
       <div class="flex mt-4">
-        <el-button @click="onUseStyleDescription" class=" mr-4" type="primary">应用描述</el-button>
-        <el-button @click="() => onUpdateStyleDescription()" class=" mr-4" type="info">更新描述</el-button>
+        <el-button @click="onUseStyleIntroduce" class=" mr-4" type="primary">应用描述</el-button>
+        <el-button @click="() => onUpdateStyleIntroduce()" class=" mr-4" type="info">更新描述</el-button>
         <el-button @click="onGenerateVoice" class=" mr-4" type="info">生成语音</el-button>
         <audio v-if="areaIntroduceQueriable && areaIntroduceQueriable.get('voice')"
           :src="areaIntroduceQueriable.get('voice')" class=" h-8" controls></audio>

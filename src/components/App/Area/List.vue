@@ -127,7 +127,7 @@ function doChangePage(p: number) {
       </el-table-column>
       <el-table-column label="介绍" width="180">
         <template #default="scope">
-          <p class=" truncate">{{ scope.row.description }}</p>
+          <p class=" truncate">{{ scope.row.introduce }}</p>
         </template>
       </el-table-column>
       <el-table-column label="封面图">

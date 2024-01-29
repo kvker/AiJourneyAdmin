@@ -14,7 +14,7 @@ export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form:
     name: [
       { required: true, message: '请输入景点名称', trigger: 'blur' },
     ],
-    description: [
+    introduce: [
       { required: true, message: '请输入景点介绍, 尽可能多点', trigger: 'blur' },
     ],
     lnglat: [
@@ -55,7 +55,7 @@ export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form:
         }
         const uploadForm = {
           name: form.value.name,
-          description: form.value.description,
+          introduce: form.value.introduce,
           lnglat: new lc.AV.GeoPoint({ latitude: form.value.lnglat!.lat, longitude: form.value.lnglat!.lng }),
           coverImageList,
         }
