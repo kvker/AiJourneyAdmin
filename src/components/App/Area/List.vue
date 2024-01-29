@@ -23,14 +23,12 @@ watch(() => searchParams.value.name, (val, oldVal) => {
   if (val !== oldVal) {
     if (timeout) {
       clearTimeout(timeout)
-      timeout = null
-    } else {
-      timeout = setTimeout(() => {
-        getCount()
-        getList()
-        timeout = null
-      }, 1000)
     }
+    timeout = setTimeout(() => {
+      getCount()
+      getList()
+      timeout = null
+    }, 1000)
   }
 })
 
@@ -61,6 +59,7 @@ async function getList(params = searchParams.value) {
   const ret = await lc.read('Area', q => {
     q.limit(10)
     q.skip(10 * page.value)
+    q.descending('updatedAt')
     if (params.name) {
       q.equalTo('name', params.name)
     }
