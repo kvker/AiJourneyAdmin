@@ -37,3 +37,7 @@ type ChatStyle = {
   previousPrompt: string
   tailPrompt: string
 } & LCBase
+
+type AreaForm = Omit<Area, 'coverImageList'> & {
+  coverImageList: File[]
+}
