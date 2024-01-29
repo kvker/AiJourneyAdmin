@@ -1,205 +1,27 @@
 <script lang="ts" setup>
-import { ref, watch, computed } from 'vue'
-import { ElLoading, ElMessage, ElMessageBox } from 'element-plus'
-import type { FormInstance, FormRules } from 'element-plus'
-import { chooseFile, file2BlobUrl } from '@/utils/fileHandler'
-import lc from '@/libs/lc';
-import type AV from 'leancloud-storage'
-import { ll2Lnglat } from '@/utils/map'
-import { doCompletions } from '@/utils/llm'
-import { text2Voice } from '@/utils/fileHandler'
+import { ref } from 'vue'
+import { file2BlobUrl } from '@/utils/fileHandler'
+import { useEditForm } from '@/use/editForm'
+import { useEditStyle } from '@/use/editStyle'
 
 const props = defineProps(['editData'])
 const emit = defineEmits(['showmap', 'confim'])
-const visible = defineModel('visible', { type: Boolean, default: false, })
-const lnglat = defineModel('lnglat')
+const visible = defineModel<boolean>('visible', { required: true })
+const lnglat = defineModel<Lnglat>('lnglat', { required: true })
 
-type AreaForm = Omit<Area, 'coverImageList'> & {
-  coverImageList: File[]
-}
-
-const obj = {
+const obj: AreaForm = {
   objectId: '',
   name: '',
   description: '',
   lnglat: null,
   coverImageList: [],
 }
-const ruleFormRef = ref<FormInstance>()
 const form = ref<AreaForm>({ ...obj })
 
-const rules = ref<FormRules<AreaForm>>({
-  name: [
-    { required: true, message: '请输入景点名称', trigger: 'blur' },
-  ],
-  description: [
-    { required: true, message: '请输入景点介绍, 尽可能多点', trigger: 'blur' },
-  ],
-  lnglat: [
-    { required: true, message: '请选择经纬度', trigger: 'change' },
-  ],
-})
+const { onCheckLocation, rules, onSubmit, onDeleteCoverImage, onAddCoverImage, ruleFormRef } = useEditForm({ form, obj, props, emit, visible, lnglat })
+const { chatStyles, styleVisible, currentStyleDescription, onUseStyleDescription, onUpdateStyleDescription, onGenerateVoice,
+  onGenerateStyleDescription, areaIntroduceQueriable } = useEditStyle(form)
 
-watch(lnglat, (val) => {
-  form.value.lnglat = val as Lnglat
-})
-
-watch(() => props.editData, val => {
-  if (val) {
-    let valNew = {
-      ...val,
-    }
-    valNew.lnglat = ll2Lnglat(valNew.lnglat)
-    form.value = valNew
-  }
-})
-
-async function onSubmit(formEl: FormInstance | undefined) {
-  if (!formEl) return
-
-  await formEl.validate(async (valid, fields) => {
-    if (valid) {
-      const coverImageList = []
-
-      let loading = ElLoading.service({ text: '上传图片中', fullscreen: true })
-      let ret: AV.File | null = null
-      for (const file of form.value.coverImageList) {
-        if (typeof file === 'string') {
-          coverImageList.push(file)
-          continue
-        } // 链接不需要再传
-        ret = await lc.uploadFile(file)
-        coverImageList.push(ret.get('url'))
-      }
-      const uploadForm = {
-        name: form.value.name,
-        description: form.value.description,
-        lnglat: new lc.AV.GeoPoint({ latitude: form.value.lnglat!.lat, longitude: form.value.lnglat!.lng }),
-        coverImageList,
-      }
-      if (form.value.attraction) {
-        await lc.update('Area', form.value.objectId, uploadForm)
-      } else {
-        const attraction = JSON.parse(localStorage.getItem('attraction') as string)
-        await lc.create('Area', {
-          ...uploadForm,
-          attraction: lc.createObject('Attraction', attraction.objectId),
-        })
-      }
-      loading.close()
-      visible.value = false
-      emit('confim')
-      form.value = { ...obj }
-    }
-  })
-}
-
-function onCheckLocation() {
-  emit('showmap', form.value.lnglat)
-}
-
-function onAddCoverImage() {
-  if (form.value.coverImageList.length >= 3) {
-    ElMessage.error('最多只能上传3张图片')
-    return
-  }
-  chooseFile(files => {
-    if (files) {
-      if (form.value.coverImageList.length + files.length >= 3) {
-        ElMessage.error('最多只能上传3张图片')
-        return
-      }
-      form.value.coverImageList = [...form.value.coverImageList, ...files]
-    }
-  })
-}
-
-function onDeleteCoverImage(index: number) {
-  form.value.coverImageList.splice(index, 1)
-}
-
-// 聊天风格区域
-const chatStylesQueriable = ref<AV.Queriable[]>([])
-const chatStyles = computed(() => {
-  return chatStylesQueriable.value.map(i => i.toJSON() as ChatStyle)
-})
-const styleVisible = ref(false)
-const currentStyleDescription = ref('')
-let areaIntroduceQueriable = ref<AV.Queriable>()
-
-async function getChatStyle() {
-  const cs = await lc.read('ChatStyle', q => {
-    q.ascending('sort')
-  })
-  chatStylesQueriable.value = cs
-}
-getChatStyle()
-
-async function onGenerateStyleDescription(chatStyle: ChatStyle, index: number) {
-  // console.log(chatStyle)
-  styleVisible.value = true
-  if (areaIntroduceQueriable.value && areaIntroduceQueriable.value.get('chatStyle').id === chatStyle.objectId) return
-  const lcArea = lc.createObject('Area', form.value.objectId)
-  const ret = await lc.one('AreaIntroduce', q => {
-    q.equalTo('chatStyle', chatStyle)
-    q.equalTo('area', lcArea)
-    q.include('chatStyle')
-  })
-  if (ret) {
-    areaIntroduceQueriable.value = ret
-    currentStyleDescription.value = areaIntroduceQueriable.value.get('description')
-  } else {
-    areaIntroduceQueriable.value = new lc.AV.Object('AreaIntroduce')
-    areaIntroduceQueriable.value.set('chatStyle', chatStylesQueriable.value[index])
-    areaIntroduceQueriable.value.set('area', lcArea)
-    areaIntroduceQueriable.value.set('user', lc.currentUser())
-    onUpdateStyleDescription()
-  }
-}
-
-async function onUseStyleDescription() {
-  console.log('onUseStyleDescription')
-  // lc.update()
-  if (areaIntroduceQueriable.value) {
-    areaIntroduceQueriable.value.set('description', currentStyleDescription.value)
-    await areaIntroduceQueriable.value.save()
-    ElMessage.success('更新完成')
-  }
-
-}
-
-function onUpdateStyleDescription() {
-  const chatStyle = areaIntroduceQueriable.value!.get('chatStyle').toJSON()
-  console.log('onUpdateStyleDescription')
-  console.log(areaIntroduceQueriable.value)
-  currentStyleDescription.value = ''
-  const content = `${chatStyle.previousPrompt}${form.value.description}${chatStyle.tailPrompt}`
-  doCompletions(content, result => {
-    currentStyleDescription.value = result
-  }, (result) => {
-    console.log(result)
-    ElMessage.info('完成输出')
-  })
-}
-
-async function onGenerateVoice() {
-  console.log('onGenerateVoice')
-  ElMessageBox.confirm('生成语音会覆盖原有语音, 是否继续?', '提示', {
-    confirmButtonText: '确认',
-    cancelButtonText: '取消',
-    type: 'warning',
-  })
-    .then(async () => {
-      const loading = ElLoading.service({ text: '生成语音中...', fullscreen: true })
-      areaIntroduceQueriable.value!.set('voice', '')
-      const ret = await text2Voice(currentStyleDescription.value)
-      console.log(ret.url)
-      areaIntroduceQueriable.value!.set('voice', ret.url)
-      await areaIntroduceQueriable.value!.save()
-      loading.close()
-      ElMessage.success('生成语音完成')
-    })
-}
 </script>
 
 <template>
