@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { ElLoading, ElMessage, ElMessageBox } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import { chooseFile, file2BlobUrl } from '@/utils/fileHandler'
@@ -119,27 +119,29 @@ function onDeleteCoverImage(index: number) {
 }
 
 // 聊天风格区域
-const chatStyles = ref<ChatStyle[]>([])
+const chatStylesQueriable = ref<AV.Queriable[]>([])
+const chatStyles = computed(() => {
+  return chatStylesQueriable.value.map(i => i.toJSON() as ChatStyle)
+})
 const styleVisible = ref(false)
 const currentStyleDescription = ref('')
 let areaIntroduceQueriable = ref<AV.Queriable>()
 
 async function getChatStyle() {
   const cs = await lc.read('ChatStyle', q => {
-    q.descending('sort')
+    q.ascending('sort')
   })
-  chatStyles.value = cs.map(i => i.toJSON())
+  chatStylesQueriable.value = cs
 }
 getChatStyle()
 
-async function onGenerateIntroduce(chatStyle: ChatStyle) {
-  // console.log(chatStyle, index, form.value)
+async function onGenerateStyleDescription(chatStyle: ChatStyle, index: number) {
+  // console.log(chatStyle)
   styleVisible.value = true
   if (areaIntroduceQueriable.value && areaIntroduceQueriable.value.get('chatStyle').id === chatStyle.objectId) return
-  const lcChatStyle = lc.createObject('ChatStyle', chatStyle.objectId)
   const lcArea = lc.createObject('Area', form.value.objectId)
   const ret = await lc.one('AreaIntroduce', q => {
-    q.equalTo('chatStyle', lcChatStyle)
+    q.equalTo('chatStyle', chatStyle)
     q.equalTo('area', lcArea)
     q.include('chatStyle')
   })
@@ -148,7 +150,7 @@ async function onGenerateIntroduce(chatStyle: ChatStyle) {
     currentStyleDescription.value = areaIntroduceQueriable.value.get('description')
   } else {
     areaIntroduceQueriable.value = new lc.AV.Object('AreaIntroduce')
-    areaIntroduceQueriable.value.set('chatStyle', lcChatStyle)
+    areaIntroduceQueriable.value.set('chatStyle', chatStylesQueriable.value[index])
     areaIntroduceQueriable.value.set('area', lcArea)
     areaIntroduceQueriable.value.set('user', lc.currentUser())
     onUpdateStyleDescription()
@@ -169,6 +171,7 @@ async function onUseStyleDescription() {
 function onUpdateStyleDescription() {
   const chatStyle = areaIntroduceQueriable.value!.get('chatStyle').toJSON()
   console.log('onUpdateStyleDescription')
+  console.log(areaIntroduceQueriable.value)
   currentStyleDescription.value = ''
   const content = `${chatStyle.previousPrompt}${form.value.description}${chatStyle.tailPrompt}`
   doCompletions(content, result => {
@@ -210,8 +213,8 @@ async function onGenerateVoice() {
           <el-input v-model="form.description" :autosize="{ minRows: 2, maxRows: 8 }"
             placeholder="杭州西湖景区是......建议300字以上500字以下" type="textarea" />
           <div class="flex mt-2">
-            <el-button v-for="(chatStyle) of chatStyles" class="mr-2" @click="onGenerateIntroduce(chatStyle)"
-              :title="chatStyle.description">{{ chatStyle.name
+            <el-button v-for="(chatStyle, index) of chatStyles" class="mr-2"
+              @click="onGenerateStyleDescription(chatStyle, index)" :title="chatStyle.description">{{ chatStyle.name
               }}</el-button>
           </div>
         </div>
@@ -227,7 +230,6 @@ async function onGenerateVoice() {
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit(ruleFormRef)">{{ form.attraction ? '更新' : '创建' }}</el-button>
-        <el-button @click="visible = false">取消</el-button>
       </el-form-item>
     </el-form>
     <el-dialog v-model="styleVisible" title="个性化景点介绍">
