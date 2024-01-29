@@ -28,10 +28,11 @@ export function useEditStyle(form: Ref<AreaForm>) {
     // console.log(chatStyle)
     styleVisible.value = true
     if (areaIntroduceQueriable.value && areaIntroduceQueriable.value.get('chatStyle').id === chatStyle.objectId) return
-    const lcArea = lc.createObject('Area', form.value.objectId)
+    const areaQueriable = lc.createObject('Area', form.value.objectId)
+    const chatStyleQueriable = chatStylesQueriable.value[index]
     const ret = await lc.one('AreaIntroduce', q => {
-      q.equalTo('chatStyle', chatStyle)
-      q.equalTo('area', lcArea)
+      q.equalTo('chatStyle', chatStyleQueriable)
+      q.equalTo('area', areaQueriable)
       q.include('chatStyle')
     })
     if (ret) {
@@ -39,8 +40,8 @@ export function useEditStyle(form: Ref<AreaForm>) {
       currentStyleIntroduce.value = areaIntroduceQueriable.value.get('introduce')
     } else {
       areaIntroduceQueriable.value = new lc.AV.Object('AreaIntroduce')
-      areaIntroduceQueriable.value.set('chatStyle', chatStylesQueriable.value[index])
-      areaIntroduceQueriable.value.set('area', lcArea)
+      areaIntroduceQueriable.value.set('chatStyle', chatStyleQueriable)
+      areaIntroduceQueriable.value.set('area', areaQueriable)
       areaIntroduceQueriable.value.set('user', lc.currentUser())
       onUpdateStyleIntroduce()
     }
@@ -59,8 +60,8 @@ export function useEditStyle(form: Ref<AreaForm>) {
 
   function onUpdateStyleIntroduce() {
     const chatStyle = areaIntroduceQueriable.value!.get('chatStyle').toJSON()
-    console.log('onUpdateStyleIntroduce')
-    console.log(areaIntroduceQueriable.value)
+    // console.log('onUpdateStyleIntroduce')
+    // console.log(areaIntroduceQueriable.value)
     currentStyleIntroduce.value = ''
     const content = `${chatStyle.previousPrompt}${form.value.introduce}${chatStyle.tailPrompt}`
     doCompletions(content, result => {
@@ -72,7 +73,7 @@ export function useEditStyle(form: Ref<AreaForm>) {
   }
 
   async function onGenerateVoice() {
-    console.log('onGenerateVoice')
+    // console.log('onGenerateVoice')
     ElMessageBox.confirm('生成语音会覆盖原有语音, 是否继续?', '提示', {
       confirmButtonText: '确认',
       cancelButtonText: '取消',
