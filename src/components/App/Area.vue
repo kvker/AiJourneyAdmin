@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, provide } from 'vue'
+import { ref, provide, nextTick } from 'vue'
 import Query from '@/components/App/Area/Query.vue'
 import List from '@/components/App/Area/List.vue'
 import Edit from '@/components/App/Area/Edit.vue'
@@ -9,7 +9,8 @@ import { ll2Lnglat } from '@/utils/map'
 const currentLnglat = ref<Lnglat | null>(null)
 const editData = ref<Area | null>(null)
 
-provide('searchParams', ref<AreaSearchParams>({ name: '' }))
+const searchParams = ref<AreaSearchParams>({ name: '' })
+provide('searchParams', searchParams)
 
 function onAdd() {
   editVisible.value = true
@@ -43,8 +44,16 @@ function doChooseLnglat(lnglat: Lnglat) {
 // 编辑(新增)
 const editVisible = ref(false)
 
-function onEditConfirm(e: any) {
-  console.log(e)
+function onEditConfirm() {
+  doUpdateList()
+}
+
+// 通过改变搜索条件来更新列表
+async function doUpdateList() {
+  let tempName = searchParams.value.name
+  searchParams.value.name = '@$%^!@^%$#!@'
+  await nextTick()
+  searchParams.value.name = tempName
 }
 
 function onCellEdit(data: Area) {
