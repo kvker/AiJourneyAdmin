@@ -71,9 +71,13 @@ export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form:
         loading.close()
         visible.value = false
         emit('confim')
-        form.value = { ...obj }
+        onResetForm()
       }
     })
+  }
+
+  function onResetForm() {
+    form.value = { ...obj }
   }
 
   async function onCheckLocation() {
@@ -110,6 +114,7 @@ export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form:
     visible,
     ruleFormRef,
     rules,
+    onResetForm,
     onSubmit,
     onCheckLocation,
     onAddCoverImage,

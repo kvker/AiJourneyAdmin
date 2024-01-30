@@ -18,14 +18,14 @@ const obj: AreaForm = {
 }
 const form = ref<AreaForm>({ ...obj })
 
-const { onCheckLocation, rules, onSubmit, onDeleteCoverImage, onAddCoverImage, ruleFormRef } = useEditForm({ form, obj, props, emit, visible, lnglat })
+const { onCheckLocation, rules, onSubmit, onDeleteCoverImage, onAddCoverImage, ruleFormRef, onResetForm } = useEditForm({ form, obj, props, emit, visible, lnglat })
 const { chatStyles, styleVisible, currentStyleIntroduce, onUseStyleIntroduce, onUpdateStyleIntroduce, onGenerateVoice,
   onGenerateStyleIntroduce, areaIntroduceQueriable } = useEditStyle(form)
 
 </script>
 
 <template>
-  <el-dialog v-model="visible" title="景点信息">
+  <el-dialog v-model="visible" title="景点信息" @closed="onResetForm">
     <el-form :model="form" :rules="rules" ref="ruleFormRef" label-width="120px">
       <el-form-item label="名称" required prop="name">
         <el-input v-model="form.name" placeholder="景区名字" />
