@@ -14,7 +14,7 @@ export function useEditStyle(form: Ref<AreaForm>) {
   })
   const styleVisible = ref(false)
   const currentStyleIntroduce = ref('')
-  let areaIntroduceQueriable = ref<AV.Queriable>()
+  const areaIntroduceQueriable = ref<AV.Queriable>()
 
   async function getChatStyle() {
     const cs = await lc.read('ChatStyle', q => {
@@ -82,7 +82,8 @@ export function useEditStyle(form: Ref<AreaForm>) {
       .then(async () => {
         const loading = ElLoading.service({ text: '生成语音中...', fullscreen: true })
         areaIntroduceQueriable.value!.set('voice', '')
-        const ret = await text2Voice(currentStyleIntroduce.value)
+        const chatStyle = areaIntroduceQueriable.value!.get('chatStyle').toJSON()
+        const ret = await text2Voice(currentStyleIntroduce.value, chatStyle.voiceType)
         console.log(ret.url)
         areaIntroduceQueriable.value!.set('voice', ret.url)
         await areaIntroduceQueriable.value!.save()
