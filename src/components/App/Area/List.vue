@@ -9,6 +9,7 @@ const searchParams = inject('searchParams') as Ref<AreaSearchParams>
 
 const emit = defineEmits(['lnglat', 'edit'])
 const page = ref(0)
+const size = 8
 const tableData = ref<Area[]>([])
 getCount()
 
@@ -57,8 +58,8 @@ let count = ref(0)
 
 async function getList(params = searchParams.value) {
   const ret = await lc.read('Area', q => {
-    q.limit(10)
-    q.skip(10 * page.value)
+    q.limit(size)
+    q.skip(size * page.value)
     q.descending('updatedAt')
     if (params.name) {
       q.equalTo('name', params.name)
@@ -144,7 +145,7 @@ function doChangePage(p: number) {
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination background layout="prev, pager, next" :page-size="10" :total="count" @change="doChangePage" />
+    <el-pagination background layout="prev, pager, next" :page-size="size" :total="count" @change="doChangePage" />
   </div>
 </template>
 
