@@ -5,7 +5,7 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { chooseFile } from '@/utils/fileHandler'
 import lc from '@/libs/lc';
 import type AV from 'leancloud-storage'
-import { ll2Lnglat } from '@/utils/map'
+import { ll2Lnglat, getGeocoder } from '@/utils/map'
 
 export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form: Ref<AreaForm>, obj: AreaForm, props: any, emit: any, visible: Ref<boolean>, lnglat: ModelRef<Lnglat> }) {
   const ruleFormRef = ref<FormInstance>()
@@ -76,7 +76,13 @@ export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form:
     })
   }
 
-  function onCheckLocation() {
+  async function onCheckLocation() {
+    const name = form.value.name.trim()
+    if (name && !form.value.lnglat) {
+      // 根据数据名字查一下经纬度
+      const lnglat = await getGeocoder(name)
+      form.value.lnglat = lnglat
+    }
     emit('showmap', form.value.lnglat)
   }
 
