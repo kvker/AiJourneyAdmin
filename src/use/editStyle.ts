@@ -15,6 +15,12 @@ export function useEditStyle(form: Ref<AreaForm>) {
   const styleVisible = ref(false)
   const currentStyleIntroduce = ref('')
   const areaIntroduceQueriable = ref<AV.Queriable>()
+  const propmtObject = ref<{ previousPrompt: string, tailPrompt: string }>({ previousPrompt: '', tailPrompt: '' })
+  const currentChatStyle = computed(() => {
+    const chatStyle = areaIntroduceQueriable.value.get('chatStyle').toJSON() as ChatStyle
+    debugger
+    return chatStyle
+  })
 
   async function getChatStyle() {
     const cs = await lc.read('ChatStyle', q => {
@@ -43,8 +49,15 @@ export function useEditStyle(form: Ref<AreaForm>) {
       areaIntroduceQueriable.value.set('chatStyle', chatStyleQueriable)
       areaIntroduceQueriable.value.set('area', areaQueriable)
       areaIntroduceQueriable.value.set('user', lc.currentUser())
+      doUpdatePromptObject()
       onUpdateStyleIntroduce()
     }
+  }
+
+  function doUpdatePromptObject() {
+    propmtObject.value.previousPrompt = currentChatStyle.value.previousPrompt
+    propmtObject.value.tailPrompt = currentChatStyle.value.tailPrompt
+    debugger
   }
 
   async function onUseStyleIntroduce() {
@@ -59,11 +72,10 @@ export function useEditStyle(form: Ref<AreaForm>) {
   }
 
   function onUpdateStyleIntroduce() {
-    const chatStyle = areaIntroduceQueriable.value!.get('chatStyle').toJSON()
     // console.log('onUpdateStyleIntroduce')
     // console.log(areaIntroduceQueriable.value)
     currentStyleIntroduce.value = ''
-    const content = `${chatStyle.previousPrompt}${form.value.introduce}${chatStyle.tailPrompt}`
+    const content = `${propmtObject.value.previousPrompt}${form.value.introduce}${propmtObject.value.tailPrompt}`
     doCompletions(content, result => {
       currentStyleIntroduce.value = result
     }, (result) => {
@@ -82,8 +94,7 @@ export function useEditStyle(form: Ref<AreaForm>) {
       .then(async () => {
         const loading = ElLoading.service({ text: '生成语音中...', fullscreen: true })
         areaIntroduceQueriable.value!.set('voice', '')
-        const chatStyle = areaIntroduceQueriable.value!.get('chatStyle').toJSON()
-        const ret = await text2Voice(currentStyleIntroduce.value, chatStyle.voiceType)
+        const ret = await text2Voice(currentStyleIntroduce.value, currentChatStyle.value.voiceType)
         console.log(ret.url)
         areaIntroduceQueriable.value!.set('voice', ret.url)
         await areaIntroduceQueriable.value!.save()
@@ -95,6 +106,8 @@ export function useEditStyle(form: Ref<AreaForm>) {
   return {
     chatStyles,
     styleVisible,
+    propmtObject,
+    currentChatStyle,
     currentStyleIntroduce,
     onGenerateStyleIntroduce,
     onUpdateStyleIntroduce,
