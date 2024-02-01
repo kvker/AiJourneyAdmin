@@ -17,8 +17,7 @@ export function useEditStyle(form: Ref<AreaForm>) {
   const areaIntroduceQueriable = ref<AV.Queriable>()
   const propmtObject = ref<{ previousPrompt: string, tailPrompt: string }>({ previousPrompt: '', tailPrompt: '' })
   const currentChatStyle = computed(() => {
-    const chatStyle = areaIntroduceQueriable.value.get('chatStyle').toJSON() as ChatStyle
-    debugger
+    const chatStyle = areaIntroduceQueriable.value!.get('chatStyle').toJSON() as ChatStyle
     return chatStyle
   })
 
@@ -57,7 +56,6 @@ export function useEditStyle(form: Ref<AreaForm>) {
   function doUpdatePromptObject() {
     propmtObject.value.previousPrompt = currentChatStyle.value.previousPrompt
     propmtObject.value.tailPrompt = currentChatStyle.value.tailPrompt
-    debugger
   }
 
   async function onUseStyleIntroduce() {

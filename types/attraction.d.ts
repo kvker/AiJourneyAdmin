@@ -36,6 +36,7 @@ type ChatStyle = {
   sort: number
   previousPrompt: string
   tailPrompt: string
+  voiceType: number
 } & LCBase
 
 type AreaForm = Omit<Area, 'coverImageList'> & {
