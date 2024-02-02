@@ -14,13 +14,15 @@ export function lnglat2Ll(lnglat: Lnglat) {
   }
 }
 
-export async function getGeocoder(name: string): Promise<Lnglat> {
+export async function getGeocoder(name: string): Promise<Lnglat | undefined> {
   const ret = await fetch(`http://api.tianditu.gov.cn/geocoder?ds={"keyWord":"${name}"}&tk=${TmKey}`)
   const json = await ret.json()
   const location = json.location
   // console.log({ location })
-  return {
-    lng: location.lon,
-    lat: location.lat,
+  if (location) {
+    return {
+      lng: location.lon,
+      lat: location.lat,
+    }
   }
 }

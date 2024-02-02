@@ -42,3 +42,20 @@ type ChatStyle = {
 type AreaForm = Omit<Area, 'coverImageList'> & {
   coverImageList: File[]
 }
+
+type Toilet = {
+  objectId: string
+  attraction?: AV.Object
+  coverImageList: url[]
+  introduce: string
+  lnglat: Lnglat | null
+  name: string
+}
+
+type ToiletSearchParams = {
+  name: string
+}
+
+type ToiletForm = Omit<Toilet, 'coverImageList'> & {
+  coverImageList: File[]
+}
