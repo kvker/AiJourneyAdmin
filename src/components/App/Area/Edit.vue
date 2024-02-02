@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { file2BlobUrl } from '@/utils/fileHandler'
-import { useEditForm } from '@/use/editForm'
-import { useEditStyle } from '@/use/editStyle'
+import { useEditForm } from '@/use/area/editForm'
+import { useEditStyle } from '@/use/area/editStyle'
 
 const props = defineProps(['editData'])
 const emit = defineEmits(['showmap', 'confim'])
