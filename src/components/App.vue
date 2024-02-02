@@ -13,7 +13,7 @@ function initPrepare() {
   // }
   console.log('当前用户：', lc.currentUser())
   if (!lc.currentUser()) {
-    location.href = '/login.html'
+    location.href = '/login/'
   }
 }
 
