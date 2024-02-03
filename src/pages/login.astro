@@ -72,7 +72,12 @@ import Empty from '../layouts/Empty.astro'
     const password = (document.querySelector('#login-with-bg-password') as HTMLInputElement).value
     const user = await lc.login(username, md5(password) as string)
     const roles = await user.getRoles()
-    const roleName = roles[0].get('name')
+    const role = roles[0]
+    if (!role) {
+      lc.logout()
+      throw new ReferenceError('无角色, 请重新登录')
+    }
+    const roleName = role.get('name')
     console.log(roleName)
     if (roleName === 'attractionOperator' || roleName === 'attractionAdmin') {
       const aum = await lc.one('AttractionUserMap', (q) => {
@@ -83,9 +88,11 @@ import Empty from '../layouts/Empty.astro'
         const attraction = aum.get('attraction').toJSON()
         localStorage.setItem('attraction', JSON.stringify(attraction))
       } else {
+        lc.logout()
         throw new ReferenceError('未绑定景区, 请联系管理人员')
       }
     } else {
+      lc.logout()
       throw new ReferenceError('无权访问, 请重新登录')
     }
   }
