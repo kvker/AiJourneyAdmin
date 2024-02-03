@@ -37,6 +37,6 @@ export async function text2Voice(text: string, voiceType?: number): Promise<{ ur
   }).then(ret => ret.json())
   // console.log(ret.data.Audio)
   let audioBase64 = ret.data.base64
-  const uploadRet = await lc.uploadBase64(audioBase64, Date.now + '.mp3')
+  const uploadRet = await lc.uploadBase64(audioBase64, Date.now() + '.mp3')
   return { url: uploadRet.get('url') }
 }
