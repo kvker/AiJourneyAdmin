@@ -57,7 +57,9 @@ const tableRowClassName = ({
 let count = ref(0)
 
 async function getList(params = searchParams.value) {
+  const attraction = JSON.parse(localStorage.getItem('attraction') as string)
   const ret = await lc.read('Area', q => {
+    q.equalTo('attraction', lc.createObject('Attraction', attraction.objectId))
     q.limit(size)
     q.skip(size * page.value)
     q.descending('updatedAt')
