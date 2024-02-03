@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, ref, computed } from 'vue'
 import lc from '@/libs/lc'
-
+console.log(import.meta.env.BASE_URL)
 async function initPrepare() {
   // 匿名用户，如果本地持有则取用本地
   // 匿名用户是用来解决数据安全问题，如果没有匿名用户，无法访问数据，且可以追踪非法操作
@@ -15,21 +15,21 @@ async function initPrepare() {
   if (!lc.currentUser()) {
     alert('未登录, 非法进入')
     lc.logout()
-    location.href = '/login/'
+    location.href = import.meta.env.BASE_URL + 'login/'
   }
 
   // 入口安全处理
   if (!localStorage.getItem('attraction')) {
     alert('无景区关系, 非法进入')
     lc.logout()
-    location.href = '/login/'
+    location.href = import.meta.env.BASE_URL + 'login/'
   }
   const roles = await lc.currentUser().getRoles()
   const role = roles[0]
   if (!role) {
     alert('无角色, 非法进入')
     lc.logout()
-    location.href = '/login/'
+    location.href = import.meta.env.BASE_URL + 'login/'
   }
 }
 

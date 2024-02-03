@@ -5,7 +5,7 @@ import lc from '@/libs/lc'
 function onLogout() {
   lc.logout()
   localStorage.removeItem('attraction')
-  window.location.href = '/login/'
+  location.href = import.meta.env.BASE_URL + 'login/'
 }
 </script>
 

@@ -53,7 +53,7 @@ import Empty from '../layouts/Empty.astro'
   import md5 from 'md5'
 
   if (lc.currentUser()) {
-    window.location.href = '/'
+    location.href = import.meta.env.BASE_URL
   }
 
   const formLogin = document.querySelector('#formLogin') as HTMLFormElement
@@ -61,7 +61,7 @@ import Empty from '../layouts/Empty.astro'
     e.preventDefault()
     try {
       await doLogin()
-      window.location.href = '/'
+      location.href = import.meta.env.BASE_URL
     } catch (error: any) {
       alert(error.rawMessage || error.message)
     }
