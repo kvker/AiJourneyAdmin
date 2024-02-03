@@ -12,21 +12,20 @@ async function initPrepare() {
   //   })
   // }
   console.log('当前用户：', lc.currentUser())
+  const roles = await lc.currentUser().getRoles()
+  const role = roles[0]
   if (!lc.currentUser()) {
     alert('未登录, 非法进入')
     lc.logout()
     location.href = import.meta.env.BASE_URL + 'login/'
   }
-
   // 入口安全处理
-  if (!localStorage.getItem('attraction')) {
+  else if (!localStorage.getItem('attraction')) {
     alert('无景区关系, 非法进入')
     lc.logout()
     location.href = import.meta.env.BASE_URL + 'login/'
   }
-  const roles = await lc.currentUser().getRoles()
-  const role = roles[0]
-  if (!role) {
+  else if (!role) {
     alert('无角色, 非法进入')
     lc.logout()
     location.href = import.meta.env.BASE_URL + 'login/'
