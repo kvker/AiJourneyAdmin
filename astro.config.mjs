@@ -4,5 +4,9 @@ import tailwind from "@astrojs/tailwind"
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://ai.ilovecats.cn/admin/',
+  base: '/admin/',
+  trailingSlash: "always",
   integrations: [vue(), tailwind()],
+  compressHTML: true,
 })
