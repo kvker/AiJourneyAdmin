@@ -3,12 +3,6 @@ import Empty from '../layouts/Empty.astro'
 ---
 
 <Empty title="经纬度查询">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-    }
-  </style>
   <script is:inline src="//api.tianditu.gov.cn/api?v=4.0&tk=7679c343623ec0339bd308138c672120"></script>
 
   <div id="mapDiv" style="position:absolute;width:100vw; height:100vh"></div>
