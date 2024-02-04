@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { defineAsyncComponent, ref, computed } from 'vue'
 import lc from '@/libs/lc'
-console.log(import.meta.env.BASE_URL)
+// console.log(import.meta.env.BASE_URL)
 async function initPrepare() {
   // 匿名用户，如果本地持有则取用本地
   // 匿名用户是用来解决数据安全问题，如果没有匿名用户，无法访问数据，且可以追踪非法操作
@@ -11,7 +11,7 @@ async function initPrepare() {
   //     console.log('新建匿名用户')
   //   })
   // }
-  console.log('当前用户：', lc.currentUser())
+  // console.log('当前用户：', lc.currentUser())
   const roles = await lc.currentUser().getRoles()
   const role = roles[0]
   if (!lc.currentUser()) {
