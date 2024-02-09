@@ -94,6 +94,7 @@ function doEdit(data: Area, index: number) {
 function doDelete(data: Area, index: number) {
   console.log('doDelete')
   console.log(data, index)
+  ElMessage('this is a message.')
   ElMessageBox.confirm(
     '即将删除此景点，是否继续？',
     '高危操作！！！',
@@ -110,7 +111,7 @@ function doDelete(data: Area, index: number) {
         type: 'success',
         message: '删除成功',
       })
-    })
+    }).catch(console.error)
 }
 
 function doChangePage(p: number) {

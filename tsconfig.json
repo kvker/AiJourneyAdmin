@@ -1,22 +1,14 @@
 {
-  "extends": "astro/tsconfigs/strict",
-  "compilerOptions": {
-    "forceConsistentCasingInFileNames": false,
-    "baseUrl": ".",
-    "jsx": "preserve",
-    "types": [
-      "element-plus/global"
-    ],
-    "paths": {
-      "@/*": [
-        "src/*"
-      ]
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.vitest.json"
     }
-  },
-  "include": [
-    "src/**/*.ts",
-    "types/**/*.ts",
-    "src/**/*.vue",
-    "src/**/*.astro"
   ]
 }

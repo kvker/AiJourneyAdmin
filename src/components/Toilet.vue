@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import { ref, provide, nextTick } from 'vue'
-import Query from '@/components/App/Area/Query.vue'
-import List from '@/components/App/Area/List.vue'
-import Edit from '@/components/App/Area/Edit.vue'
-import Map from '@/components/App/Common/Map.vue'
+import Query from '@/components/Toilet/Query.vue'
+import List from '@/components/Toilet/List.vue'
+import Edit from '@/components/Toilet/Edit.vue'
+import Map from '@/components/Common/Map.vue'
 import { ll2Lnglat } from '@/utils/map'
 
 const currentLnglat = ref<Lnglat | null>(null)
-const editData = ref<Area | null>(null)
+const editData = ref<Toilet | null>(null)
 
-const searchParams = ref<AreaSearchParams>({ name: '' })
+const searchParams = ref<ToiletSearchParams>({ name: '' })
 provide('searchParams', searchParams)
 
 function onAdd() {

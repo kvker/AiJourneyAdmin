@@ -5,13 +5,13 @@ import lc from '@/libs/lc'
 function onLogout() {
   lc.logout()
   localStorage.removeItem('attraction')
-  location.href = import.meta.env.BASE_URL + 'login/'
+  location.href = '/'
 }
 </script>
 
 <template>
   <div>
-    <el-button type="primary" @click="onLogout">退出</el-button>
+    <button class="btn btn-secondary" @click="onLogout">退出</button>
   </div>
 </template>
 
