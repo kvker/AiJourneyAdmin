@@ -1,46 +1,26 @@
-# AIGuideMasterAdmin1
+# AI导游大师
 
-This template should help get you started developing with Vue 3 in Vite.
+后台管理 + 小程序 + H5 + Web门户 + APP（含鸿蒙） + Serverless + 大模型（ChatGLM） + 天地图 + TypeScript。
 
-## Recommended IDE Setup
+希望感兴趣的小伙伴一起开发，一个人实在精力有限。
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+服务端届时开源会使用 Express，并且核心数据使用环境变量方式供自行导入。
 
-## Type Support for `.vue` Imports in TS
+## AI导游大师后台管理端
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+本应用为AI导游大师个人项目后台管理端。
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+技术栈目前为：Vue3 + Vitest + daisyUI + LeanCloud（Serverless） + TypeScript + Tailwind CSS。
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+目前的 Serverless 是测试版，已经处理好权限，请使用 leghair + aa123456 登录系统进行开发。
 
-## Customize configuration
+其中 LeanCloud 有兴趣的可以提供账号给我，我加你开发权限。
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+## 待办
 
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-npm run test:unit
-```
+- [x] 用户与景区景点管理(角色)
+- [x] 生成 styled 描述
+- [x] 生成描述的语音
+- [x] 厕所管理
+- [ ] 服务端来的菜单
+- [ ] 注意事项
