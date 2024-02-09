@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { file2BlobUrl } from '@/utils/fileHandler'
-import { useEditForm } from '@/use/toilet/editForm'
+import { useEditForm } from '@/composables/toilet/editForm'
 
 const props = defineProps(['editData'])
 const emit = defineEmits(['showmap', 'confim'])
