@@ -74,7 +74,7 @@ function onCloseStyleDialog() {
         </div>
         <div class="flex items-center mb-2">
           <button class="btn btn-secondary mr-2" type="button" @click="onAddCoverImage">新增图片</button>
-          <img class=" cursor-pointer object-contain h-14 w-14 mr-2" v-for="(file, index) of form.coverImageList"
+          <img class=" cursor-pointer object-contain h-12 w-12 mr-2" v-for="(file, index) of form.coverImageList"
             :src="file2BlobUrl(file)" @click="onDeleteCoverImage(index)" alt="preview-image">
         </div>
         <button class="btn btn-primary" type="submit">{{ form.attraction ? '更新' : '创建' }}景点</button>

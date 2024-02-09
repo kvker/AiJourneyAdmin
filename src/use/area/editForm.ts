@@ -78,7 +78,7 @@ export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form:
     }
     chooseFile(files => {
       if (files) {
-        if (form.value.coverImageList.length + files.length >= 3) {
+        if (form.value.coverImageList.length + files.length > 3) {
           alert('最多只能上传3张图片')
           return
         }
