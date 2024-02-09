@@ -31,32 +31,38 @@ const router = createRouter({
       component: () => import('../views/LoginView.vue'),
     },
     {
-      path: '/play',
+      path: '/home',
       name: 'home',
       component: HomeView,
       children: [
         {
-          path: '/',
+          path: '',
+          name: 'home-default', // 默认子路由，重定向到total
           component: () => import('@/components/Total.vue')
         },
         {
           path: 'total',
+          name: 'home-total',
           component: () => import('@/components/Total.vue')
         },
         {
           path: 'area',
+          name: 'home-area',
           component: () => import('@/components/Area.vue')
         },
         {
           path: 'toilet',
+          name: 'home-toilet',
           component: () => import('@/components/Toilet.vue')
         },
         {
           path: 'user',
+          name: 'home-user',
           component: () => import('@/components/User.vue')
         },
         {
           path: 'setting',
+          name: 'home-setting',
           component: () => import('@/components/Setting.vue')
         },
       ]

@@ -34,7 +34,7 @@ async function initPrepare() {
 
 initPrepare()
 
-const basePath = '/play'
+const basePath = '/home'
 // TODO:
 // 这一块数据来自服务端
 const menu = [{

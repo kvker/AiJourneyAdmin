@@ -6,7 +6,7 @@ import lc from '@/libs/lc'
 import md5 from 'md5'
 
 if (lc.currentUser()) {
-  router.replace('/play')
+  router.replace('/home')
 }
 
 const username = ref('')
@@ -16,7 +16,7 @@ async function onSubmit(e: Event) {
   e.preventDefault()
   try {
     await doLogin()
-    router.replace('/play')
+    router.replace('/home')
   } catch (error: any) {
     alert(error.rawMessage || error.message)
   }
