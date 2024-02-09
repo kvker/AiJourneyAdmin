@@ -56,20 +56,18 @@ async function doUpdateList() {
   searchParams.value.name = tempName
 }
 
-function onCellEdit(data: Area) {
+function onCellEdit(data: Toilet) {
   editVisible.value = true
   editData.value = data
 }
 </script>
 
 <template>
-  <main class=" flex flex-col h-full">
-    <Query @add="onAdd" />
-    <List @lnglat="onReviewLnglat" @edit="onCellEdit" />
-    <Edit v-model:visible="editVisible" v-model:lnglat="currentLnglat" :editData="editData" @confim="onEditConfirm"
-      @showmap="onShowMap" />
-    <Map :visible="dialogMapVisible" :defaultLnglat="defaultLnglat" @choose="doChooseLnglat" @close="onCloseMap" />
-  </main>
+  <Query @add="onAdd" />
+  <List @lnglat="onReviewLnglat" @edit="onCellEdit" />
+  <Edit v-model:visible="editVisible" v-model:lnglat="currentLnglat" :editData="editData" @confim="onEditConfirm"
+    @showmap="onShowMap" />
+  <Map :visible="dialogMapVisible" :defaultLnglat="defaultLnglat" @choose="doChooseLnglat" @close="onCloseMap" />
 </template>
 
 <style></style>
