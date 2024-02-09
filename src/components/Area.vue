@@ -63,13 +63,11 @@ function onCellEdit(data: Area) {
 </script>
 
 <template>
-  <main class=" flex flex-col h-full">
-    <Query @add="onAdd" />
-    <List @lnglat="onReviewLnglat" @edit="onCellEdit" />
-    <Edit v-model:visible="editVisible" v-model:lnglat="currentLnglat" :editData="editData" @confim="onEditConfirm"
-      @showmap="onShowMap" />
-    <Map :visible="dialogMapVisible" :defaultLnglat="defaultLnglat" @choose="doChooseLnglat" @close="onCloseMap" />
-  </main>
+  <Query @add="onAdd" />
+  <List @lnglat="onReviewLnglat" @edit="onCellEdit" />
+  <Edit v-model:visible="editVisible" v-model:lnglat="currentLnglat" :editData="editData" @confim="onEditConfirm"
+    @showmap="onShowMap" />
+  <Map :visible="dialogMapVisible" :defaultLnglat="defaultLnglat" @choose="doChooseLnglat" @close="onCloseMap" />
 </template>
 
 <style></style>

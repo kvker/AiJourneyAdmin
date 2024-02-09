@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, watch } from 'vue'
+import type { Ref } from 'vue'
 
 let map: any
   , marker: any
@@ -12,6 +13,7 @@ const props = defineProps({
   },
 })
 const loading = ref(false)
+const mapDialog: Ref<HTMLDialogElement | undefined> = ref()
 
 onMounted(() => {
   // 地图
@@ -21,6 +23,7 @@ onMounted(() => {
 
 watch(() => props.visible, (val) => {
   if (val === true) {
+    mapDialog.value!.showModal()
     loading.value = true
     navigator.geolocation.getCurrentPosition(function (position) {
       const { latitude, longitude } = position.coords
@@ -59,33 +62,28 @@ function doChoose() {
     alert('请选择一个坐标点')
     return
   }
+  mapDialog.value!.close()
   emit('choose', marker.getLngLat())
+}
+
+function onClose() {
+  emit('close')
 }
 </script>
 
 <template>
-  <div v-show="visible" class=" fixed left-0 top-0 w-full h-full mask flex items-center justify-center"
-    style="z-index: 9999;">
-    <div v-loading="loading" element-loading-text="定位中" element-loading-background="rgba(122, 122, 122, 0.8)" id="mapDiv">
+  <dialog ref="mapDialog" class="modal" @close="onClose">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg">请选择一个坐标点</h3>
+      <div id="mapDiv" class=" h-96"></div>
+      <button class=" btn btn-primary mt-8" @click="doChoose">确认</button>
+      <div class="modal-action">
+        <form method="dialog">
+          <button class="btn">关闭</button>
+        </form>
+      </div>
     </div>
-    <div class=" ml-10 flex flex-col justify-end">
-      <el-button @click="emit('close')">关闭</el-button>
-      <el-button class=" mt-8" type="primary" @click="doChoose">确认</el-button>
-    </div>
-  </div>
+  </dialog>
 </template>
 
-<style scoped>
-.mask {
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-#mapDiv {
-  width: 62%;
-  height: 62%;
-}
-
-.el-button {
-  margin-left: 0;
-}
-</style>
+<style scoped></style>

@@ -66,7 +66,7 @@ const onMenuSelect = (item: typeof menu[0], index: number) => {
       <li v-for="(m, index) of menu" :index="'' + index" @click="onMenuSelect(m, index)"><a>{{ m.name }}</a></li>
     </ul>
   </menu>
-  <main class=" flex-1 h-full">
+  <main class=" flex-1 h-full p-2">
     <router-view v-slot="{ Component }">
       <keep-alive>
         <component :is="Component" />

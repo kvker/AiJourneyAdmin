@@ -11,14 +11,15 @@ function onAdd() {
 </script>
 
 <template>
-  <el-form :inline="true" :model="searchParams" class="demo-form-inline">
-    <el-form-item label="景点名称">
-      <el-input v-model="searchParams.name" placeholder="输入自动搜索" />
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="onAdd">新增</el-button>
-    </el-form-item>
-  </el-form>
+  <form :inline="true" :model="searchParams" class="demo-form-inline" @submit.prevent="onAdd">
+    <label for="searchName">
+      <input id="searchName" v-model.trim="searchParams.name" placeholder="输入自动搜索"
+        class="input input-bordered w-full max-w-xs" />
+    </label>
+    <label class=" ml-2">
+      <button class="btn btn-primary" type="submit">新增</button>
+    </label>
+  </form>
 </template>
 
 <style scoped></style>

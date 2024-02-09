@@ -1,26 +1,12 @@
 import { ref, watch } from 'vue'
 import type { Ref, ModelRef } from 'vue'
-import { ElLoading, ElMessage } from 'element-plus'
 import type { FormInstance, FormRules } from 'element-plus'
 import { chooseFile } from '@/utils/fileHandler'
-import lc from '@/libs/lc';
+import lc from '@/libs/lc'
 import type AV from 'leancloud-storage'
 import { ll2Lnglat, getGeocoder } from '@/utils/map'
 
 export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form: Ref<AreaForm>, obj: AreaForm, props: any, emit: any, visible: Ref<boolean>, lnglat: ModelRef<Lnglat> }) {
-  const ruleFormRef = ref<FormInstance>()
-
-  const rules = ref<FormRules<AreaForm>>({
-    name: [
-      { required: true, message: '请输入景点名称', trigger: 'blur' },
-    ],
-    introduce: [
-      { required: true, message: '请输入景点介绍, 尽可能多点', trigger: 'blur' },
-    ],
-    lnglat: [
-      { required: true, message: '请选择经纬度', trigger: 'change' },
-    ],
-  })
 
   watch(lnglat, (val) => {
     form.value.lnglat = val as Lnglat
@@ -36,44 +22,37 @@ export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form:
     }
   })
 
-  async function onSubmit(formEl: FormInstance | undefined) {
-    if (!formEl) return
+  async function onSubmit() {
 
-    await formEl.validate(async (valid) => {
-      if (valid) {
-        const coverImageList = []
+    const coverImageList = []
 
-        let loading = ElLoading.service({ text: '上传图片中', fullscreen: true })
-        let ret: AV.File | null = null
-        for (const file of form.value.coverImageList) {
-          if (typeof file === 'string') {
-            coverImageList.push(file)
-            continue
-          } // 链接不需要再传
-          ret = await lc.uploadFile(file)
-          coverImageList.push(ret.get('url'))
-        }
-        const uploadForm = {
-          name: form.value.name,
-          introduce: form.value.introduce,
-          lnglat: new lc.AV.GeoPoint({ latitude: form.value.lnglat!.lat, longitude: form.value.lnglat!.lng }),
-          coverImageList,
-        }
-        if (form.value.attraction) {
-          await lc.update('Area', form.value.objectId, uploadForm)
-        } else {
-          const attraction = JSON.parse(localStorage.getItem('attraction') as string)
-          await lc.create('Area', {
-            ...uploadForm,
-            attraction: lc.createObject('Attraction', attraction.objectId),
-          })
-        }
-        loading.close()
-        visible.value = false
-        emit('confim')
-        onResetForm()
-      }
-    })
+    let ret: AV.File | null = null
+    for (const file of form.value.coverImageList) {
+      if (typeof file === 'string') {
+        coverImageList.push(file)
+        continue
+      } // 链接不需要再传
+      ret = await lc.uploadFile(file)
+      coverImageList.push(ret.get('url'))
+    }
+    const uploadForm = {
+      name: form.value.name,
+      introduce: form.value.introduce,
+      lnglat: new lc.AV.GeoPoint({ latitude: form.value.lnglat!.lat, longitude: form.value.lnglat!.lng }),
+      coverImageList,
+    }
+    if (form.value.attraction) {
+      await lc.update('Area', form.value.objectId, uploadForm)
+    } else {
+      const attraction = JSON.parse(localStorage.getItem('attraction') as string)
+      await lc.create('Area', {
+        ...uploadForm,
+        attraction: lc.createObject('Attraction', attraction.objectId),
+      })
+    }
+    visible.value = false
+    emit('confim')
+    onResetForm()
   }
 
   function onResetForm() {
@@ -94,13 +73,13 @@ export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form:
 
   function onAddCoverImage() {
     if (form.value.coverImageList.length >= 3) {
-      ElMessage.error('最多只能上传3张图片')
+      alert('最多只能上传3张图片')
       return
     }
     chooseFile(files => {
       if (files) {
         if (form.value.coverImageList.length + files.length >= 3) {
-          ElMessage.error('最多只能上传3张图片')
+          alert('最多只能上传3张图片')
           return
         }
         form.value.coverImageList = [...form.value.coverImageList, ...files]
@@ -114,8 +93,6 @@ export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form:
 
   return {
     visible,
-    ruleFormRef,
-    rules,
     onResetForm,
     onSubmit,
     onCheckLocation,
