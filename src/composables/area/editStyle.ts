@@ -2,9 +2,9 @@ import { ref, computed } from 'vue'
 import type { Ref } from 'vue'
 import lc from '@/libs/lc';
 import type AV from 'leancloud-storage'
-import { doCompletions } from '@/utils/llm'
-import { text2Voice } from '@/utils/fileHandler'
-import { toast, loading, unloading } from '@/utils/ui'
+import { doCompletions } from '@/services/llm'
+import { text2Voice } from '@/services/fileHandler'
+import { toast, loading, unloading } from '@/services/ui'
 
 export function useEditStyle(form: Ref<AreaForm>) {
   // 聊天风格区域

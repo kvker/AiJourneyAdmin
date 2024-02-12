@@ -1,9 +1,9 @@
 import { watch } from 'vue'
 import type { Ref, ModelRef } from 'vue'
-import { chooseFile } from '@/utils/fileHandler'
+import { chooseFile } from '@/services/fileHandler'
 import lc from '@/libs/lc'
 import type AV from 'leancloud-storage'
-import { ll2Lnglat, getGeocoder } from '@/utils/map'
+import { ll2Lnglat, getGeocoder } from '@/services/map'
 
 export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form: Ref<ToiletForm>, obj: ToiletForm, props: any, emit: any, visible: Ref<boolean>, lnglat: ModelRef<Lnglat> }) {
 

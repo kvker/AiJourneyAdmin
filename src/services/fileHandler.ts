@@ -1,4 +1,4 @@
-import { serverUrl } from '@/utils/config'
+import { serverUrl } from '@/services/config'
 import lc from '@/libs/lc'
 
 export function chooseFile(cb: (files?: FileList) => void, multiple = true, accept?: string) {

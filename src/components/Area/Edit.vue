@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
 import type { Ref } from 'vue'
-import { file2BlobUrl } from '@/utils/fileHandler'
+import { file2BlobUrl } from '@/services/fileHandler'
 import { useEditForm } from '@/composables/area/editForm'
 import { useEditStyle } from '@/composables/area/editStyle'
 
