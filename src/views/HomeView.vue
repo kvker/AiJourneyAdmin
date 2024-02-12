@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { ref, } from 'vue'
 import router from '@/router'
 import lc from '@/libs/lc'
 
@@ -35,6 +36,7 @@ async function initPrepare() {
 initPrepare()
 
 const basePath = '/home'
+const currentIndex = ref(0)
 // TODO:
 // 这一块数据来自服务端
 const menu = [{
@@ -57,13 +59,14 @@ const menu = [{
 
 const onMenuSelect = (item: typeof menu[0], index: number) => {
   router.push(basePath + item.path)
+  currentIndex.value = index
 }
 </script>
 
 <template>
   <menu class=" h-full">
     <ul class="menu bg-base-200 w-56 rounded-box h-full">
-      <li v-for="(m, index) of menu" :index="'' + index" @click="onMenuSelect(m, index)"><a>{{ m.name }}</a></li>
+      <li v-for="(m, index) of menu" :index="'' + index" @click="onMenuSelect(m, index)"><a :class="{'active': currentIndex === index}">{{ m.name }}</a></li>
     </ul>
   </menu>
   <main class=" flex-1 h-full p-2">
