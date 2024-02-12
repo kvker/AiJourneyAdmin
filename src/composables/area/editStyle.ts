@@ -43,6 +43,7 @@ export function useEditStyle(form: Ref<AreaForm>) {
     if (ret) {
       areaIntroduceQueriable.value = ret
       currentStyleIntroduce.value = areaIntroduceQueriable.value.get('introduce')
+      doUpdatePromptObject()
     } else {
       areaIntroduceQueriable.value = new lc.AV.Object('AreaIntroduce')
       areaIntroduceQueriable.value.set('chatStyle', chatStyleQueriable)
