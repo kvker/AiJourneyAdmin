@@ -1,6 +1,5 @@
-import { ref, watch } from 'vue'
+import { watch } from 'vue'
 import type { Ref, ModelRef } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
 import { chooseFile } from '@/utils/fileHandler'
 import lc from '@/libs/lc'
 import type AV from 'leancloud-storage'
