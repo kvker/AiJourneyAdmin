@@ -1,4 +1,8 @@
-html, body, #app {
+@import url('./overlay.css');
+
+html,
+body,
+#app {
   height: 100%;
 }
 

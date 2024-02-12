@@ -35,7 +35,7 @@ watch(visible, newValue => {
 })
 
 watch(styleVisible, newValue => {
-  if(newValue) {
+  if (newValue) {
     styleDialog.value && styleDialog!.value.showModal()
   } else {
     styleDialog.value && styleDialog!.value.close()
@@ -96,11 +96,13 @@ function onCloseStyleDialog() {
           placeholder="这里是后置指令, 给 AI 的指令等于: 前置指令 + 基础描述 + 后置指令, 如果您需要, 也可以自行修改此处给 AI 下发别的要求" rows="3"></textarea>
       </div>
       <p class=" my-2 text-gray-400 text-sm">您可以修改上述要求让 AI 生成新的内容</p>
-      <textarea class="textarea w-full h-60" v-model.trim="currentStyleIntroduce"
+      <textarea class="textarea w-full h-56" v-model.trim="currentStyleIntroduce"
         placeholder="这里显示的是AI协助生成的各类有趣的景点介绍语录, 来自基础描述" rows="12"></textarea>
-      <div class="flex mt-4">
+      <div class="flex mt-2">
         <button @click="onUseStyleIntroduce" class=" btn btn-primary mr-4">应用描述</button>
         <button @click="() => onUpdateStyleIntroduce()" class="btn btn-secondary mr-4">更新描述</button>
+      </div>
+      <div class="flex mt-2 items-center">
         <button @click="onGenerateVoice" class="btn btn-accent mr-4">生成语音</button>
         <audio v-if="areaIntroduceQueriable && areaIntroduceQueriable.get('voice')"
           :src="areaIntroduceQueriable.get('voice')" class=" h-8" controls></audio>

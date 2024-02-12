@@ -1,10 +1,10 @@
 import { ref, computed } from 'vue'
 import type { Ref } from 'vue'
-import { ElLoading, ElMessage, ElMessageBox } from 'element-plus'
 import lc from '@/libs/lc';
 import type AV from 'leancloud-storage'
 import { doCompletions } from '@/utils/llm'
 import { text2Voice } from '@/utils/fileHandler'
+import { toast, loading, unloading } from '@/utils/ui'
 
 export function useEditStyle(form: Ref<AreaForm>) {
   // 聊天风格区域
@@ -65,7 +65,7 @@ export function useEditStyle(form: Ref<AreaForm>) {
     if (areaIntroduceQueriable.value) {
       areaIntroduceQueriable.value.set('introduce', currentStyleIntroduce.value)
       await areaIntroduceQueriable.value.save()
-      ElMessage.success('更新完成')
+      toast('更新完成')
     }
 
   }
@@ -79,27 +79,22 @@ export function useEditStyle(form: Ref<AreaForm>) {
       currentStyleIntroduce.value = result
     }, (result) => {
       console.log(result)
-      ElMessage.info('完成输出')
+      toast('完成输出', 'info')
     })
   }
 
   async function onGenerateVoice() {
     // console.log('onGenerateVoice')
-    ElMessageBox.confirm('生成语音会覆盖原有语音, 是否继续?', '提示', {
-      confirmButtonText: '确认',
-      cancelButtonText: '取消',
-      type: 'warning',
-    })
-      .then(async () => {
-        const loading = ElLoading.service({ text: '生成语音中...', fullscreen: true })
-        areaIntroduceQueriable.value!.set('voice', '')
-        const ret = await text2Voice(currentStyleIntroduce.value, currentChatStyle.value.voiceType)
-        console.log(ret.url)
-        areaIntroduceQueriable.value!.set('voice', ret.url)
-        await areaIntroduceQueriable.value!.save()
-        loading.close()
-        ElMessage.success('生成语音完成')
-      })
+    if (confirm('生成语音会覆盖原有语音, 是否继续?')) {
+      loading('生成语音中...')
+      areaIntroduceQueriable.value!.set('voice', '')
+      const ret = await text2Voice(currentStyleIntroduce.value, currentChatStyle.value.voiceType)
+      console.log(ret.url)
+      areaIntroduceQueriable.value!.set('voice', ret.url)
+      await areaIntroduceQueriable.value!.save()
+      unloading()
+      toast('生成语音完成')
+    }
   }
 
   return {
