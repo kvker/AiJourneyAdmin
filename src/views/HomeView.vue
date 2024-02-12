@@ -36,7 +36,6 @@ async function initPrepare() {
 initPrepare()
 
 const basePath = '/home'
-const currentIndex = ref(0)
 // TODO:
 // 这一块数据来自服务端
 const menu = [{
@@ -56,6 +55,12 @@ const menu = [{
   name: '设置'
 }
 ]
+
+const currentIndex = ref(doFindInitialIndex())
+function doFindInitialIndex() {
+  let index = menu.findIndex(item => basePath + item.path === location.pathname)
+  return index < 0 ? 0 : index
+}
 
 const onMenuSelect = (item: typeof menu[0], index: number) => {
   router.push(basePath + item.path)
