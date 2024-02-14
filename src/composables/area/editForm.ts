@@ -5,7 +5,7 @@ import lc from '@/libs/lc'
 import type AV from 'leancloud-storage'
 import { ll2Lnglat, getGeocoder } from '@/services/map'
 
-export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form: Ref<AreaForm>, obj: AreaForm, props: any, emit: any, visible: Ref<boolean>, lnglat: ModelRef<Lnglat> }) {
+export function useEditForm(form: Ref<AreaForm>, {obj, props, emit, visible, lnglat }: { obj: AreaForm, props: any, emit: any, visible: Ref<boolean>, lnglat: ModelRef<Lnglat> }) {
 
   watch(lnglat, (val) => {
     form.value.lnglat = val as Lnglat

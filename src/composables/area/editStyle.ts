@@ -32,7 +32,6 @@ export function useEditStyle(form: Ref<AreaForm>) {
   async function onGenerateStyleIntroduce(chatStyle: ChatStyle, index: number) {
     // console.log(chatStyle)
     styleVisible.value = true
-    if (areaIntroduceQueriable.value && areaIntroduceQueriable.value.get('chatStyle').id === chatStyle.objectId) return
     const areaQueriable = lc.createObject('Area', form.value.objectId)
     const chatStyleQueriable = chatStylesQueriable.value[index]
     const ret = await lc.one('AreaIntroduce', q => {
@@ -74,7 +73,11 @@ export function useEditStyle(form: Ref<AreaForm>) {
     // console.log('onUpdateStyleIntroduce')
     // console.log(areaIntroduceQueriable.value)
     currentStyleIntroduce.value = ''
+    // console.log(form.value)
     const content = `${propmtObject.value.previousPrompt}${form.value.introduce}${propmtObject.value.tailPrompt}`
+    // console.log(content)
+    // debugger
+    // return
     doCompletions(content, result => {
       currentStyleIntroduce.value = result
     }, (result) => {

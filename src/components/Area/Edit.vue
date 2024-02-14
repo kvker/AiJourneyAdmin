@@ -22,7 +22,7 @@ const obj: AreaForm = {
 }
 const form = ref<AreaForm>({ ...obj })
 
-const { onCheckLocation, onSubmit, onDeleteCoverImage, onAddCoverImage, onResetForm } = useEditForm({ form, obj, props, emit, visible, lnglat })
+const { onCheckLocation, onSubmit, onDeleteCoverImage, onAddCoverImage, onResetForm } = useEditForm(form, { obj, props, emit, visible, lnglat })
 const { chatStyles, styleVisible, propmtObject, currentStyleIntroduce, onUseStyleIntroduce, onUpdateStyleIntroduce, onGenerateVoice,
   onGenerateStyleIntroduce, areaIntroduceQueriable } = useEditStyle(form)
 
