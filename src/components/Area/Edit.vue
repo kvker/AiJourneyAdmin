@@ -90,9 +90,9 @@ function onCloseStyleDialog() {
     <div class="modal-box">
       <h3 class="font-bold text-lg mb-2">个性化景点介绍</h3>
       <div class=" flex" v-if="propmtObject.previousPrompt">
-        <textarea class=" mr-2 textarea" v-model.trim="propmtObject.previousPrompt"
+        <textarea class=" mr-2 textarea f1" v-model.trim="propmtObject.previousPrompt"
           placeholder="这里是前置指令, 给AI的指令等于: 前置指令 + 基础描述 + 后置指令, 如果您需要, 也可以自行修改此处给 AI 下发别的要求" rows="3"></textarea>
-        <textarea class="textarea w-full" v-model.trim="propmtObject.tailPrompt"
+        <textarea class="textarea f1" v-model.trim="propmtObject.tailPrompt"
           placeholder="这里是后置指令, 给 AI 的指令等于: 前置指令 + 基础描述 + 后置指令, 如果您需要, 也可以自行修改此处给 AI 下发别的要求" rows="3"></textarea>
       </div>
       <p class=" my-2 text-gray-400 text-sm">您可以修改上述要求让 AI 生成新的内容</p>
