@@ -63,7 +63,7 @@ function onCloseStyleDialog() {
           <textarea class="textarea w-full mb-2" v-model="form.introduce" placeholder="介绍,如: 杭州西湖景区是......建议300字以上500字以下"
             required minlength="2" maxlength="1000"></textarea>
           <div v-if="form.attraction" class="flex mt-2">
-            <button v-for="(chatStyle, index) of chatStyles" class=" btn mr-2"
+            <button type="button" v-for="(chatStyle, index) of chatStyles" class=" btn mr-2"
               @click="onGenerateStyleIntroduce(chatStyle, index)" :title="chatStyle.remind">{{ chatStyle.name
               }}</button>
           </div>
