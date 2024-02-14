@@ -16,7 +16,7 @@ async function initPrepare() {
   if (!lc.currentUser()) {
     alert('未登录, 非法进入')
     lc.logout()
-    router.replace('/login')
+    router.replace('/')
   }
   const roles = await lc.currentUser().getRoles()
   const role = roles[0]
@@ -24,12 +24,12 @@ async function initPrepare() {
   if (!localStorage.getItem('attraction')) {
     alert('无景区关系, 非法进入')
     lc.logout()
-    router.replace('/login')
+    router.replace('/')
   }
   else if (!role) {
     alert('无角色, 非法进入')
     lc.logout()
-    router.replace('/login')
+    router.replace('/')
   }
 }
 
