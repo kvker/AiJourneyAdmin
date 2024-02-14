@@ -57,21 +57,15 @@ async function getCount(params = searchParams.value) {
   count.value = ret
 }
 
-function doReviewLnglat(data: Area) {
-  console.log('doReviewLnglat')
-  console.log(data.lnglat)
-  emit('lnglat', data.lnglat)
-}
-
 function doEdit(data: Area, index: number) {
   console.log('doEdit')
-  console.log(data, index)
+  // console.log(data, index)
   emit('edit', data)
 }
 
 async function doDelete(data: Area, index: number) {
   console.log('doDelete')
-  console.log(data, index)
+  // console.log(data, index)
   if (confirm('即将删除此景点，是否继续？')) {
     await lc.delete('Area', data.objectId)
     tableData.value.splice(index, 1)

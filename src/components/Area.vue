@@ -59,6 +59,7 @@ async function doUpdateList() {
 function onCellEdit(data: Area) {
   editVisible.value = true
   editData.value = data
+  console.log('选择景点: ' + data.name)
 }
 </script>
 
