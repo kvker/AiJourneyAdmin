@@ -50,16 +50,14 @@ function parseGlmStreamChunkJsons2JsonList(text: string, tempText: string): { js
     if (!text.trim()) continue
     text = (tempText + text).replace(/data:\s|\[DONE\]/g, '')
     try {
-      if (text.match(/^{.*}]}$/)) {
-        json = JSON.parse(text) as GLMResponseJSON
-        jsonList.push(json)
-        tempText = ''
-      } else {
-        tempText += text
-      }
+      // console.log(text.length)
+      json = JSON.parse(text) as GLMResponseJSON
+      jsonList.push(json)
+      tempText = ''
     } catch (error) {
+      tempText += text
       // console.log(text)
-      console.error(error)
+      // console.error(error)
     }
   }
   return { jsonList, tempText }
