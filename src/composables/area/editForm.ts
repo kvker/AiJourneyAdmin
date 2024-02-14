@@ -18,6 +18,7 @@ export function useEditForm(form: Ref<AreaForm>, {obj, props, emit, visible, lng
       }
       valNew.lnglat = ll2Lnglat(valNew.lnglat)
       form.value = valNew
+      console.log('当前表单景点: ' + form.value.name)
     }
   })
 
@@ -55,6 +56,7 @@ export function useEditForm(form: Ref<AreaForm>, {obj, props, emit, visible, lng
   }
 
   function onResetForm() {
+    debugger
     form.value = { ...obj }
   }
 
