@@ -56,7 +56,7 @@ export function useEditForm(form: Ref<AreaForm>, {obj, props, emit, visible, lng
   }
 
   function onResetForm() {
-    form.value = { ...obj }
+    // form.value = { ...obj }
   }
 
   async function onCheckLocation() {
