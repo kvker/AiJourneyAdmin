@@ -16,6 +16,7 @@ const styleDialog: Ref<HTMLDialogElement | undefined> = ref()
 const obj: AreaForm = {
   objectId: '',
   name: '',
+  innerName: '',
   introduce: '',
   lnglat: null,
   coverImageList: [],
