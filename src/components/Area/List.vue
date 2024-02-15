@@ -49,7 +49,9 @@ async function getList(params = searchParams.value) {
 }
 
 async function getCount(params = searchParams.value) {
+  const attraction = JSON.parse(localStorage.getItem('attraction') as string)
   const ret = await lc.count('Area', q => {
+    q.equalTo('attraction', lc.createObject('Attraction', attraction.objectId))
     if (params.name) {
       q.equalTo('name', params.name)
     }
@@ -106,7 +108,7 @@ function doChangePage(p: number) {
     </tbody>
   </table>
   <div class="join">
-    <button class="join-item btn" @click="doChangePage(n)" v-for="n in Math.ceil(count / size)">{{ n }}</button>
+    <button class="join-item btn" @click="doChangePage(n)" v-for="n in (~~(count / size) + 1)">{{ n }}</button>
   </div>
 </template>
 
