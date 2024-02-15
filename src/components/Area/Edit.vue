@@ -59,6 +59,8 @@ function onCloseStyleDialog() {
       <form @submit.prevent="onSubmit">
         <input class="input w-full max-w-xs mb-2" v-model.trim="form.name" placeholder="景区名字" required maxlength="100"
           minlength="2" />
+        <input class="input w-full max-w-xs mb-2" v-model.trim="form.innerName" placeholder="内部名字" required
+          maxlength="100" minlength="2" />
         <div class="w-full mb-2">
           <textarea class="textarea w-full mb-2" v-model="form.introduce" placeholder="介绍,如: 杭州西湖景区是......建议300字以上500字以下"
             required minlength="2" maxlength="1000"></textarea>
@@ -69,15 +71,17 @@ function onCloseStyleDialog() {
           </div>
         </div>
         <div class="flex items-center mb-2">
-          <button @click="onCheckLocation" class=" btn btn-neutral mr-2" type="button">添加定位</button>
+          <button @click="onCheckLocation" class=" btn btn-neutral mr-2 required" type="button">定位</button>
           <p v-if="form.lnglat">{{ form.lnglat.lng + ', ' + form.lnglat.lat }}</p>
         </div>
         <div class="flex items-center mb-2">
-          <button class="btn btn-secondary mr-2" type="button" @click="onAddCoverImage">新增图片</button>
+          <button class="btn btn-secondary mr-2" type="button" @click="onAddCoverImage">图片</button>
           <img class=" cursor-pointer object-contain h-12 w-12 mr-2" v-for="(file, index) of form.coverImageList"
             :src="file2BlobUrl(file)" @click="onDeleteCoverImage(index)" alt="preview-image">
         </div>
-        <button class="btn btn-primary" type="submit">{{ form.attraction ? '更新' : '创建' }}景点</button>
+        <div class=" text-right">
+          <button class="btn btn-primary ml-auto" type="submit">{{ form.attraction ? '更新' : '创建' }}景点</button>
+        </div>
       </form>
       <div class="modal-action">
         <form method="dialog">

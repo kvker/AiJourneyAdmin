@@ -24,6 +24,7 @@ type Area = {
   introduce: string
   lnglat: Lnglat | null
   name: string
+  innerName: string // 内部使用名
 }
 
 type AreaSearchParams = {

@@ -23,9 +23,7 @@ export function useEditForm(form: Ref<AreaForm>, {obj, props, emit, visible, lng
   })
 
   async function onSubmit() {
-
     const coverImageList = []
-
     let ret: AV.File | null = null
     for (const file of form.value.coverImageList) {
       if (typeof file === 'string') {
@@ -37,6 +35,7 @@ export function useEditForm(form: Ref<AreaForm>, {obj, props, emit, visible, lng
     }
     const uploadForm = {
       name: form.value.name,
+      innerName: form.value.innerName,
       introduce: form.value.introduce,
       lnglat: new lc.AV.GeoPoint({ latitude: form.value.lnglat!.lat, longitude: form.value.lnglat!.lng }),
       coverImageList,
@@ -63,10 +62,10 @@ export function useEditForm(form: Ref<AreaForm>, {obj, props, emit, visible, lng
     const name = form.value.name.trim()
     if (name && !form.value.lnglat) {
       // 根据数据名字查一下经纬度
-      const lnglat = await getGeocoder(name)
-      if (lnglat) {
-        form.value.lnglat = lnglat
-      }
+      // const lnglat = await getGeocoder(name)
+      // if (lnglat) {
+      //   form.value.lnglat = lnglat
+      // }
     }
     emit('showmap', form.value.lnglat)
   }
