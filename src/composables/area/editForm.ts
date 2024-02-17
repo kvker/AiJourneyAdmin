@@ -1,12 +1,11 @@
-import { watch } from 'vue'
+import { watch, inject } from 'vue'
 import type { Ref, ModelRef } from 'vue'
 import { chooseFile } from '@/services/fileHandler'
 import lc from '@/libs/lc'
 import type AV from 'leancloud-storage'
 import { ll2Lnglat, } from '@/services/map'
-import { unloading, loading } from '@/services/ui'
 
-export function useEditForm(form: Ref<AreaForm>, {obj, props, emit, visible, lnglat }: { obj: AreaForm, props: any, emit: any, visible: Ref<boolean>, lnglat: ModelRef<Lnglat> }) {
+export function useEditForm(form: Ref<AreaForm>, { uiStatus, obj, props, emit, visible, lnglat }: { uiStatus: Ref<UiStatusMap>, obj: AreaForm, props: any, emit: any, visible: Ref<boolean>, lnglat: ModelRef<Lnglat> }) {
 
   watch(lnglat, (val) => {
     form.value.lnglat = val as Lnglat
@@ -26,7 +25,7 @@ export function useEditForm(form: Ref<AreaForm>, {obj, props, emit, visible, lng
   async function onSubmit() {
     const coverImageList = []
     let ret: AV.File | null = null
-    loading()
+    uiStatus.value.isLoading = true
     for (const file of form.value.coverImageList) {
       if (typeof file === 'string') {
         coverImageList.push(file)
@@ -51,7 +50,7 @@ export function useEditForm(form: Ref<AreaForm>, {obj, props, emit, visible, lng
         attraction: lc.createObject('Attraction', attraction.objectId),
       })
     }
-    unloading()
+    uiStatus.value.isLoading = false
     visible.value = false
     emit('confim')
     onResetForm()

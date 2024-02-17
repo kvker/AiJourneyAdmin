@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { ref, provide } from 'vue'
+import { RouterView } from 'vue-router'
+
+import { UiStatusMapKey } from '@/services/provideKey'
+
+provide(UiStatusMapKey, ref({
+  isLoading: false,
+}))
 </script>
 
 <template>

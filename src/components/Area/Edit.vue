@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
-import type { Ref } from 'vue'
+import { ref, watch, inject } from 'vue'
+import type { Ref, } from 'vue'
 import { file2BlobUrl } from '@/services/fileHandler'
 import { useEditForm } from '@/composables/area/editForm'
 import { useEditStyle } from '@/composables/area/editStyle'
+import { UiStatusMapKey } from '@/services/provideKey'
+
+const uiStatus = inject(UiStatusMapKey) as Ref<UiStatusMap>
 
 const props = defineProps(['editData'])
 const emit = defineEmits(['showmap', 'confim'])
@@ -23,7 +26,7 @@ const obj: AreaForm = {
 }
 const form = ref<AreaForm>({ ...obj })
 
-const { onCheckLocation, onSubmit, onDeleteCoverImage, onAddCoverImage, onResetForm } = useEditForm(form, { obj, props, emit, visible, lnglat })
+const { onCheckLocation, onSubmit, onDeleteCoverImage, onAddCoverImage, onResetForm } = useEditForm(form, { uiStatus, obj, props, emit, visible, lnglat })
 const { chatStyles, styleVisible, propmtObject, currentStyleIntroduce, onUseStyleIntroduce, onUpdateStyleIntroduce, onGenerateVoice,
   onGenerateStyleIntroduce, areaIntroduceQueriable } = useEditStyle(form)
 
@@ -81,7 +84,10 @@ function onCloseStyleDialog() {
             :src="file2BlobUrl(file)" @click="onDeleteCoverImage(index)" alt="preview-image">
         </div>
         <div class=" text-right">
-          <button class="btn btn-primary ml-auto" type="submit">{{ form.attraction ? '更新' : '创建' }}景点</button>
+          <button class="btn btn-primary ml-auto" type="submit">
+            <span v-if="uiStatus.isLoading" class="loading loading-spinner"></span>
+            {{ form.attraction ? '更新' : '创建' }}景点
+          </button>
         </div>
       </form>
       <div class="modal-action">
