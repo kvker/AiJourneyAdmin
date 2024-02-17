@@ -1,3 +1,8 @@
+const dialog = document.createElement('dialog')
+dialog.id = 'serviceDialog'
+dialog.style.cssText = 'fixed flex aic jcc w-100 h-100'
+document.body.append(dialog)
+
 export const toast = (text: string, type: 'success' | 'info' = 'success') => {
   const clean = () => {
     document.querySelectorAll('.toast').forEach(item => {
@@ -17,10 +22,15 @@ export const toast = (text: string, type: 'success' | 'info' = 'success') => {
 }
 
 export const loading = (text = '加载中') => {
-  let loadingHtml = `<span class="loading loading-bars loading-lg">${text}</span>`
-  document.body.insertAdjacentHTML('beforeend', loadingHtml)
+  let loadingHtml = `<span class="loading loading-dots loading-lg">${text}</span>`
+  dialog.insertAdjacentHTML('beforeend', loadingHtml)
+  dialog.showModal()
 }
 
 export const unloading = () => {
-  document.querySelector('.loading')?.remove()
+  return new Promise<boolean>(s => {
+    dialog.querySelector('.loading')?.remove()
+    dialog.close()
+    s(true)
+  })
 }

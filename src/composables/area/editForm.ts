@@ -3,7 +3,8 @@ import type { Ref, ModelRef } from 'vue'
 import { chooseFile } from '@/services/fileHandler'
 import lc from '@/libs/lc'
 import type AV from 'leancloud-storage'
-import { ll2Lnglat, getGeocoder } from '@/services/map'
+import { ll2Lnglat, } from '@/services/map'
+import { unloading, loading } from '@/services/ui'
 
 export function useEditForm(form: Ref<AreaForm>, {obj, props, emit, visible, lnglat }: { obj: AreaForm, props: any, emit: any, visible: Ref<boolean>, lnglat: ModelRef<Lnglat> }) {
 
@@ -25,6 +26,7 @@ export function useEditForm(form: Ref<AreaForm>, {obj, props, emit, visible, lng
   async function onSubmit() {
     const coverImageList = []
     let ret: AV.File | null = null
+    loading()
     for (const file of form.value.coverImageList) {
       if (typeof file === 'string') {
         coverImageList.push(file)
@@ -49,6 +51,7 @@ export function useEditForm(form: Ref<AreaForm>, {obj, props, emit, visible, lng
         attraction: lc.createObject('Attraction', attraction.objectId),
       })
     }
+    unloading()
     visible.value = false
     emit('confim')
     onResetForm()

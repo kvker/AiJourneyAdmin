@@ -2,9 +2,17 @@
 import { onMounted } from 'vue'
 import * as echarts from 'echarts'
 
+import { loading, unloading } from '@/services/ui'
+
 onMounted(() => {
   chart1()
   chart2()
+
+  // loading()
+
+  // setTimeout(() => {
+  //   unloading()
+  // }, 2000)
 })
 
 function chart1() {
