@@ -12,4 +12,9 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 
+app.config.errorHandler = (err, instance, info) => {
+  // 处理错误，例如：报告给一个服务
+  console.log(instance)
+}
+
 app.mount('#app')
