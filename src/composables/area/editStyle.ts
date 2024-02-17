@@ -6,7 +6,7 @@ import { doCompletions } from '@/services/llm'
 import { text2Voice } from '@/services/fileHandler'
 import { toast, loading, unloading } from '@/services/ui'
 
-export function useEditStyle(form: Ref<AreaForm>) {
+export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<UiStatusMap> }) {
   // 聊天风格区域
   const chatStylesQueriable = ref<AV.Queriable[]>([])
   const chatStyles = computed(() => {
@@ -32,6 +32,7 @@ export function useEditStyle(form: Ref<AreaForm>) {
   async function onGenerateStyleIntroduce(chatStyle: ChatStyle, index: number) {
     // console.log(chatStyle)
     console.log('当前景点: ' + form.value.name)
+    currentStyleIntroduce.value = ''
     styleVisible.value = true
     const areaQueriable = lc.createObject('Area', form.value.objectId)
     const chatStyleQueriable = chatStylesQueriable.value[index]
@@ -50,7 +51,6 @@ export function useEditStyle(form: Ref<AreaForm>) {
       areaIntroduceQueriable.value.set('area', areaQueriable)
       areaIntroduceQueriable.value.set('user', lc.currentUser())
       doUpdatePromptObject()
-      onUpdateStyleIntroduce()
     }
   }
 
@@ -89,13 +89,13 @@ export function useEditStyle(form: Ref<AreaForm>) {
   async function onGenerateVoice() {
     // console.log('onGenerateVoice')
     if (confirm('生成语音会覆盖原有语音, 是否继续?')) {
-      loading('生成语音中...')
+      uiStatus.value.isLoading = true
       areaIntroduceQueriable.value!.set('voice', '')
       const ret = await text2Voice(currentStyleIntroduce.value, currentChatStyle.value.voiceType)
       console.log(ret.url)
       areaIntroduceQueriable.value!.set('voice', ret.url)
       await areaIntroduceQueriable.value!.save()
-      unloading()
+      uiStatus.value.isLoading = false
       toast('生成语音完成')
     }
   }

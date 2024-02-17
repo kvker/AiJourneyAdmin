@@ -28,7 +28,7 @@ const form = ref<AreaForm>({ ...obj })
 
 const { onCheckLocation, onSubmit, onDeleteCoverImage, onAddCoverImage, onResetForm } = useEditForm(form, { uiStatus, obj, props, emit, visible, lnglat })
 const { chatStyles, styleVisible, propmtObject, currentStyleIntroduce, onUseStyleIntroduce, onUpdateStyleIntroduce, onGenerateVoice,
-  onGenerateStyleIntroduce, areaIntroduceQueriable } = useEditStyle(form)
+  onGenerateStyleIntroduce, areaIntroduceQueriable } = useEditStyle(form, { uiStatus })
 
 watch(visible, newValue => {
   if (newValue) {
@@ -114,7 +114,11 @@ function onCloseStyleDialog() {
         <button @click="() => onUpdateStyleIntroduce()" class="btn btn-secondary mr-4">更新描述</button>
       </div>
       <div class="flex mt-2 items-center">
-        <button @click="onGenerateVoice" class="btn btn-accent mr-4">生成语音</button>
+        <!-- <button @click="onGenerateVoice" class="btn btn-accent mr-4">生成语音</button> -->
+        <button @click="onGenerateVoice" class="btn btn-accent mr-4">
+          <span v-if="uiStatus.isLoading" class="loading loading-spinner"></span>
+          生成语音
+        </button>
         <audio v-if="areaIntroduceQueriable && areaIntroduceQueriable.get('voice')"
           :src="areaIntroduceQueriable.get('voice')" class=" h-8" controls></audio>
       </div>
