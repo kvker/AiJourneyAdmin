@@ -91,7 +91,7 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
 
   async function onGenerateVoice() {
     // console.log('onGenerateVoice')
-    if (confirm('生成语音会覆盖原有语音, 是否继续?')) {
+    const generate = async () => {
       uiStatus.value.isLoading = true
       areaIntroduceQueriable.value!.set('voice', '')
       const ret = await text2Voice(currentStyleIntroduce.value, currentChatStyle.value.voiceType)
@@ -100,6 +100,11 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
       await areaIntroduceQueriable.value!.save()
       uiStatus.value.isLoading = false
       toast('生成语音完成')
+    }
+    if (areaIntroduceQueriable.value!.get('voice') && confirm('生成语音会覆盖原有语音, 是否继续?')) {
+      generate()
+    } else {
+      generate()
     }
   }
 
