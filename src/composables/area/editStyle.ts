@@ -21,6 +21,8 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
     return chatStyle
   })
 
+  const styleUiStatus = ref({ isUpdating: false })
+
   async function getChatStyle() {
     const cs = await lc.read('ChatStyle', q => {
       q.ascending('sort')
@@ -65,7 +67,7 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
     if (areaIntroduceQueriable.value) {
       areaIntroduceQueriable.value.set('introduce', currentStyleIntroduce.value)
       await areaIntroduceQueriable.value.save()
-      toast('更新完成')
+      alert('更新完成')
     }
 
   }
@@ -73,6 +75,7 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
   function onUpdateStyleIntroduce() {
     // console.log('onUpdateStyleIntroduce')
     // console.log(areaIntroduceQueriable.value)
+    styleUiStatus.value.isUpdating = true
     currentStyleIntroduce.value = ''
     const content = `${propmtObject.value.previousPrompt}${form.value.introduce}${propmtObject.value.tailPrompt}`
     // console.log(content)
@@ -83,6 +86,7 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
     }, (result) => {
       console.log(result)
       toast('完成输出', 'info')
+      styleUiStatus.value.isUpdating = false
     })
   }
 
@@ -103,6 +107,7 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
   return {
     chatStyles,
     styleVisible,
+    styleUiStatus,
     propmtObject,
     currentChatStyle,
     currentStyleIntroduce,

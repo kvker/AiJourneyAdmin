@@ -27,7 +27,7 @@ const obj: AreaForm = {
 const form = ref<AreaForm>({ ...obj })
 
 const { onCheckLocation, onSubmit, onDeleteCoverImage, onAddCoverImage, onResetForm } = useEditForm(form, { uiStatus, obj, props, emit, visible, lnglat })
-const { chatStyles, styleVisible, propmtObject, currentStyleIntroduce, onUseStyleIntroduce, onUpdateStyleIntroduce, onGenerateVoice,
+const { chatStyles, styleUiStatus, styleVisible, propmtObject, currentStyleIntroduce, onUseStyleIntroduce, onUpdateStyleIntroduce, onGenerateVoice,
   onGenerateStyleIntroduce, areaIntroduceQueriable } = useEditStyle(form, { uiStatus })
 
 watch(visible, newValue => {
@@ -97,7 +97,7 @@ function onCloseStyleDialog() {
     </div>
   </dialog>
   <dialog ref="styleDialog" class="modal" @close="onCloseStyleDialog">
-    <div class="modal-box">
+    <div class="modal-box relative">
       <h3 class="font-bold text-lg mb-2">个性化景点介绍</h3>
       <div class=" flex" v-if="propmtObject.previousPrompt">
         <textarea class=" mr-2 textarea f1" v-model.trim="propmtObject.previousPrompt"
@@ -110,7 +110,11 @@ function onCloseStyleDialog() {
         placeholder="这里显示的是AI协助生成的各类有趣的景点介绍语录, 来自基础描述" rows="12"></textarea>
       <div class="flex mt-2">
         <button @click="onUseStyleIntroduce" class=" btn btn-primary mr-4">应用描述</button>
-        <button @click="() => onUpdateStyleIntroduce()" class="btn btn-secondary mr-4">更新描述</button>
+        <!-- <button @click="() => onUpdateStyleIntroduce()" class="btn btn-secondary mr-4">更新描述</button> -->
+        <button class="btn btn-secondary mr-4" @click="onUpdateStyleIntroduce">
+          <span v-if="styleUiStatus.isUpdating" class="loading loading-spinner"></span>
+          更新描述
+        </button>
       </div>
       <div class="flex mt-2 items-center">
         <!-- <button @click="onGenerateVoice" class="btn btn-accent mr-4">生成语音</button> -->
