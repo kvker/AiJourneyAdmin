@@ -74,7 +74,7 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
   function onUpdateStyleIntroduce() {
     // console.log('onUpdateStyleIntroduce')
     // console.log(areaIntroduceQueriable.value)
-    styleUiStatus.value.isUpdating = true
+    onShowStyleLoading()
     currentStyleIntroduce.value = ''
     const content = `${propmtObject.value.previousPrompt}${form.value.introduce}${propmtObject.value.tailPrompt}`
     // console.log(content)
@@ -85,7 +85,7 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
     }, (result) => {
       console.log(result)
       toast('完成输出', 'info')
-      styleUiStatus.value.isUpdating = false
+      onHideStyleLoading()
     })
   }
 
@@ -104,8 +104,18 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
   }
 
   function onAbortCompletions() {
-    styleUiStatus.value.isUpdating = false
+    onHideStyleLoading()
     onAbortFetch()
+  }
+
+  // UI Control
+  function onShowStyleLoading() {
+    styleUiStatus.value.isUpdating = true
+  }
+
+
+  function onHideStyleLoading() {
+    styleUiStatus.value.isUpdating = false
   }
 
   return {
