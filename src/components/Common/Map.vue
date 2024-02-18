@@ -4,6 +4,7 @@ import type { Ref } from 'vue'
 
 let map: any
   , marker: any
+  , lo: any
 const emit = defineEmits(['choose', 'close'])
 const props = defineProps({
   visible: Boolean,
@@ -19,23 +20,43 @@ onMounted(() => {
   // 地图
   map = new T.Map('mapDiv')
   map.addEventListener("click", onMapClick)
+  lo = new T.Geolocation()
 })
 
 watch(() => props.visible, (val) => {
   if (val === true) {
     mapDialog.value!.showModal()
     loading.value = true
-    navigator.geolocation.getCurrentPosition(function (position) {
-      const { latitude, longitude } = position.coords
-      map.centerAndZoom(new T.LngLat(longitude, latitude), 16)
-      if (props.defaultLnglat) {
-        addMarker(props.defaultLnglat)
+    lo.getCurrentPosition(function (this: any, e: any) {
+      if (this.getStatus() == 0) {
+        map.centerAndZoom(e.lnglat, 15)
+        if (props.defaultLnglat) {
+          addMarker(props.defaultLnglat)
+        }
+      }
+      if (this.getStatus() == 1) {
+        map.centerAndZoom(e.lnglat, 15)
+        if (props.defaultLnglat) {
+          addMarker(props.defaultLnglat)
+        }
       }
       loading.value = false
-    }, function (error) {
-      console.error(error)
-      loading.value = false
+    }, {
+      enableHighAccuracy: true,
+      maximumAge: 10000,
+      timeout: 60000,
     })
+    // navigator.geolocation.getCurrentPosition(function (position) {
+    //   const { latitude, longitude } = position.coords
+    //   map.centerAndZoom(new T.LngLat(longitude, latitude), 16)
+    //   if (props.defaultLnglat) {
+    //     addMarker(props.defaultLnglat)
+    //   }
+    //   loading.value = false
+    // }, function (error) {
+    //   console.error(error)
+    //   loading.value = false
+    // })
   }
 })
 
