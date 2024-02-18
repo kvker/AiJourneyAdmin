@@ -26,7 +26,7 @@ const obj: AreaForm = {
 }
 const form = ref<AreaForm>({ ...obj })
 
-const { onCheckLocation, onSubmit, onDeleteCoverImage, onAddCoverImage, onResetForm } = useEditForm(form, { uiStatus, obj, props, emit, visible, lnglat })
+const { onCheckLocation, onSubmit, onDeleteCoverImage, onAddCoverImage } = useEditForm(form, { uiStatus, obj, props, emit, visible, lnglat })
 const { chatStyles, styleUiStatus, styleVisible, propmtObject, currentStyleIntroduce, onUseStyleIntroduce, onUpdateStyleIntroduce, onGenerateVoice,
   onGenerateStyleIntroduce, areaIntroduceQueriable } = useEditStyle(form, { uiStatus })
 
