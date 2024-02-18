@@ -28,7 +28,7 @@ const form = ref<AreaForm>({ ...obj })
 
 const { onCheckLocation, onSubmit, onDeleteCoverImage, onAddCoverImage } = useEditForm(form, { uiStatus, obj, props, emit, visible, lnglat })
 const { chatStyles, styleUiStatus, styleVisible, propmtObject, currentStyleIntroduce, onUseStyleIntroduce, onUpdateStyleIntroduce, onGenerateVoice,
-  onGenerateStyleIntroduce, areaIntroduceQueriable } = useEditStyle(form, { uiStatus })
+  onGenerateStyleIntroduce, areaIntroduceQueriable, onAbortCompletions, } = useEditStyle(form, { uiStatus })
 
 watch(visible, newValue => {
   if (newValue) {
@@ -114,6 +114,7 @@ function onCloseStyleDialog() {
           <span v-if="styleUiStatus.isUpdating" class="loading loading-spinner"></span>
           更新描述
         </button>
+        <button @click="onAbortCompletions" class=" btn btn-ghost mr-4">停止生成</button>
       </div>
       <div class="flex mt-2 items-center">
         <button @click="onGenerateVoice" class="btn btn-accent mr-4">

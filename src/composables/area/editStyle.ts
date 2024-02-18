@@ -2,9 +2,9 @@ import { ref, computed } from 'vue'
 import type { Ref } from 'vue'
 import lc from '@/libs/lc';
 import type AV from 'leancloud-storage'
-import { doCompletions } from '@/services/llm'
+import { onCompletions, onAbortFetch } from '@/services/llm'
 import { text2Voice } from '@/services/fileHandler'
-import { toast, loading, unloading } from '@/services/ui'
+import { toast, } from '@/services/ui'
 
 export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<UiStatusMap> }) {
   // 聊天风格区域
@@ -69,7 +69,6 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
       await areaIntroduceQueriable.value.save()
       alert('更新完成')
     }
-
   }
 
   function onUpdateStyleIntroduce() {
@@ -81,7 +80,7 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
     // console.log(content)
     // debugger
     // return
-    doCompletions(content, result => {
+    onCompletions(content, result => {
       currentStyleIntroduce.value = result
     }, (result) => {
       console.log(result)
@@ -104,6 +103,11 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
     }
   }
 
+  function onAbortCompletions() {
+    styleUiStatus.value.isUpdating = false
+    onAbortFetch()
+  }
+
   return {
     chatStyles,
     styleVisible,
@@ -116,5 +120,6 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
     onUseStyleIntroduce,
     onGenerateVoice,
     areaIntroduceQueriable,
+    onAbortCompletions,
   }
 }

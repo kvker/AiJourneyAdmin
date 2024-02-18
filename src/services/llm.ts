@@ -4,7 +4,7 @@ type GLMResponseJSON = { "id": string, "created": number, "model": string, "choi
 
 type LLMCB = (result: string) => void
 
-export async function doCompletions(content: string, SseCB: LLMCB, doneCB?: LLMCB) {
+export async function onCompletions(content: string, SseCB: LLMCB, doneCB?: LLMCB) {
   const response = await doFetchStream(content)
   if (response.status !== 200) {
     return response.json().then((json: Object) => Promise.reject(json))
@@ -12,6 +12,7 @@ export async function doCompletions(content: string, SseCB: LLMCB, doneCB?: LLMC
   doParseStreamChunk(response, SseCB, doneCB)
 }
 
+let controller: AbortController
 async function doFetchStream(content: string) {
   const raw = JSON.stringify({
     messages: [
@@ -22,7 +23,11 @@ async function doFetchStream(content: string) {
     ]
   })
 
+  controller = new AbortController()
+  const signal = controller.signal
+
   const response = await fetch(serverUrl + "/api/chat/sse", {
+    signal,
     method: 'POST',
     headers: {
       "Content-Type": "application/json",
@@ -32,6 +37,13 @@ async function doFetchStream(content: string) {
     body: raw,
   })
   return response
+}
+
+export function onAbortFetch() {
+  if (controller) {
+    console.log('abort fetch')
+    controller.abort()
+  }
 }
 
 
