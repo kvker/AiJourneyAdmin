@@ -110,14 +110,12 @@ function onCloseStyleDialog() {
         placeholder="这里显示的是AI协助生成的各类有趣的景点介绍语录, 来自基础描述" rows="12"></textarea>
       <div class="flex mt-2">
         <button @click="onUseStyleIntroduce" class=" btn btn-primary mr-4">应用描述</button>
-        <!-- <button @click="() => onUpdateStyleIntroduce()" class="btn btn-secondary mr-4">更新描述</button> -->
         <button class="btn btn-secondary mr-4" @click="onUpdateStyleIntroduce">
           <span v-if="styleUiStatus.isUpdating" class="loading loading-spinner"></span>
           更新描述
         </button>
       </div>
       <div class="flex mt-2 items-center">
-        <!-- <button @click="onGenerateVoice" class="btn btn-accent mr-4">生成语音</button> -->
         <button @click="onGenerateVoice" class="btn btn-accent mr-4">
           <span v-if="uiStatus.isLoading" class="loading loading-spinner"></span>
           生成语音
