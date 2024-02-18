@@ -19,6 +19,8 @@ export function useEditForm(form: Ref<AreaForm>, { uiStatus, obj, props, emit, v
       valNew.lnglat = ll2Lnglat(valNew.lnglat)
       form.value = valNew
       console.log('当前表单景点: ' + form.value.name)
+    } else {
+      onResetForm()
     }
   })
 
@@ -52,12 +54,12 @@ export function useEditForm(form: Ref<AreaForm>, { uiStatus, obj, props, emit, v
     }
     uiStatus.value.isLoading = false
     visible.value = false
-    emit('confim')
+    emit('confirm')
     onResetForm()
   }
 
   function onResetForm() {
-    // form.value = { ...obj }
+    form.value = { ...obj }
   }
 
   async function onCheckLocation() {

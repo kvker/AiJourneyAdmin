@@ -9,7 +9,7 @@ import { UiStatusMapKey } from '@/services/provideKey'
 const uiStatus = inject(UiStatusMapKey) as Ref<UiStatusMap>
 
 const props = defineProps(['editData'])
-const emit = defineEmits(['showmap', 'confim'])
+const emit = defineEmits(['showmap', 'confirm'])
 const visible = defineModel<boolean>('visible', { required: true })
 const lnglat = defineModel<Lnglat>('lnglat', { required: true })
 
@@ -48,7 +48,6 @@ watch(styleVisible, newValue => {
 
 function onCloseEditDialog() {
   visible.value = false
-  onResetForm()
 }
 
 function onCloseStyleDialog() {

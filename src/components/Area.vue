@@ -13,6 +13,7 @@ const searchParams = ref<AreaSearchParams>({ name: '' })
 provide('searchParams', searchParams)
 
 function onAdd() {
+  editData.value = null
   editVisible.value = true
 }
 
@@ -66,7 +67,7 @@ function onCellEdit(data: Area) {
 <template>
   <Query @add="onAdd" />
   <List @lnglat="onReviewLnglat" @edit="onCellEdit" />
-  <Edit v-model:visible="editVisible" v-model:lnglat="currentLnglat" :editData="editData" @confim="onEditConfirm"
+  <Edit v-model:visible="editVisible" v-model:lnglat="currentLnglat" :editData="editData" @confirm="onEditConfirm"
     @showmap="onShowMap" />
   <Map :visible="dialogMapVisible" :defaultLnglat="defaultLnglat" @choose="doChooseLnglat" @close="onCloseMap" />
 </template>
