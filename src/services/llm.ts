@@ -1,19 +1,19 @@
 import { serverUrl } from '@/services/config'
 
-type GLMResponseJSON = { "id": string, "created": number, "model": string, "choices": { "index": number, "finish_reason"?: "stop", "delta": { "role": "assistant", "content": string } }[], "usage"?: { "prompt_tokens": number, "completion_tokens": number, "total_tokens": number } }
+type GlmResponseJson = { "id": string, "created": number, "model": string, "choices": { "index": number, "finish_reason"?: "stop", "delta": { "role": "assistant", "content": string } }[], "usage"?: { "prompt_tokens": number, "completion_tokens": number, "total_tokens": number } }
 
-type LLMCB = (result: string) => void
+type LlmCb = (result: string) => void
 
-export async function onCompletions(content: string, SseCB: LLMCB, doneCB?: LLMCB) {
-  const response = await doFetchStream(content)
+export async function onCompletions(content: string, SseCB: LlmCb, doneCb?: LlmCb) {
+  const response = await onFetchStream(content)
   if (response.status !== 200) {
     return response.json().then((json: Object) => Promise.reject(json))
   }
-  doParseStreamChunk(response, SseCB, doneCB)
+  onParseStreamChunk(response, SseCB, doneCb)
 }
 
 let controller: AbortController
-async function doFetchStream(content: string) {
+async function onFetchStream(content: string) {
   const raw = JSON.stringify({
     messages: [
       {
@@ -53,17 +53,17 @@ export function onAbortFetch() {
  * @param tempText 上次未能 parse 的尾部字符
  * @returns {jsonList, tempText} 其中的 tempText 是未能parse的字符串, 需要追加到下一次parse
  */
-function parseGlmStreamChunkJsons2JsonList(text: string, tempText: string): { jsonList: GLMResponseJSON[], tempText: string } {
+function onParseGlmStreamChunkJsons2JsonList(text: string, tempText: string): { jsonList: GlmResponseJson[], tempText: string } {
   // console.log(text)
-  let json: GLMResponseJSON
-  let jsonList: GLMResponseJSON[] = []
+  let json: GlmResponseJson
+  let jsonList: GlmResponseJson[] = []
   let textList = text.split('\n\n')
   for (text of textList) {
     if (!text.trim()) continue
     text = (tempText + text).replace(/data:\s|\[DONE\]/g, '')
     try {
       // console.log(text.length)
-      json = JSON.parse(text) as GLMResponseJSON
+      json = JSON.parse(text) as GlmResponseJson
       jsonList.push(json)
       tempText = ''
     } catch (error) {
@@ -75,12 +75,12 @@ function parseGlmStreamChunkJsons2JsonList(text: string, tempText: string): { js
   return { jsonList, tempText }
 }
 
-async function doParseStreamChunk(response: Response, sseCB: LLMCB, doneCB?: LLMCB) {
+async function onParseStreamChunk(response: Response, sseCB: LlmCb, doneCb?: LlmCb) {
   const reader = response.body!.getReader()
   const decoder = new TextDecoder('utf-8')
   let value: Uint8Array | undefined
   let done = false
-  let parseRet: { jsonList: GLMResponseJSON[], tempText: string }
+  let parseRet: { jsonList: GlmResponseJson[], tempText: string }
   let text = ''
   let content = ''
   let resultText = ''
@@ -93,7 +93,7 @@ async function doParseStreamChunk(response: Response, sseCB: LLMCB, doneCB?: LLM
     // console.log(value)
     if (value) {
       text = decoder.decode(value)
-      parseRet = parseGlmStreamChunkJsons2JsonList(text, tempText)
+      parseRet = onParseGlmStreamChunkJsons2JsonList(text, tempText)
       tempText = parseRet.tempText
       for (const json of parseRet.jsonList) {
         content = json.choices[0].delta.content
@@ -108,7 +108,7 @@ async function doParseStreamChunk(response: Response, sseCB: LLMCB, doneCB?: LLM
     }
     if (done) {
       console.log('done!!!')
-      doneCB && doneCB(resultText)
+      doneCb && doneCb(resultText)
       break
     }
   }
