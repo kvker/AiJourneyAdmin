@@ -122,12 +122,12 @@ const onPreview = (item: Area) => {
     <button class="join-item btn" @click="doChangePage(n)" v-for="n in (~~(count / size) + 1)">{{ n }}</button>
   </div>
   <dialog ref="previewDialog">
-    <div class="carousel rounded-box">
-      <div class="carousel-item flex-1" v-for="(src, index) of coverImageList" :key="`coverImageList${index}`">
-        <img class=" object-contain" :src="src" alt="Burger" />
+    <div class="carousel carousel-vertical rounded-box" style="height: 80vh;">
+      <div class="carousel-item h-full" v-for="(src, index) of coverImageList" :key="`coverImageList${index}`">
+        <img class="mx-auto" :src="src" alt="Burger" />
       </div>
     </div>
-    <form method="dialog" class="text-center">
+    <form method="dialog" class="text-center mb-2">
       <button class=" btn btn-primary w-24">关闭</button>
     </form>
   </dialog>
