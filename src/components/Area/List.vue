@@ -96,8 +96,8 @@ function doChangePage(p: number) {
         <td>{{ item.name }}</td>
         <td>
           <div class="flex items-center">
-            <img class=" w-10 h-10 mr-2" v-for="(imgItem, index) of item.coverImageList" :key="imgItem" :src="imgItem"
-              alt="preview-img" />
+            <img class=" w-10 h-10 mr-2" v-for="(imgItem, index) of item.coverImageList" :key="imgItem"
+              :src="imgItem + '?imageView2/2/h/200'" alt="preview-img" />
           </div>
         </td>
         <td>
