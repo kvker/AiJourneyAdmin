@@ -60,3 +60,20 @@ type ToiletSearchParams = {
 type ToiletForm = Omit<Toilet, 'coverImageList'> & {
   coverImageList: File[]
 }
+
+type Attention = {
+  objectId: string
+  attraction?: AV.Object
+  coverImageList: url[]
+  introduce: string
+  lnglat: Lnglat | null
+  name: string
+}
+
+type AttentionSearchParams = {
+  name: string
+}
+
+type AttentionForm = Omit<Attention, 'coverImageList'> & {
+  coverImageList: File[]
+}

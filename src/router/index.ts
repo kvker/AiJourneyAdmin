@@ -51,6 +51,11 @@ const router = createRouter({
           component: () => import('@/components/Area.vue')
         },
         {
+          path: 'attention',
+          name: 'home-attention',
+          component: () => import('@/components/Attention.vue')
+        },
+        {
           path: 'toilet',
           name: 'home-toilet',
           component: () => import('@/components/Toilet.vue')

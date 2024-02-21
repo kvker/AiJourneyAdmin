@@ -48,6 +48,9 @@ const menu = [{
   path: '/toilet',
   name: '厕所管理'
 }, {
+  path: '/attention',
+  name: '注意事项'
+}, {
   path: '/user',
   name: '人员管理'
 }, {
