@@ -14,7 +14,7 @@ app.use(router)
 
 app.config.errorHandler = (err, instance, info) => {
   // 处理错误，例如：报告给一个服务
-  console.log(instance)
+  console.log(err, instance, info)
 }
 
 app.mount('#app')
