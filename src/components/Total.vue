@@ -1,8 +1,28 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue'
-import * as echarts from 'echarts'
-
-import { loading, unloading } from '@/services/ui'
+import * as echarts from 'echarts/core'
+import { LineChart } from 'echarts/charts'
+import {
+  TitleComponent,
+  TooltipComponent,
+  GridComponent,
+  LegendComponent,
+  DatasetComponent
+} from 'echarts/components'
+import {
+  CanvasRenderer
+} from 'echarts/renderers'
+echarts.use(
+  [
+    LineChart,
+    TitleComponent,
+    TooltipComponent,
+    GridComponent,
+    LegendComponent,
+    DatasetComponent,
+    CanvasRenderer
+  ]
+)
 
 onMounted(() => {
   chart1()
