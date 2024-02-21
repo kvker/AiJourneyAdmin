@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch, inject } from 'vue'
+import { ref, watch, inject, nextTick } from 'vue'
 import type { Ref } from 'vue'
 import lc from '@/libs/lc'
 
@@ -78,6 +78,17 @@ function doChangePage(p: number) {
   // console.log(p)
   page.value = p - 1 // 这个p是从1开始
 }
+
+const coverImageList: Ref<string[]> = ref([])
+const previewDialog: Ref<HTMLDialogElement | undefined> = ref()
+
+const onPreview = (item: Area) => {
+  coverImageList.value = []
+  nextTick(() => {
+    coverImageList.value = item.coverImageList
+    previewDialog.value?.showModal()
+  })
+}
 </script>
 
 <template>
@@ -95,7 +106,7 @@ function doChangePage(p: number) {
         <th>{{ index + 1 }}</th>
         <td>{{ item.name }}</td>
         <td>
-          <div class="flex items-center">
+          <div class="flex items-center" @click="onPreview(item)">
             <img class=" w-10 h-10 mr-2" v-for="(imgItem, index) of item.coverImageList" :key="imgItem"
               :src="imgItem + '?imageView2/2/h/200'" alt="preview-img" />
           </div>
@@ -110,6 +121,16 @@ function doChangePage(p: number) {
   <div class="join">
     <button class="join-item btn" @click="doChangePage(n)" v-for="n in (~~(count / size) + 1)">{{ n }}</button>
   </div>
+  <dialog ref="previewDialog">
+    <div class="carousel rounded-box">
+      <div class="carousel-item flex-1" v-for="(src, index) of coverImageList" :key="`coverImageList${index}`">
+        <img class=" object-contain" :src="src" alt="Burger" />
+      </div>
+    </div>
+    <form method="dialog" class="text-center">
+      <button class=" btn btn-primary w-24">关闭</button>
+    </form>
+  </dialog>
 </template>
 
 <style scoped></style>
