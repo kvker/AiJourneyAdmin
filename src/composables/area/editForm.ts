@@ -43,19 +43,24 @@ export function useEditForm(form: Ref<AreaForm>, { uiStatus, obj, props, emit, v
       lnglat: new lc.AV.GeoPoint({ latitude: form.value.lnglat!.lat, longitude: form.value.lnglat!.lng }),
       coverImageList,
     }
-    if (form.value.attraction) {
-      await lc.update('Area', form.value.objectId, uploadForm)
-    } else {
-      const attraction = JSON.parse(localStorage.getItem('attraction') as string)
-      await lc.create('Area', {
-        ...uploadForm,
-        attraction: lc.createObject('Attraction', attraction.objectId),
-      })
+    try {
+      if (form.value.attraction) {
+        await lc.update('Area', form.value.objectId, uploadForm)
+      } else {
+        const attraction = JSON.parse(localStorage.getItem('attraction') as string)
+        await lc.create('Area', {
+          ...uploadForm,
+          attraction: lc.createObject('Attraction', attraction.objectId),
+        })
+      }
+      visible.value = false
+      emit('confirm')
+      onResetForm()
+    } catch (error) {
+      console.error(error)
+    } finally {
+      uiStatus.value.isLoading = false
     }
-    uiStatus.value.isLoading = false
-    visible.value = false
-    emit('confirm')
-    onResetForm()
   }
 
   function onResetForm() {
