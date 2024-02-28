@@ -4,8 +4,14 @@ type GlmResponseJson = { "id": string, "created": number, "model": string, "choi
 
 type LlmCb = (result: string) => void
 
-export async function onCompletions(content: string, SseCB: LlmCb, doneCb?: LlmCb) {
-  const response = await onFetchStream(content)
+export async function onCompletions(content: string | GLMMessage[], SseCB: LlmCb, doneCb?: LlmCb) {
+  let messages = []
+  if (content instanceof Array) {
+    messages = content
+  } else {
+    messages = [{ content, role: 'user' }] as GLMMessage[]
+  }
+  const response = await onFetchStream(messages)
   if (response.status !== 200) {
     return response.json().then((json: Object) => Promise.reject(json))
   }
@@ -13,14 +19,9 @@ export async function onCompletions(content: string, SseCB: LlmCb, doneCb?: LlmC
 }
 
 let controller: AbortController
-async function onFetchStream(content: string) {
+async function onFetchStream(messages: GLMMessage[]) {
   const raw = JSON.stringify({
-    messages: [
-      {
-        role: "user",
-        content,
-      }
-    ]
+    messages,
   })
 
   controller = new AbortController()
