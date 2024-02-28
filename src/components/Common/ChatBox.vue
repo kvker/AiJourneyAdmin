@@ -41,17 +41,22 @@ const onChat = () => {
 const onSend = () => {
   const content = textarea.value!.value.trim()
   if (content) {
+    onCleanTextarea()
     onCreateChat(content, 'user')
     onChat()
   }
+}
+
+const onCleanTextarea = () => {
+  textarea.value!.value = ''
 }
 </script>
 
 <template>
   <div class=" fixed bottom-20 right-20">
-    <div class="fab w-24 h-24 rounded-full border-2 font-bold text-4xl flex justify-center items-center cursor-pointer"
+    <div class="fab w-24 h-24 rounded-full border-2 font-bold text-4xl flex justify-center items-center cursor-pointer shadow-2xl"
       v-show="!chatBoxShow" @click="onToggleExpand">展开</div>
-    <div class="chat-box bg-white" v-show="chatBoxShow">
+    <div class="chat-box bg-white shadow-2xl p-4" v-show="chatBoxShow">
       <div class="chat-list-box w-full">
         <div class="chat chat-start">
           <div class="chat-bubble chat-bubble-accent">你好啊，有什么需要帮助的么？</div>
@@ -66,7 +71,7 @@ const onSend = () => {
         </div>
       </div>
       <div class="chat-input-box flex justify-between items-center">
-        <textarea class=" flex-1 h-32 border-none outline-none p-2" ref="textarea"></textarea>
+        <textarea class=" flex-1 h-32 border-none outline-none p-2 shadow-md" placeholder="请描述您的需求" ref="textarea" @keyup.shift.enter.prevent="onSend"></textarea>
         <div class=" flex flex-col">
           <button class=" h-12 text-red-400" @click="onSend">发送</button>
           <button class=" h-12 text-grey-400" @click="onToggleExpand">关闭</button>
