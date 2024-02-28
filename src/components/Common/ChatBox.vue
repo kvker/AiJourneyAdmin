@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 import type { Ref } from 'vue'
 import { onCompletions } from '@/services/llm'
 
@@ -11,6 +11,7 @@ const onToggleExpand = () => chatBoxShow.value = !chatBoxShow.value
 // 对话模块
 const lastContent = ref('')
 const textarea: Ref<HTMLTextAreaElement | undefined> = ref()
+const listBox: Ref<HTMLDivElement | undefined> = ref()
 
 type ChatList = GLMMessage[]
 
@@ -18,6 +19,7 @@ const chatList: Ref<ChatList> = ref([])
 
 const onCreateChat = (content: string, role: GLMMessage["role"]) => {
   chatList.value.push({ content, role })
+  onScrollToBottom()
 }
 
 const onChat = () => {
@@ -25,6 +27,7 @@ const onChat = () => {
   if (lastChat) {
     onCompletions(chatList.value, (result) => {
       lastContent.value = result
+      onScrollToBottom()
     }, done => {
       if (done) {
         onCreateChat(lastContent.value, 'assistant')
@@ -47,15 +50,21 @@ const onSend = (e: KeyboardEvent | MouseEvent) => {
 const onCleanTextarea = () => {
   textarea.value!.value = ''
 }
+
+const onScrollToBottom = () => {
+  nextTick(() => {
+    listBox.value!.scrollTop = listBox.value!.scrollHeight
+  })
+}
 </script>
 
 <template>
   <div class=" fixed bottom-20 right-20">
     <div
-      class="fab w-24 h-24 rounded-full border-2 font-bold text-4xl flex justify-center items-center cursor-pointer shadow-2xl bg-white"
-      v-show="!chatBoxShow" @click="onToggleExpand">展开</div>
+      class="fab w-12 h-12 rounded-full border-2 font-bold text-2xl flex justify-center items-center cursor-pointer shadow-2xl bg-white"
+      v-show="!chatBoxShow" @click="onToggleExpand">AI</div>
     <div class="chat-box bg-white shadow-2xl p-4" v-show="chatBoxShow">
-      <div class="chat-list-box w-full">
+      <div class="chat-list-box w-full border-b-2 overflow-y-scroll" ref="listBox">
         <div class="chat chat-start">
           <div class="chat-bubble chat-bubble-accent">你好啊，有什么需要帮助的么？</div>
         </div>
@@ -68,12 +77,12 @@ const onCleanTextarea = () => {
           <div class="chat-bubble chat-bubble-accent">{{ lastContent }}</div>
         </div>
       </div>
-      <div class="chat-input-box flex justify-between items-center">
-        <textarea class=" flex-1 h-32 border-none outline-none p-2 shadow-md" placeholder="请描述您的需求" ref="textarea"
-          @keydown.shift.enter="onSend"></textarea>
+      <div class="chat-input-box flex justify-between items-center mt-2">
+        <textarea class=" flex-1 h-24 border-none outline-none p-2 shadow-md" placeholder="请描述您的需求（shift+enter=发送）"
+          ref="textarea" @keydown.shift.enter="onSend"></textarea>
         <div class=" flex flex-col">
-          <button class=" h-12 text-red-400" @click="onSend">发送</button>
-          <button class=" h-12 text-grey-400" @click="onToggleExpand">关闭</button>
+          <button class="btn btn-sm btn-primary mb-4" @click="onSend">发送</button>
+          <button class="btn btn-sm btn-ghost" @click="onToggleExpand">关闭</button>
         </div>
       </div>
     </div>
@@ -83,6 +92,10 @@ const onCleanTextarea = () => {
 <style scoped>
 .chat {
   margin-bottom: 1rem;
+}
+
+.chat-list-box {
+  max-height: 24rem;
 }
 
 .chat-box {
