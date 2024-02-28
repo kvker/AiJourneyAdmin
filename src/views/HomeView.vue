@@ -2,6 +2,7 @@
 import { ref, } from 'vue'
 import router from '@/router'
 import lc from '@/libs/lc'
+import ChatBox from '@/components/Common/ChatBox.vue'
 
 async function initPrepare() {
   // 匿名用户，如果本地持有则取用本地
@@ -74,7 +75,8 @@ const onMenuSelect = (item: typeof menu[0], index: number) => {
 <template>
   <menu class=" h-full">
     <ul class="menu bg-base-200 w-56 rounded-box h-full">
-      <li v-for="(m, index) of menu" :index="'' + index" @click="onMenuSelect(m, index)"><a :class="{'active': currentIndex === index}">{{ m.name }}</a></li>
+      <li v-for="(m, index) of menu" :index="'' + index" @click="onMenuSelect(m, index)"><a
+          :class="{ 'active': currentIndex === index }">{{ m.name }}</a></li>
     </ul>
   </menu>
   <main class=" flex-1 h-full p-2">
@@ -84,6 +86,7 @@ const onMenuSelect = (item: typeof menu[0], index: number) => {
       </keep-alive>
     </router-view>
   </main>
+  <ChatBox />
 </template>
 
 <style>
