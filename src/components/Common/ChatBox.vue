@@ -3,10 +3,12 @@ import { ref, computed, watch } from 'vue'
 import type { Ref } from 'vue'
 import { onCompletions } from '@/services/llm'
 
+// 显示控制
 const chatBoxShow = ref(false)
 
-const toggleExpand = () => chatBoxShow.value = !chatBoxShow.value
+const onToggleExpand = () => chatBoxShow.value = !chatBoxShow.value
 
+// 对话模块
 const lastContent = ref('')
 const textarea: Ref<HTMLTextAreaElement | undefined> = ref()
 
@@ -18,7 +20,7 @@ type ChatList = Chat[]
 
 const chatList: Ref<ChatList> = ref([])
 
-const createChat = (content: string, role: 'user' | 'assitant') => {
+const onCreateChat = (content: string, role: 'user' | 'assitant') => {
   chatList.value.push({ content, role })
 }
 
@@ -29,7 +31,7 @@ const onChat = () => {
       lastContent.value = result
     }, done => {
       if (done) {
-        createChat(lastContent.value, 'assitant')
+        onCreateChat(lastContent.value, 'assitant')
         lastContent.value = ''
       }
     })
@@ -39,7 +41,7 @@ const onChat = () => {
 const onSend = () => {
   const content = textarea.value!.value.trim()
   if (content) {
-    createChat(content, 'user')
+    onCreateChat(content, 'user')
     onChat()
   }
 }
@@ -48,7 +50,7 @@ const onSend = () => {
 <template>
   <div class=" fixed bottom-20 right-20">
     <div class="fab w-24 h-24 rounded-full border-2 font-bold text-4xl flex justify-center items-center cursor-pointer"
-      v-show="!chatBoxShow" @click="toggleExpand">展开</div>
+      v-show="!chatBoxShow" @click="onToggleExpand">展开</div>
     <div class="chat-box bg-white" v-show="chatBoxShow">
       <div class="chat-list-box w-full">
         <div class="chat chat-start">
@@ -67,7 +69,7 @@ const onSend = () => {
         <textarea class=" flex-1 h-32 border-none outline-none p-2" ref="textarea"></textarea>
         <div class=" flex flex-col">
           <button class=" h-12 text-red-400" @click="onSend">发送</button>
-          <button class=" h-12 text-grey-400" @click="toggleExpand">关闭</button>
+          <button class=" h-12 text-grey-400" @click="onToggleExpand">关闭</button>
         </div>
       </div>
     </div>
