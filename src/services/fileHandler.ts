@@ -1,4 +1,4 @@
-import { serverUrl } from '@/services/config'
+import { faasVoiceUrl } from '@/services/config'
 import lc from '@/libs/lc'
 
 export function chooseFile(cb: (files?: FileList) => void, multiple = true, accept?: string) {
@@ -28,7 +28,7 @@ export function file2BlobUrl(file: File | url) {
 }
 
 export async function text2Voice(text: string, voiceType?: number): Promise<{ url: string }> {
-  const ret = await fetch(serverUrl + '/api/tencent/text2voice', {
+  const ret = await fetch(faasVoiceUrl + '/api/text2voice', {
     method: 'POST',
     headers: {
       "Content-Type": "application/json",
