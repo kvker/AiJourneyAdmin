@@ -1,4 +1,4 @@
-import { serverUrl } from '@/services/config'
+import { faasChatUrl } from '@/services/config'
 
 type GlmResponseJson = { "id": string, "created": number, "model": string, "choices": { "index": number, "finish_reason"?: "stop", "delta": { "role": "assistant", "content": string } }[], "usage"?: { "prompt_tokens": number, "completion_tokens": number, "total_tokens": number } }
 
@@ -26,8 +26,7 @@ async function onFetchStream(messages: GLMMessage[]) {
 
   controller = new AbortController()
   const signal = controller.signal
-
-  const response = await fetch(serverUrl + "/api/chat/sse", {
+  return await fetch(faasChatUrl + "/api/sse", {
     signal,
     method: 'POST',
     headers: {
@@ -37,7 +36,6 @@ async function onFetchStream(messages: GLMMessage[]) {
     },
     body: raw,
   })
-  return response
 }
 
 export function onAbortFetch() {

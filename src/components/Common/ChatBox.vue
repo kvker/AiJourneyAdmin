@@ -22,18 +22,25 @@ const onCreateChat = (content: string, role: GLMMessage["role"]) => {
   onScrollToBottom()
 }
 
-const onChat = () => {
+const onChat = async () => {
   const lastChat = chatList.value.at(-1)
   if (lastChat) {
-    onCompletions(chatList.value, (result) => {
-      lastContent.value = result
-      onScrollToBottom()
-    }, done => {
-      if (done) {
-        onCreateChat(lastContent.value, 'assistant')
-        lastContent.value = ''
-      }
-    })
+    try {
+      await onCompletions(chatList.value, (result) => {
+        lastContent.value = result
+        onScrollToBottom()
+      }, done => {
+        if (done) {
+          onCreateChat(lastContent.value, 'assistant')
+          lastContent.value = ''
+        }
+      })
+    } catch (error) {
+      alert(error)
+      chatList.value.pop()
+      console.log(chatList.value)
+      console.error(error)
+    }
   }
 }
 
