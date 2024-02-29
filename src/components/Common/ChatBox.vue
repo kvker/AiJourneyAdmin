@@ -16,6 +16,7 @@ const listBox: Ref<HTMLDivElement | undefined> = ref()
 type ChatList = GLMMessage[]
 
 const chatList: Ref<ChatList> = ref([])
+const isChating = ref(false)
 
 const onCreateChat = (content: string, role: GLMMessage["role"]) => {
   chatList.value.push({ content, role })
@@ -24,21 +25,23 @@ const onCreateChat = (content: string, role: GLMMessage["role"]) => {
 
 const onChat = async () => {
   const lastChat = chatList.value.at(-1)
-  if (lastChat) {
+  if (lastChat && !isChating.value) {
     try {
+      isChating.value = true
       await onCompletions(chatList.value, (result) => {
         lastContent.value = result
         onScrollToBottom()
       }, done => {
         if (done) {
+          isChating.value = false
           onCreateChat(lastContent.value, 'assistant')
           lastContent.value = ''
         }
       })
     } catch (error) {
+      isChating.value = false
       alert(error)
       chatList.value.pop()
-      console.log(chatList.value)
       console.error(error)
     }
   }
@@ -85,8 +88,8 @@ const onScrollToBottom = () => {
         </div>
       </div>
       <div class="chat-input-box flex justify-between items-center mt-2">
-        <textarea class=" flex-1 h-24 border-none outline-none p-2 shadow-md" placeholder="请描述您的需求（shift+enter=发送）"
-          ref="textarea" @keydown.shift.enter="onSend"></textarea>
+        <textarea class=" flex-1 h-24 border-none outline-none p-2 shadow-md" :placeholder="isChating ? '请等待 AI 输出完成' : '请描述您的需求（shift+enter=发送）'"
+          :disabled="isChating" ref="textarea" @keydown.shift.enter="onSend"></textarea>
         <div class=" flex flex-col">
           <button class="btn btn-sm btn-primary mb-4" @click="onSend">发送</button>
           <button class="btn btn-sm btn-ghost" @click="onToggleExpand">关闭</button>
