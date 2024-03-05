@@ -70,6 +70,7 @@ type ToiletSearchParams = {
 
 type ToiletForm = Omit<Toilet, 'coverImageList'> & {
   coverImageList: File[]
+  attractionId: string
 }
 
 type Attention = {
@@ -86,4 +87,5 @@ type AttentionSearchParams = {
 
 type AttentionForm = Omit<Attention, 'coverImageList'> & {
   coverImageList: File[]
+  attractionId: string
 }

@@ -1,9 +1,8 @@
 import { watch } from 'vue'
 import type { Ref, ModelRef } from 'vue'
-import { chooseFile } from '@/services/fileHandler'
-import lc from '@/libs/lc'
-import type AV from 'leancloud-storage'
+import { chooseFile, uploadFile } from '@/services/fileHandler'
 import { ll2Lnglat, getGeocoder } from '@/services/map'
+import { db } from '@/services/cloud'
 
 export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form: Ref<AttentionForm>, obj: AttentionForm, props: any, emit: any, visible: Ref<boolean>, lnglat: ModelRef<Lnglat> }) {
 
@@ -25,28 +24,27 @@ export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form:
 
     const coverImageList = []
 
-    let ret: AV.File | null = null
     for (const file of form.value.coverImageList) {
       if (typeof file === 'string') {
         coverImageList.push(file)
         continue
       } // 链接不需要再传
-      ret = await lc.uploadFile(file)
-      coverImageList.push(ret.get('url'))
+      const { download_url } = await uploadFile(file, 'images')
+      coverImageList.push(download_url)
     }
     const uploadForm = {
       name: form.value.name,
       introduce: form.value.introduce,
-      lnglat: new lc.AV.GeoPoint({ latitude: form.value.lnglat!.lat, longitude: form.value.lnglat!.lng }),
+      lnglat: { latitude: form.value.lnglat!.lat, longitude: form.value.lnglat!.lng },
       coverImageList,
     }
-    if (form.value.attraction) {
-      await lc.update('Attention', form.value.objectId, uploadForm)
+    if (form.value.attractionId) {
+      await db.collection('JAttention').doc(form.value._id).update(uploadForm)
     } else {
       const attraction = JSON.parse(localStorage.getItem('attraction') as string)
-      await lc.create('Attention', {
+      await db.collection('JAttention').add({
         ...uploadForm,
-        attraction: lc.createObject('Attraction', attraction.objectId),
+        attractionId: attraction._id,
       })
     }
     visible.value = false

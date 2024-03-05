@@ -1,7 +1,6 @@
 import { watch, inject } from 'vue'
 import type { Ref, ModelRef } from 'vue'
 import { chooseFile, uploadFile } from '@/services/fileHandler'
-import type AV from 'leancloud-storage'
 import { ll2Lnglat, } from '@/services/map'
 import { db } from '@/services/cloud'
 

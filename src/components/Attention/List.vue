@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { ref, watch, inject } from 'vue'
 import type { Ref } from 'vue'
-import lc from '@/libs/lc'
+import { db } from '@/services/cloud'
+
+const attraction = JSON.parse(localStorage.getItem('attraction') as string)
 
 const searchParams = inject('searchParams') as Ref<AttentionSearchParams>
 
@@ -34,27 +36,25 @@ watch(() => searchParams.value.name, (val, oldVal) => {
 // 列表
 let count = ref(0)
 
-async function getList(params = searchParams.value) {
-  const attraction = JSON.parse(localStorage.getItem('attraction') as string)
-  const ret = await lc.read('Attention', q => {
-    q.equalTo('attraction', lc.createObject('Attraction', attraction.objectId))
-    q.limit(size)
-    q.skip(size * page.value)
-    q.descending('updatedAt')
-    if (params.name) {
-      q.equalTo('name', params.name)
-    }
-  })
-  tableData.value = ret.map(i => i.toJSON())
+async function getList() {
+  const { data } = await db.collection('JAttention')
+    .where({
+      attractionId: attraction._id,
+    })
+    .limit(size)
+    .skip(size * page.value)
+    .orderBy('updatedAt', 'desc')
+    .get()
+  tableData.value = data
 }
 
-async function getCount(params = searchParams.value) {
-  const ret = await lc.count('Attention', q => {
-    if (params.name) {
-      q.equalTo('name', params.name)
-    }
-  })
-  count.value = ret
+async function getCount() {
+  const { total } = await db.collection('JAttention')
+    .where({
+      attractionId: attraction._id,
+    })
+    .count()
+  count.value = total
 }
 
 function doEdit(data: Attention, index: number) {
@@ -67,7 +67,7 @@ async function doDelete(data: Attention, index: number) {
   console.log('doDelete')
   console.log(data, index)
   if (confirm('即将删除此事项，是否继续？')) {
-    await lc.delete('Attention', data.objectId)
+    await db.collection('JAttention').doc(data._id).remove()
     tableData.value.splice(index, 1)
   }
 }
@@ -89,7 +89,7 @@ function doChangePage(p: number) {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(item, index) of tableData" :key="item.objectId">
+      <tr v-for="(item, index) of tableData" :key="item._id">
         <th>{{ index + 1 }}</th>
         <td>{{ item.name }}</td>
         <td>
