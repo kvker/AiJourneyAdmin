@@ -12,6 +12,13 @@ import {
 import {
   CanvasRenderer
 } from 'echarts/renderers'
+import { db } from '@/services/cloud'
+
+db.collection('JAttraction')
+  .orderBy('createdAt', 'asc')
+  .get()
+  .then(console.log)
+
 echarts.use(
   [
     LineChart,

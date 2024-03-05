@@ -1,35 +1,12 @@
 <script lang="ts" setup>
 import { ref, } from 'vue'
 import router from '@/router'
-import lc from '@/libs/lc'
 import ChatBox from '@/components/Common/ChatBox.vue'
+import { auth } from '@/services/cloud'
 
 async function initPrepare() {
-  // 匿名用户，如果本地持有则取用本地
-  // 匿名用户是用来解决数据安全问题，如果没有匿名用户，无法访问数据，且可以追踪非法操作
-  // 匿名用户放到用户端去，这里必须要求登录
-  // if (!lc.currentUser()) {
-  //   lc.AV.User.loginAnonymously().then((user) => {
-  //     console.log('新建匿名用户')
-  //   })
-  // }
-  // console.log('当前用户：', lc.currentUser())
-  if (!lc.currentUser()) {
+  if (!auth.currentUser) {
     alert('未登录, 非法进入')
-    lc.logout()
-    router.replace('/')
-  }
-  const roles = await lc.currentUser().getRoles()
-  const role = roles[0]
-  // 入口安全处理
-  if (!localStorage.getItem('attraction')) {
-    alert('无景区关系, 非法进入')
-    lc.logout()
-    router.replace('/')
-  }
-  else if (!role) {
-    alert('无角色, 非法进入')
-    lc.logout()
     router.replace('/')
   }
 }
@@ -37,8 +14,6 @@ async function initPrepare() {
 initPrepare()
 
 const basePath = '/home'
-// TODO:
-// 这一块数据来自服务端
 const menu = [{
   path: '/total',
   name: '信息管理'

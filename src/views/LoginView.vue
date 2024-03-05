@@ -1,56 +1,46 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import router from '@/router'
-import lc from '@/libs/lc'
+import { auth } from '@/services/cloud'
 //@ts-ignore
 import md5 from 'md5'
 
-if (lc.currentUser()) {
+if (auth.currentUser) {
   router.replace('/home')
 }
 
-const username = ref('')
+const email = ref('')
 const password = ref('')
 const isLoading = ref(false)
 
 async function onSubmit(e: Event) {
   e.preventDefault()
-  if(isLoading.value) return
+  if (isLoading.value) return
   isLoading.value = true
   try {
-    await doLogin()
-    router.replace('/home')
+    await onLogin()
   } catch (error: any) {
-    alert(error.rawMessage || error.message)
+    if (error.message.includes('102003')) {
+      await onRegister()
+    } else {
+      console.error(error)
+      alert(error.message || error)
+    }
   }
   isLoading.value = false
 }
 
-async function doLogin() {
-  const user = await lc.login(username.value, md5(password.value) as string)
-  const roles = await user.getRoles()
-  const role = roles[0]
-  if (!role) {
-    lc.logout()
-    throw new ReferenceError('无角色, 请重新登录')
+async function onLogin() {
+  const loginState = await auth.signInWithEmailAndPassword(email.value, md5(password.value) as string)
+  if (loginState && loginState.user) {
+    router.replace('/home')
   }
-  const roleName = role.get('name')
-  console.log(roleName)
-  if (roleName === 'attractionOperator' || roleName === 'attractionAdmin') {
-    const aum = await lc.one('AttractionUserMap', (q) => {
-      q.equalTo('user', lc.currentUser())
-      q.include('attraction')
-    })
-    if (aum && aum.get('attraction')) {
-      const attraction = aum.get('attraction').toJSON()
-      localStorage.setItem('attraction', JSON.stringify(attraction))
-    } else {
-      lc.logout()
-      throw new ReferenceError('未绑定景区, 请联系管理人员')
-    }
-  } else {
-    lc.logout()
-    throw new ReferenceError('无权访问, 请重新登录')
+}
+
+async function onRegister() {
+  const sendState = await auth.signUpWithEmailAndPassword(email.value, md5(password.value) as string)
+  if (sendState && sendState.requestId) {
+    alert('发送邮件成功，请从邮箱进入')
   }
 }
 </script>
@@ -65,9 +55,9 @@ async function doLogin() {
             <p class="mb-8 text-2xl font-light text-center text-white">AI导游大师后台管理-登录</p>
             <div class="mb-2">
               <div class="relative">
-                <input v-model.trim="username" type="text" id="login-with-bg-username"
+                <input v-model.trim="email" type="text" id="login-with-bg-email"
                   class="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                  placeholder="用户名" />
+                  placeholder="邮箱" />
               </div>
             </div>
             <div class="mb-2">
