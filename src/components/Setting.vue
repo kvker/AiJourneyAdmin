@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import lc from '@/libs/lc'
+import { auth } from '@/services/cloud'
 
 function onLogout() {
-  lc.logout()
-  localStorage.removeItem('attraction')
-  location.href = '/'
+  auth.signOut()
+    .then(() => {
+      localStorage.removeItem('attraction')
+      location.href = import.meta.env.BASE_URL
+    })
 }
 </script>
 
