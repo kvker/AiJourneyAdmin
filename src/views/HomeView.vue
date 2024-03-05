@@ -37,7 +37,7 @@ const menu = [{
 
 const currentIndex = ref(doFindInitialIndex())
 function doFindInitialIndex() {
-  let index = menu.findIndex(item => basePath + item.path === location.pathname)
+  let index = menu.findIndex(item => basePath + item.path === router.currentRoute.value.path)
   return index < 0 ? 0 : index
 }
 
