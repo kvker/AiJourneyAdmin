@@ -22,7 +22,6 @@ type Attraction = {
 } & CloudItem
 
 type Area = {
-  attraction?: AV.Object
   coverImageList: url[]
   introduce: string
   lnglat: Lnglat | null
@@ -57,7 +56,6 @@ type AreaIntroduce = {
 } & CloudItem
 
 type Toilet = {
-  attraction?: AV.Object
   coverImageList: url[]
   introduce: string
   lnglat: Lnglat | null
@@ -74,7 +72,6 @@ type ToiletForm = Omit<Toilet, 'coverImageList'> & {
 }
 
 type Attention = {
-  attraction?: AV.Object
   coverImageList: url[]
   introduce: string
   lnglat: Lnglat | null

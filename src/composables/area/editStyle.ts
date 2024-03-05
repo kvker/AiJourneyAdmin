@@ -61,7 +61,6 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
 
   async function onUseStyleIntroduce() {
     console.log('onUseStyleIntroduce')
-    // lc.update()
     if (areaIntroduce.value) {
       areaIntroduce.value.introduce = currentStyleIntroduce.value
       await db.collection('JAreaIntroduce')
