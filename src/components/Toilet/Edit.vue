@@ -58,7 +58,7 @@ function onCloseEditDialog() {
           <img class=" cursor-pointer object-contain h-12 w-12 mr-2" v-for="(file, index) of form.coverImageList"
             :src="file2BlobUrl(file)" @click="onDeleteCoverImage(index)" alt="preview-image">
         </div>
-        <button class="btn btn-primary" type="submit">{{ form.attraction ? '更新' : '创建' }}厕所</button>
+        <button class="btn btn-primary" type="submit">{{ form.attractionId ? '更新' : '创建' }}厕所</button>
       </form>
       <div class="modal-action">
         <form method="dialog">
