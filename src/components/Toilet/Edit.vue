@@ -17,6 +17,7 @@ const obj: ToiletForm = {
   introduce: '',
   lnglat: null,
   coverImageList: [],
+  attractionId: '',
 }
 const form = ref<ToiletForm>({ ...obj })
 

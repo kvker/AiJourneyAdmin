@@ -10,14 +10,14 @@ const visible = defineModel<boolean>('visible', { required: true })
 const lnglat = defineModel<Lnglat>('lnglat', { required: true })
 
 const editDialog: Ref<HTMLDialogElement | undefined> = ref()
-const styleDialog: Ref<HTMLDialogElement | undefined> = ref()
 
 const obj: AttentionForm = {
-  objectId: '',
+  _id: '',
   name: '',
   introduce: '',
   lnglat: null,
   coverImageList: [],
+  attractionId: '',
 }
 const form = ref<AttentionForm>({ ...obj })
 
