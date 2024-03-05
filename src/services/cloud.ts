@@ -1,4 +1,4 @@
-const app = cloudbase.init({
+export const app = cloudbase.init({
   env: 'ai-tools-6guwawtsb724a7e7',
 })
 export const auth = app.auth({

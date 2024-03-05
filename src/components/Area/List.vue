@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { ref, watch, inject, nextTick } from 'vue'
 import type { Ref } from 'vue'
-import lc from '@/libs/lc'
+import { db } from '@/services/cloud'
+
+const attraction = JSON.parse(localStorage.getItem('attraction') as string)
 
 const searchParams = inject('searchParams') as Ref<AreaSearchParams>
 
@@ -34,29 +36,25 @@ watch(() => searchParams.value.name, (val, oldVal) => {
 // 列表
 let count = ref(0)
 
-async function getList(params = searchParams.value) {
-  const attraction = JSON.parse(localStorage.getItem('attraction') as string)
-  const ret = await lc.read('Area', q => {
-    q.equalTo('attraction', lc.createObject('Attraction', attraction.objectId))
-    q.limit(size)
-    q.skip(size * page.value)
-    q.descending('updatedAt')
-    if (params.name) {
-      q.equalTo('name', params.name)
-    }
-  })
-  tableData.value = ret.map(i => i.toJSON())
+async function getList() {
+  const { data } = await db.collection('JArea')
+    .where({
+      attractionId: attraction._id,
+    })
+    .limit(size)
+    .skip(size * page.value)
+    .orderBy('updatedAt', 'asc')
+    .get()
+  tableData.value = data
 }
 
 async function getCount(params = searchParams.value) {
-  const attraction = JSON.parse(localStorage.getItem('attraction') as string)
-  const ret = await lc.count('Area', q => {
-    q.equalTo('attraction', lc.createObject('Attraction', attraction.objectId))
-    if (params.name) {
-      q.equalTo('name', params.name)
-    }
-  })
-  count.value = ret
+  const { total } = await db.collection('JArea')
+    .where({
+      attractionId: attraction._id,
+    })
+    .count()
+  count.value = total
 }
 
 function doEdit(data: Area, index: number) {
@@ -69,7 +67,7 @@ async function doDelete(data: Area, index: number) {
   console.log('doDelete')
   // console.log(data, index)
   if (confirm('即将删除此景点，是否继续？')) {
-    await lc.delete('Area', data.objectId)
+    await db.collection('JArea').doc(data._id).remove()
     tableData.value.splice(index, 1)
   }
 }
@@ -102,12 +100,12 @@ const onPreview = (item: Area) => {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(item, index) of tableData" :key="item.objectId">
+      <tr v-for="(item, index) of tableData" :key="item._id">
         <th>{{ index + 1 }}</th>
         <td>{{ item.name }}</td>
         <td>
           <div class="flex items-center" @click="onPreview(item)">
-            <img class=" w-10 h-10 mr-2" v-for="(imgItem, index) of item.coverImageList" :key="imgItem"
+            <img class=" w-10 h-10 mr-2 object-cover" v-for="(imgItem, index) of item.coverImageList" :key="imgItem"
               :src="imgItem + '?imageView2/2/h/200'" alt="preview-img" />
           </div>
         </td>

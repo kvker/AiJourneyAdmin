@@ -1,9 +1,9 @@
 import { watch, inject } from 'vue'
 import type { Ref, ModelRef } from 'vue'
-import { chooseFile } from '@/services/fileHandler'
-import lc from '@/libs/lc'
+import { chooseFile, uploadFile } from '@/services/fileHandler'
 import type AV from 'leancloud-storage'
 import { ll2Lnglat, } from '@/services/map'
+import { db } from '@/services/cloud'
 
 export function useEditForm(form: Ref<AreaForm>, { uiStatus, obj, props, emit, visible, lnglat }: { uiStatus: Ref<UiStatusMap>, obj: AreaForm, props: any, emit: any, visible: Ref<boolean>, lnglat: ModelRef<Lnglat> }) {
 
@@ -25,32 +25,32 @@ export function useEditForm(form: Ref<AreaForm>, { uiStatus, obj, props, emit, v
   })
 
   async function onSubmit() {
-    const coverImageList = []
-    let ret: AV.File | null = null
+    const coverImageList: string[] = []
     uiStatus.value.isLoading = true
     for (const file of form.value.coverImageList) {
+      // 链接不需要再传
       if (typeof file === 'string') {
         coverImageList.push(file)
         continue
-      } // 链接不需要再传
-      ret = await lc.uploadFile(file)
-      coverImageList.push(ret.get('url'))
+      }
+      const { download_url } = await uploadFile(file, 'images')
+      coverImageList.push(download_url)
     }
     const uploadForm = {
       name: form.value.name,
       innerName: form.value.innerName,
       introduce: form.value.introduce,
-      lnglat: new lc.AV.GeoPoint({ latitude: form.value.lnglat!.lat, longitude: form.value.lnglat!.lng }),
+      lnglat: { latitude: form.value.lnglat!.lat, longitude: form.value.lnglat!.lng },
       coverImageList,
     }
     try {
-      if (form.value.attraction) {
-        await lc.update('Area', form.value.objectId, uploadForm)
+      if (form.value.attractionId) {
+        await db.collection('JArea').doc(form.value._id).update(uploadForm)
       } else {
         const attraction = JSON.parse(localStorage.getItem('attraction') as string)
-        await lc.create('Area', {
+        await db.collection('JArea').add({
           ...uploadForm,
-          attraction: lc.createObject('Attraction', attraction.objectId),
+          attractionId: attraction._id,
         })
       }
       visible.value = false

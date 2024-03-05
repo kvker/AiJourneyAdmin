@@ -7,6 +7,7 @@ import { useEditStyle } from '@/composables/area/editStyle'
 import { UiStatusMapKey } from '@/services/provideKey'
 
 const uiStatus = inject(UiStatusMapKey) as Ref<UiStatusMap>
+const audio: Ref<HTMLAudioElement | undefined> = ref()
 
 const props = defineProps(['editData'])
 const emit = defineEmits(['showmap', 'confirm'])
@@ -17,18 +18,19 @@ const editDialog: Ref<HTMLDialogElement | undefined> = ref()
 const styleDialog: Ref<HTMLDialogElement | undefined> = ref()
 
 const obj: AreaForm = {
-  objectId: '',
+  _id: '',
   name: '',
   innerName: '',
   introduce: '',
   lnglat: null,
   coverImageList: [],
+  attractionId: '',
 }
 const form = ref<AreaForm>({ ...obj })
 
 const { onCheckLocation, onSubmit, onDeleteCoverImage, onAddCoverImage } = useEditForm(form, { uiStatus, obj, props, emit, visible, lnglat })
 const { chatStyles, styleUiStatus, styleVisible, propmtObject, currentStyleIntroduce, onUseStyleIntroduce, onUpdateStyleIntroduce, onGenerateVoice,
-  onGenerateStyleIntroduce, areaIntroduceQueriable, onAbortCompletions, } = useEditStyle(form, { uiStatus })
+  onGenerateStyleIntroduce, areaIntroduce, onAbortCompletions, } = useEditStyle(form, { uiStatus })
 
 watch(visible, newValue => {
   if (newValue) {
@@ -52,6 +54,7 @@ function onCloseEditDialog() {
 
 function onCloseStyleDialog() {
   styleVisible.value = false
+  audio.value && audio.value.pause()
 }
 </script>
 
@@ -65,9 +68,9 @@ function onCloseStyleDialog() {
         <input class="input w-full max-w-xs mb-2" v-model.trim="form.innerName" placeholder="内部名字" required
           maxlength="100" minlength="2" />
         <div class="w-full mb-2">
-          <textarea class="textarea w-full mb-2" v-model="form.introduce" placeholder="介绍,如: 杭州西湖景区是......建议300字以上500字以下"
-            required minlength="2" maxlength="1000"></textarea>
-          <div v-if="form.attraction" class="flex mt-2">
+          <textarea class="textarea w-full mb-2" v-model="form.introduce"
+            placeholder="介绍,如: 杭州西湖景区是......建议300字以上500字以下" required minlength="2" maxlength="1000"></textarea>
+          <div v-if="form.attractionId" class="flex mt-2">
             <button type="button" v-for="(chatStyle, index) of chatStyles" class=" btn mr-2"
               @click="onGenerateStyleIntroduce(chatStyle, index)" :title="chatStyle.remind">{{ chatStyle.name
               }}</button>
@@ -85,7 +88,7 @@ function onCloseStyleDialog() {
         <div class=" text-right">
           <button class="btn btn-primary ml-auto" type="submit">
             <span v-if="uiStatus.isLoading" class="loading loading-spinner"></span>
-            {{ form.attraction ? '更新' : '创建' }}景点
+            {{ form.attractionId ? '更新' : '创建' }}景点
           </button>
         </div>
       </form>
@@ -121,8 +124,8 @@ function onCloseStyleDialog() {
           <span v-if="uiStatus.isLoading" class="loading loading-spinner"></span>
           生成语音
         </button>
-        <audio v-if="areaIntroduceQueriable && areaIntroduceQueriable.get('voice')"
-          :src="areaIntroduceQueriable.get('voice')" class=" h-8" controls></audio>
+        <audio v-if="areaIntroduce && areaIntroduce.voice" :src="areaIntroduce.voice" class=" h-8" controls
+          ref="audio"></audio>
       </div>
       <div class="modal-action">
         <form method="dialog">

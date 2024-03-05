@@ -1,5 +1,5 @@
 import { faasVoiceUrl } from '@/services/config'
-import lc from '@/libs/lc'
+import { app } from '@/services/cloud'
 
 export function chooseFile(cb: (files?: FileList) => void, multiple = true, accept?: string) {
   const input = document.createElement('input')
@@ -37,6 +37,28 @@ export async function text2Voice(text: string, voiceType?: number): Promise<{ ur
   }).then(ret => ret.json())
   // console.log(ret.data.Audio)
   let audioBase64 = ret.data.base64
-  const uploadRet = await lc.uploadBase64(audioBase64, Date.now() + '.mp3')
-  return { url: uploadRet.get('url') }
+  function dataURLtoFile(base64: string, filename: string) {
+    let mime = 'audio/mpeg',
+      bstr = atob(base64),
+      n = bstr.length,
+      u8arr = new Uint8Array(n)
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n)
+    }
+    return new File([u8arr], filename, { type: mime })
+  }
+  //调用
+  const file = dataURLtoFile(audioBase64, Date.now() + '.mp3')
+  const { download_url: url } = await uploadFile(file, "audios")
+  return { url }
+}
+
+export async function uploadFile(file: File, rootPath: string) {
+  return await app
+    .uploadFile({
+      // 云存储的路径
+      cloudPath: rootPath + "/" + file.name,
+      // 需要上传的文件，File 类型
+      filePath: file,
+    })
 }
