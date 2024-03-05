@@ -8,6 +8,8 @@ const attractionList: Ref<Attraction[]> = ref([])
 const getAttractionList = async () => {
   const { data } = await db.collection('JAttraction').get()
   attractionList.value = data
+  attraction.value = data[0]
+  localStorage.setItem('attraction', JSON.stringify(attraction.value))
 }
 getAttractionList()
 
