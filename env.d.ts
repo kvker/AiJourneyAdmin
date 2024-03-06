@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
 
-/// <reference types="./typings/common" />
-/// <reference types="./typings/glm" />
-/// <reference types="./typings/attraction" />
+/// <reference types="./types/common" />
+/// <reference types="./types/glm" />
+/// <reference types="./types/attraction" />
