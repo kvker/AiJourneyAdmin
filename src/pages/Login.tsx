@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
+// @ts-ignore
 import md5 from 'md5'
 import { useNavigate } from 'react-router-dom'
 import { auth } from '@/services/cloud'
@@ -9,7 +10,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
 
-  const onSubmit = async (e: Event) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (isLoading) return
     setIsLoading(true)
