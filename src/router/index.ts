@@ -64,38 +64,31 @@ const router = createRouter({
       },
       children: [
         {
-          path: '',
-          name: 'home-default', // 默认子路由，重定向到total
+          path: '', // 默认子路由，重定向到total
           component: () => import('@/components/Total.vue')
         },
         {
           path: 'total',
-          name: 'home-total',
           component: () => import('@/components/Total.vue')
         },
         {
           path: 'area',
-          name: 'home-area',
           component: () => import('@/components/Area.vue')
         },
         {
           path: 'attention',
-          name: 'home-attention',
           component: () => import('@/components/Attention.vue')
         },
         {
           path: 'toilet',
-          name: 'home-toilet',
           component: () => import('@/components/Toilet.vue')
         },
         {
           path: 'user',
-          name: 'home-user',
           component: () => import('@/components/User.vue')
         },
         {
           path: 'setting',
-          name: 'home-setting',
           component: () => import('@/components/Setting.vue')
         },
       ]
