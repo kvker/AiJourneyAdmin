@@ -21,7 +21,7 @@ export default defineConfig({
         // assetFileNames: 'static/[ext]/[name]-[hash][extname]',
         //manualChunks 两种使用形式
         manualChunks: {
-          vue: ['vue'],
+          react: ['react'],
         }
         // manualChunks(id) {
         //   if (id.includes('daisyUI')) {
