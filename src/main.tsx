@@ -6,6 +6,7 @@ import {
   RouterProvider,
 } from "react-router-dom"
 import './index.css'
+import "@/styles/main.css"
 import ErrorPage from "./pages/Error"
 
 const router = createBrowserRouter([
@@ -15,7 +16,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/home",
+    path: "/home/*",
     Component: lazy(() => import('./pages/Home.tsx')),
     errorElement: <ErrorPage />,
     // children: [
