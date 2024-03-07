@@ -19,15 +19,15 @@ export default function LoginPage() {
     path: '/area',
     name: '景点管理'
   }, {
-  //   path: '/toilet',
-  //   name: '厕所管理'
-  // }, {
-  //   path: '/attention',
-  //   name: '注意事项'
-  // }, {
-  //   path: '/user',
-  //   name: '人员管理'
-  // }, {
+    //   path: '/toilet',
+    //   name: '厕所管理'
+    // }, {
+    //   path: '/attention',
+    //   name: '注意事项'
+    // }, {
+    //   path: '/user',
+    //   name: '人员管理'
+    // }, {
     path: '/setting',
     name: '设置'
   }]
@@ -48,7 +48,7 @@ export default function LoginPage() {
       <ul className="menu bg-base-200 w-56 rounded-box h-full">
         {
           menu.map((m, index) => {
-            return <li key={index} onClick={() => onMenuSelect(m, index)} className={currentIndex === index ? 'active' : ''}>{m.name}</li>
+            return <li key={index} onClick={() => onMenuSelect(m, index)} className={`cursor-pointer h-8 ${currentIndex === index ? 'active' : ''}`}>{m.name}</li>
           })
         }
       </ul>
