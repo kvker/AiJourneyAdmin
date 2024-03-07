@@ -47,8 +47,7 @@ const router = createRouter({
           if (message) {
             throw new Error(message)
           }
-          console.log(data)
-          console.log('用户角色： ' + data[0]?.name)
+          console.log('当前用户角色： ' + (data[0]?.name || '无角色'))
           const passed = data[0]?.name === 'superAdmin'
           if (passed) {
             next()
