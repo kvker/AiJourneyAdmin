@@ -43,9 +43,5 @@ const onChangeAttraction = (e: Event) => {
 </template>
 
 <style>
-#chart-panel,
-#chart-line {
-  width: 100%;
-  height: 50%;
-}
+
 </style>
