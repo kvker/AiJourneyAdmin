@@ -23,12 +23,7 @@ export default defineConfig({
         // assetFileNames: 'static/[ext]/[name]-[hash][extname]',
         //manualChunks 两种使用形式
         manualChunks: {
-          leancloudStorage: ['leancloud-storage'],
-          // daisyUI: ['daisyUI'],
-          // daisyui: ['daisyui'],
           vue: ['vue'],
-          // vueRouter: ['vue-router'],
-          echarts: ['echarts'],
         }
         // manualChunks(id) {
         //   if (id.includes('daisyUI')) {
