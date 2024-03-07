@@ -4,14 +4,10 @@ import router from '@/router'
 import ChatBox from '@/components/Common/ChatBox.vue'
 import { auth } from '@/services/cloud'
 
-async function initPrepare() {
-  if (!auth.currentUser) {
-    alert('未登录, 非法进入')
-    router.replace('/')
-  }
+if (!auth.currentUser) {
+  alert('未登录, 非法进入')
+  router.replace('/')
 }
-
-initPrepare()
 
 const basePath = '/home'
 const menu = [{
