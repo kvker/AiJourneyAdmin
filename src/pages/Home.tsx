@@ -1,47 +1,69 @@
 import { useState } from 'react'
+import { auth } from '@/services/cloud'
+import { useNavigate, Routes, Route, useLocation } from 'react-router-dom'
+import Total from '@/components/Total'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-
-  const onSubmit = () => {
-    console.log(111)
+  const navigate = useNavigate()
+  if (!auth.currentUser) {
+    alert('未登录, 非法进入')
+    navigate('/', { replace: true })
   }
-  return <div className="w-full h-screen font-sans bg-cover bg-landscape"
-    style={{ backgroundImage: 'url(https://www.tailwind-kit.com/images/landscape/2.jpg);' }}>
-    <div className="container flex items-center justify-center flex-1 h-full mx-auto">
-      <div className="w-full max-w-lg">
-        <div className="leading-loose">
-          <form className="max-w-sm p-10 m-auto rounded shadow-xl bg-white/25" id="formLogin" onSubmit={onSubmit}>
-            <p className="mb-8 text-2xl font-light text-center text-white">AI导游大师后台管理-登录</p>
-            <div className="mb-2">
-              <div className="relative">
-                <input value={email} type="text" id="login-with-bg-email"
-                  className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                  placeholder="邮箱" />
-              </div>
-            </div>
-            <div className="mb-2">
-              <div className="relative">
-                <input value={password} type="password" id="login-with-bg-password"
-                  className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                  placeholder="密码" />
-              </div>
-            </div>
-            <div className="flex items-center justify-between mt-4">
-              <button type="submit"
-                className="py-2 px-4 bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg">
-                <span v-if="isLoading" className="loading loading-spinner"></span>
-                登录
-              </button>
-            </div>
-            <div className="text-center">
-              <a
-                className="right-0 inline-block text-sm font-light align-baseline text-500 hover:text-gray-800 cursor-pointer">忘记密码？</a>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div >
+  const { pathname } = useLocation()
+  console.log({ pathname })
+  const basePath = '/home'
+  const menu = [{
+    path: '/total',
+    name: '景区选择'
+  }, {
+    path: '/area',
+    name: '景点管理'
+  }, {
+  //   path: '/toilet',
+  //   name: '厕所管理'
+  // }, {
+  //   path: '/attention',
+  //   name: '注意事项'
+  // }, {
+  //   path: '/user',
+  //   name: '人员管理'
+  // }, {
+    path: '/setting',
+    name: '设置'
+  }]
+
+  const [currentIndex, setCurrentIndex] = useState(doFindInitialIndex())
+  function doFindInitialIndex() {
+    let index = menu.findIndex(item => basePath + item.path === pathname)
+    return index < 0 ? 0 : index
+  }
+
+  const onMenuSelect = (item: typeof menu[0], index: number) => {
+    navigate(basePath + item.path)
+    setCurrentIndex(index)
+  }
+
+  return <>
+    <menu className=" h-full">
+      <ul className="menu bg-base-200 w-56 rounded-box h-full">
+        {
+          menu.map((m, index) => {
+            return <li key={index} onClick={() => onMenuSelect(m, index)} className={currentIndex === index ? 'active' : ''}>{m.name}</li>
+          })
+        }
+      </ul>
+    </menu >
+    <main className=" flex-1 h-full p-2">
+      <Routes>
+        <Route path="/" element={<Total />} />
+        <Route path="/total" element={<Total />} />
+        {/* <Route path="/area" element={<Area />} />
+        <Route path="/attention" element={<Attention />} />
+        <Route path="/toilet" element={<Toilet />} />
+        <Route path="/user" element={<User />} />
+        <Route path="/setting" element={<Setting />} /> */}
+      </Routes>
+    </main>
+    {/* <ChatBox /> */}
+  </>
 }
