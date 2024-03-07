@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { auth } from '@/services/cloud'
 import { useNavigate, Routes, Route, useLocation } from 'react-router-dom'
 import Total from '@/components/Total'
+import Area from '@/components/Area'
+import Setting from '@/components/Setting'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -57,11 +59,11 @@ export default function LoginPage() {
       <Routes>
         <Route path="/" element={<Total />} />
         <Route path="/total" element={<Total />} />
-        {/* <Route path="/area" element={<Area />} />
-        <Route path="/attention" element={<Attention />} />
+        <Route path="/area" element={<Area />} />
+        {/* <Route path="/attention" element={<Attention />} />
         <Route path="/toilet" element={<Toilet />} />
-        <Route path="/user" element={<User />} />
-        <Route path="/setting" element={<Setting />} /> */}
+        <Route path="/user" element={<User />} /> */}
+        <Route path="/setting" element={<Setting />} />
       </Routes>
     </main>
     {/* <ChatBox /> */}
