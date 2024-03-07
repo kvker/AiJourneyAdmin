@@ -56,7 +56,7 @@ const onMenuSelect = (item: typeof menu[0], index: number) => {
   </menu>
   <main class=" flex-1 h-full p-2">
     <router-view v-slot="{ Component }">
-      <keep-alive>
+      <keep-alive include="Total, Setting">
         <component :is="Component" />
       </keep-alive>
     </router-view>
