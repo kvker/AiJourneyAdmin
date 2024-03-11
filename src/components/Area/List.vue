@@ -40,6 +40,7 @@ async function getList() {
   const { data } = await db.collection('JArea')
     .where({
       attractionId: attraction._id,
+      name: new RegExp(searchParams.value.name),
     })
     .limit(size)
     .skip(size * page.value)
@@ -52,6 +53,7 @@ async function getCount(params = searchParams.value) {
   const { total } = await db.collection('JArea')
     .where({
       attractionId: attraction._id,
+      name: new RegExp(searchParams.value.name),
     })
     .count()
   count.value = total
