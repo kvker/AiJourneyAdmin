@@ -4,8 +4,8 @@ type LL = {
   latitude: number
 }
 type Lnglat = {
-  lng: number
-  lat: number
+  longitude: number
+  latitude: number
 }
 
 type CloudItem = {
@@ -24,7 +24,7 @@ type Attraction = {
 type Area = {
   coverImageList: url[]
   introduce: string
-  lnglat: Lnglat | null
+  lnglat: Lnglat
   name: string
   innerName: string // 内部使用名
 } & CloudItem

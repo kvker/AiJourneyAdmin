@@ -35,7 +35,7 @@ export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form:
     const uploadForm = {
       name: form.value.name,
       introduce: form.value.introduce,
-      lnglat: { latitude: form.value.lnglat!.lat, longitude: form.value.lnglat!.lng },
+      lnglat: { latitude: form.value.lnglat!.latitude, longitude: form.value.lnglat!.longitude },
       coverImageList,
     }
     if (form.value.attractionId) {

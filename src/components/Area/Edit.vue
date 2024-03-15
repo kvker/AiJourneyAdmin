@@ -22,7 +22,7 @@ const obj: AreaForm = {
   name: '',
   innerName: '',
   introduce: '',
-  lnglat: null,
+  lnglat: { latitude: 0, longitude: 0 },
   coverImageList: [],
   attractionId: '',
 }
@@ -78,7 +78,7 @@ function onCloseStyleDialog() {
         </div>
         <div class="flex items-center mb-2">
           <button @click="onCheckLocation" class=" btn btn-neutral mr-2 required" type="button">定位</button>
-          <p v-if="form.lnglat">{{ form.lnglat.lng + ', ' + form.lnglat.lat }}</p>
+          <p v-if="form.lnglat">{{ form.lnglat.longitude + ', ' + form.lnglat.latitude }}</p>
         </div>
         <div class="flex items-center mb-2">
           <button class="btn btn-secondary mr-2" type="button" @click="onAddCoverImage">图片</button>

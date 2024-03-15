@@ -73,9 +73,9 @@ function addMarker(lnglat: Lnglat) {
   if (marker) {
     map.removeOverLay(marker) // 移除标注
   }
-  marker = new T.Marker(new T.LngLat(lnglat.lng, lnglat.lat)) // 创建标注
+  marker = new T.Marker(new T.LngLat(lnglat.longitude, lnglat.latitude)) // 创建标注
   map.addOverLay(marker) // 将标注添加到地图中
-  map.panTo(new T.LngLat(lnglat.lng, lnglat.lat)) // 将地图中心点更改为标注的位置
+  map.panTo(new T.LngLat(lnglat.longitude, lnglat.latitude)) // 将地图中心点更改为标注的位置
 }
 
 function doChoose() {

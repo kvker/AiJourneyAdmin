@@ -15,7 +15,7 @@ const obj: ToiletForm = {
   _id: '',
   name: '',
   introduce: '',
-  lnglat: null,
+  lnglat: { longitude: 0, latitude: 0 },
   coverImageList: [],
   attractionId: '',
 }
@@ -51,7 +51,7 @@ function onCloseEditDialog() {
         </div>
         <div class="flex items-center mb-2">
           <button @click="onCheckLocation" class=" btn btn-neutral mr-2" type="button">添加定位</button>
-          <p v-if="form.lnglat">{{ form.lnglat.lng + ', ' + form.lnglat.lat }}</p>
+          <p v-if="form.lnglat">{{ form.lnglat.longitude + ', ' + form.lnglat.latitude }}</p>
         </div>
         <div class="flex items-center mb-2">
           <button class="btn btn-secondary mr-2" type="button" @click="onAddCoverImage">新增图片</button>

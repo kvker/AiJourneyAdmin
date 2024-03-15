@@ -7,7 +7,7 @@ export function ll2Lnglat(ll: LL) {
   }
 }
 
-export function lnglat2Ll(lnglat: Lnglat) {
+export function lnglat2Ll(lnglat: { lng: number, lat: number }) {
   return {
     longitude: lnglat.lng,
     latitude: lnglat.lat,
@@ -21,8 +21,8 @@ export async function getGeocoder(name: string): Promise<Lnglat | undefined> {
   // console.log({ location })
   if (location) {
     return {
-      lng: location.lon,
-      lat: location.lat,
+      longitude: location.lon,
+      latitude: location.lat,
     }
   }
 }
