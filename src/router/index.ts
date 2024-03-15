@@ -64,7 +64,7 @@ const router = createRouter({
       },
       children: [
         {
-          path: '', // 默认子路由，重定向到total
+          path: 'home', // 默认子路由，重定向到total
           component: () => import('@/components/Total.vue')
         },
         {
