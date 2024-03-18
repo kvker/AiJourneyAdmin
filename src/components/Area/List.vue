@@ -62,7 +62,7 @@ async function getCount(params = searchParams.value) {
 function doEdit(data: Area, index: number) {
   console.log('doEdit')
   // console.log(data, index)
-  emit('edit', data)
+  emit('edit', { ...data })
 }
 
 async function doDelete(data: Area, index: number) {
