@@ -1,7 +1,6 @@
 import { watch, inject } from 'vue'
 import type { Ref, ModelRef } from 'vue'
 import { chooseFile, uploadFile } from '@/services/fileHandler'
-import { ll2Lnglat, } from '@/services/map'
 import { db } from '@/services/cloud'
 
 export function useEditForm(form: Ref<AreaForm>, { uiStatus, obj, props, emit, visible, lnglat }: { uiStatus: Ref<UiStatusMap>, obj: AreaForm, props: any, emit: any, visible: Ref<boolean>, lnglat: ModelRef<Lnglat> }) {
@@ -15,7 +14,6 @@ export function useEditForm(form: Ref<AreaForm>, { uiStatus, obj, props, emit, v
       let valNew = {
         ...val,
       }
-      valNew.lnglat = ll2Lnglat(valNew.lnglat)
       form.value = valNew
       console.log('当前表单景点: ' + form.value.name)
     } else {

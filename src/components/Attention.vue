@@ -4,7 +4,6 @@ import Query from '@/components/Attention/Query.vue'
 import List from '@/components/Attention/List.vue'
 import Edit from '@/components/Attention/Edit.vue'
 import Map from '@/components/Common/Map.vue'
-import { ll2Lnglat } from '@/services/map'
 
 const currentLnglat = ref<Lnglat | null>(null)
 const editData = ref<Attention | null>(null)
@@ -21,7 +20,7 @@ const dialogMapVisible = ref(false)
 const defaultLnglat = ref<Lnglat | null>(null)
 
 function onReviewLnglat(ll: LL) {
-  defaultLnglat.value = ll2Lnglat(ll)
+  defaultLnglat.value = ll
   onShowMap()
 }
 

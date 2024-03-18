@@ -4,7 +4,6 @@ import Query from '@/components/Toilet/Query.vue'
 import List from '@/components/Toilet/List.vue'
 import Edit from '@/components/Toilet/Edit.vue'
 import Map from '@/components/Common/Map.vue'
-import { ll2Lnglat } from '@/services/map'
 
 const currentLnglat = ref<Lnglat | null>(null)
 const editData = ref<Toilet | null>(null)
@@ -21,7 +20,7 @@ const dialogMapVisible = ref(false)
 const defaultLnglat = ref<Lnglat | null>(null)
 
 function onReviewLnglat(ll: LL) {
-  defaultLnglat.value = ll2Lnglat(ll)
+  defaultLnglat.value = ll
   onShowMap()
 }
 

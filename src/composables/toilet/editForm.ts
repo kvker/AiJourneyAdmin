@@ -1,7 +1,7 @@
 import { watch } from 'vue'
 import type { Ref, ModelRef } from 'vue'
 import { chooseFile, uploadFile } from '@/services/fileHandler'
-import { ll2Lnglat, getGeocoder } from '@/services/map'
+import { getGeocoder } from '@/services/map'
 import { db } from '@/services/cloud'
 
 export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form: Ref<ToiletForm>, obj: ToiletForm, props: any, emit: any, visible: Ref<boolean>, lnglat: ModelRef<Lnglat> }) {
@@ -15,7 +15,6 @@ export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form:
       let valNew = {
         ...val,
       }
-      valNew.lnglat = ll2Lnglat(valNew.lnglat)
       form.value = valNew
     }
   })
