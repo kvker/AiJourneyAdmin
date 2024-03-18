@@ -70,8 +70,6 @@ export function useEditForm(form: Ref<AreaForm>, { uiStatus, obj, props, emit, v
 
   function onResetForm() {
     form.value = { ...obj }
-    console.log('保存后的form')
-    console.log(form.value)
   }
 
   async function onCheckLocation() {
