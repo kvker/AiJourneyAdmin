@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
+import { lnglat2Ll } from '@/services/map'
 
 let map: any
   , marker: any
@@ -64,9 +65,9 @@ onUnmounted(() => {
   map.removeEventListener("click", onMapClick)
 })
 
-function onMapClick({ lnglat }: { lnglat: Lnglat }) {
+function onMapClick({ lnglat }: { lnglat: LnglatLite }) {
   // emit('choose', e.lnglat)
-  addMarker(lnglat)
+  addMarker(lnglat2Ll(lnglat))
 }
 
 function addMarker(lnglat: Lnglat) {
@@ -84,7 +85,7 @@ function doChoose() {
     return
   }
   mapDialog.value!.close()
-  emit('choose', marker.getLngLat())
+  emit('choose', lnglat2Ll(marker.getLngLat()))
 }
 
 function onClose() {

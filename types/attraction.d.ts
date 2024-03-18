@@ -8,6 +8,12 @@ type Lnglat = {
   latitude: number
 }
 
+// 特殊返回值需要处理
+type LnglatLite = {
+  lng: number
+  lat: number
+}
+
 type CloudItem = {
   _id: string
 }
