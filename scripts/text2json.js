@@ -15,14 +15,14 @@ fs.readFile('1.txt', 'utf8', (err, data) => {
       // console.log(item)
       const [name, introduce, lnglat] = item.split('\t')
       if(!name) return
-      const [longitude, latitude] = lnglat.replace('经度:', '').replace('纬度:', '').split(' ')
+      const [longitude, latitude] = lnglat.replace('经度:', '').replace('纬度:', '').split(', ')
       obj = {
         name,
         innerName: name,
         introduce,
         lnglat: {
-          longitude,
-          latitude
+          longitude: parseFloat(longitude),
+          latitude: parseFloat(latitude)
         },
       }
       json.push(obj)
