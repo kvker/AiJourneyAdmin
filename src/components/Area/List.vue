@@ -119,7 +119,7 @@ const onPreview = (item: Area) => {
     </tbody>
   </table>
   <div class="join">
-    <button class="join-item btn" @click="doChangePage(n)" v-for="n in (~~(count / size) + 1)">{{ n }}</button>
+    <button class="join-item btn" @click="doChangePage(n)" v-for="n in (Math.ceil(count / size))">{{ n }}</button>
   </div>
   <dialog class="modal" ref="previewDialog">
     <div class="carousel carousel-vertical rounded-box" style="height: 80vh;">

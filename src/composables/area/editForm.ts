@@ -30,8 +30,12 @@ export function useEditForm(form: Ref<AreaForm>, { uiStatus, obj, props, emit, v
         coverImageList.push(file)
         continue
       }
-      const { download_url } = await uploadFile(file, 'images')
-      coverImageList.push(download_url)
+      try {
+        const { download_url } = await uploadFile(file, 'images/changhelaojie')
+        coverImageList.push(download_url)
+      } catch (e) {
+        console.error(e)
+      }
     }
     const uploadForm = {
       name: form.value.name,
@@ -42,12 +46,16 @@ export function useEditForm(form: Ref<AreaForm>, { uiStatus, obj, props, emit, v
     }
     try {
       if (form.value.attractionId) {
-        await db.collection('JArea').doc(form.value._id).update(uploadForm)
+        await db.collection('JArea').doc(form.value._id).update({
+          ...uploadForm,
+          updatedAt: new Date(),
+        })
       } else {
         const attraction = JSON.parse(localStorage.getItem('attraction') as string)
         await db.collection('JArea').add({
           ...uploadForm,
           attractionId: attraction._id,
+          updatedAt: new Date(),
         })
       }
       visible.value = false
@@ -62,6 +70,8 @@ export function useEditForm(form: Ref<AreaForm>, { uiStatus, obj, props, emit, v
 
   function onResetForm() {
     form.value = { ...obj }
+    console.log('保存后的form')
+    console.log(form.value)
   }
 
   async function onCheckLocation() {
