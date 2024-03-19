@@ -15,7 +15,7 @@ type LnglatLite = {
 }
 
 type CloudItem = {
-  _id: string
+  _id?: string
 }
 
 type Attraction = {
@@ -57,7 +57,6 @@ type AreaIntroduce = {
   areaId: string
   chatStyleId: string
   introduce: string
-  chatStyleList: ChatStyle[]
   voice: string
 } & CloudItem
 

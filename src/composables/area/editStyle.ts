@@ -37,17 +37,15 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
       })
       .limit(1)
       .get()
-    if (data) {
+    if (data && data.length) {
       areaIntroduce.value = data[0]
       currentStyleIntroduce.value = areaIntroduce.value!.introduce
       doUpdatePromptObject()
     } else {
       areaIntroduce.value = {
-        _id: '',
-        chatStyleId: chatStyle._id,
-        areaId: form.value._id,
+        chatStyleId: chatStyle._id as string,
+        areaId: form.value._id as string,
         introduce: '',
-        chatStyleList: [],
         voice: '',
       }
       doUpdatePromptObject()
@@ -57,17 +55,6 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
   function doUpdatePromptObject() {
     propmtObject.value.previousPrompt = currentChatStyle!.previousPrompt
     propmtObject.value.tailPrompt = currentChatStyle!.tailPrompt
-  }
-
-  async function onUseStyleIntroduce() {
-    console.log('onUseStyleIntroduce')
-    if (areaIntroduce.value) {
-      areaIntroduce.value.introduce = currentStyleIntroduce.value
-      await db.collection('JAreaIntroduce')
-        .doc(areaIntroduce.value._id)
-        .update({ introduce: currentStyleIntroduce.value })
-      alert('更新完成')
-    }
   }
 
   function onUpdateStyleIntroduce() {
@@ -83,23 +70,57 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
     })
   }
 
+  async function onUseStyleIntroduce() {
+    console.log('onUseStyleIntroduce')
+    if (areaIntroduce.value) {
+      areaIntroduce.value.introduce = currentStyleIntroduce.value
+      if (areaIntroduce.value._id) {
+        await db.collection('JAreaIntroduce')
+          .doc(areaIntroduce.value._id)
+          .update({ introduce: currentStyleIntroduce.value })
+        alert('更新完成')
+      } else {
+        await db.collection('JAreaIntroduce')
+          .add(areaIntroduce.value)
+        alert('新增完成')
+      }
+    }
+  }
+
   async function onGenerateVoice() {
     // console.log('onGenerateVoice')
     const generate = async () => {
       uiStatus.value.isLoading = true
       areaIntroduce.value!.voice = ''
-      const ret = await text2Voice(currentStyleIntroduce.value, currentChatStyle!.voiceType)
-      console.log(ret.url)
-      areaIntroduce.value!.voice = ret.url
-      await db.collection('JAreaIntroduce').doc(areaIntroduce.value!._id).update({ voice: ret.url })
-      uiStatus.value.isLoading = false
-      toast('生成语音完成')
+      try {
+        const ret = await text2Voice(currentStyleIntroduce.value, currentChatStyle!.voiceType)
+        await onUpdateVoice(ret.url)
+      } catch (e) {
+        console.error(e)
+        alert(e)
+      } finally {
+        uiStatus.value.isLoading = false
+      }
     }
     if (areaIntroduce.value?.voice && confirm('生成语音会覆盖原有语音, 是否继续?')) {
       generate()
     } else {
       generate()
     }
+  }
+
+  async function onUpdateVoice(url: string) {
+    const { data } = await db.collection('JAreaIntroduce')
+      .where({
+        chatStyleId: currentChatStyle!._id,
+        areaId: form.value._id,
+      })
+      .limit(1)
+      .get()
+    areaIntroduce.value = data[0]
+    areaIntroduce.value!.voice = url
+    await db.collection('JAreaIntroduce').doc(areaIntroduce.value!._id).update({ voice: url })
+    toast('生成语音完成')
   }
 
   function onAbortCompletions() {
