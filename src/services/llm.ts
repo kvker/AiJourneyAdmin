@@ -89,9 +89,9 @@ async function onParseStreamChunk(response: Response, sseCB: LlmCb, doneCb?: Llm
     readerRet = await reader.read()
     value = readerRet.value
     done = readerRet.done
-    // console.log(value)
     if (value) {
       text = decoder.decode(value)
+      // console.log(text)
       parseRet = onParseGlmStreamChunkJsons2JsonList(text, tempText)
       tempText = parseRet.tempText
       for (const json of parseRet.jsonList) {

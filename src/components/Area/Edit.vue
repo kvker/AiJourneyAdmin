@@ -113,7 +113,10 @@ function onCloseStyleDialog() {
       <textarea class="textarea w-full h-56" v-model.trim="currentStyleIntroduce"
         placeholder="这里显示的是AI协助生成的各类有趣的景点介绍语录, 来自基础描述" rows="12"></textarea>
       <div class="flex mt-2">
-        <button v-if="currentStyleIntroduce" @click="onUseStyleIntroduce" class=" btn btn-primary mr-4">应用描述</button>
+        <button v-if="currentStyleIntroduce" @click="onUseStyleIntroduce" class=" btn btn-primary mr-4">
+          <span v-if="styleUiStatus.isUsing" class="loading loading-spinner"></span>
+          应用描述
+        </button>
         <button class="btn btn-secondary mr-4" @click="onUpdateStyleIntroduce">
           <span v-if="styleUiStatus.isUpdating" class="loading loading-spinner"></span>
           更新描述

@@ -16,7 +16,7 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
 
   let currentChatStyle: ChatStyle | undefined
 
-  const styleUiStatus = ref({ isUpdating: false })
+  const styleUiStatus = ref({ isUpdating: false, isUsing: false })
 
   async function getChatStyle() {
     const { data } = await db.collection('JChatStyle').orderBy('sort', 'asc').get()
@@ -65,7 +65,7 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
       currentStyleIntroduce.value = result
     }, (result) => {
       console.log(result)
-      toast('完成输出', 'info')
+      console.log('完成输出')
       onHideStyleLoading()
     })
   }
@@ -73,17 +73,21 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
   async function onUseStyleIntroduce() {
     console.log('onUseStyleIntroduce')
     if (areaIntroduce.value) {
+      styleUiStatus.value.isUsing = true
       areaIntroduce.value.introduce = currentStyleIntroduce.value
       if (areaIntroduce.value._id) {
-        await db.collection('JAreaIntroduce')
+        const ret = await db.collection('JAreaIntroduce')
           .doc(areaIntroduce.value._id)
           .update({ introduce: currentStyleIntroduce.value })
-        alert('更新完成')
+        console.log('更新成功')
+        console.log(ret)
       } else {
-        await db.collection('JAreaIntroduce')
+        const ret = await db.collection('JAreaIntroduce')
           .add(areaIntroduce.value)
-        alert('新增完成')
+        console.log('新增成功')
+        console.log(ret)
       }
+      styleUiStatus.value.isUsing = false
     }
   }
 
