@@ -59,10 +59,10 @@ export function useEditForm({ form, obj, props, emit, visible, lnglat }: { form:
     const name = form.value.name.trim()
     if (name && !form.value.lnglat) {
       // 根据数据名字查一下经纬度
-      const lnglat = await getGeocoder(name)
-      if (lnglat) {
-        form.value.lnglat = lnglat
-      }
+      // const lnglat = await getGeocoder(name)
+      // if (lnglat) {
+      //   form.value.lnglat = lnglat
+      // }
     }
     emit('showmap', form.value.lnglat)
   }
