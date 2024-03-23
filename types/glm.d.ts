@@ -9,3 +9,10 @@ type GLMMessage = {
   content: string
   role: 'user' | 'assistant' | 'system'
 }
+
+type GlmTools = {
+  type: string
+  retrieval: {
+    knowledge_id: string
+  }
+}

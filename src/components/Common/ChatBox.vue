@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { ref, computed, watch, nextTick } from 'vue'
 import type { Ref } from 'vue'
-import { onCompletions } from '@/services/llm'
+import LLM from '@/services/llm'
+
+const llm = new LLM()
 
 // 显示控制
 const chatBoxShow = ref(false)
@@ -28,7 +30,7 @@ const onChat = async () => {
   if (lastChat && !isChating.value) {
     try {
       isChating.value = true
-      await onCompletions(chatList.value, (result) => {
+      await llm.onCompletions(chatList.value, (result) => {
         lastContent.value = result
         onScrollToBottom()
       }, done => {

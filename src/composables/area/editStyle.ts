@@ -1,10 +1,12 @@
 import { ref, computed } from 'vue'
 import type { Ref } from 'vue'
 import type AV from 'leancloud-storage'
-import { onCompletions, onAbortFetch } from '@/services/llm'
+import LLM from '@/services/llm'
 import { text2Voice } from '@/services/fileHandler'
 import { toast, } from '@/services/ui'
 import { db } from '@/services/cloud'
+
+const llm = new LLM()
 
 export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<UiStatusMap> }) {
   // 聊天风格区域
@@ -61,7 +63,7 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
     onShowStyleLoading()
     currentStyleIntroduce.value = ''
     const content = `${propmtObject.value.previousPrompt}${form.value.introduce}${propmtObject.value.tailPrompt}`
-    onCompletions(content, result => {
+    llm.onCompletions(content, result => {
       currentStyleIntroduce.value = result
     }, (result) => {
       console.log(result)
@@ -129,7 +131,7 @@ export function useEditStyle(form: Ref<AreaForm>, { uiStatus }: { uiStatus: Ref<
 
   function onAbortCompletions() {
     onHideStyleLoading()
-    onAbortFetch()
+    llm.onAbortFetch()
   }
 
   function onShowStyleLoading() {
