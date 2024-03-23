@@ -15,12 +15,12 @@ const lastContent = ref('')
 const textarea: Ref<HTMLTextAreaElement | undefined> = ref()
 const listBox: Ref<HTMLDivElement | undefined> = ref()
 
-type ChatList = GLMMessage[]
+type ChatList = GlmMessage[]
 
 const chatList: Ref<ChatList> = ref([])
 const isChating = ref(false)
 
-const onCreateChat = (content: string, role: GLMMessage["role"]) => {
+const onCreateChat = (content: string, role: GlmMessage["role"]) => {
   chatList.value.push({ content, role })
   onScrollToBottom()
 }

@@ -13,12 +13,12 @@ export default class LLM {
     this.knowledgeId = attraction.knowledgeId as string
   }
 
-  async onCompletions(content: string | GLMMessage[], SseCB: LlmCb, doneCb?: LlmCb) {
+  async onCompletions(content: string | GlmMessage[], SseCB: LlmCb, doneCb?: LlmCb) {
     let messages = []
     if (content instanceof Array) {
       messages = content
     } else {
-      messages = [{ content, role: 'user' }] as GLMMessage[]
+      messages = [{ content, role: 'user' }] as GlmMessage[]
     }
     const response = await this.onFetchStream(messages)
     if (response.status !== 200) {
@@ -27,8 +27,8 @@ export default class LLM {
     this.onParseStreamChunk(response, SseCB, doneCb)
   }
 
-  async onFetchStream(messages: GLMMessage[]) {
-    const body: { messages: GLMMessage[], tools?: GlmTools[] } = {
+  async onFetchStream(messages: GlmMessage[]) {
+    const body: { messages: GlmMessage[], tools?: GlmTools[] } = {
       messages: [{ role: 'system', content: '你是长河老街的专属AI智能导游，名字叫来来。是对这里最最熟悉的人，很愿意回答关于长河老街的问题。' }, ...messages],
     }
     if (this.knowledgeId) {
