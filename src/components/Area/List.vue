@@ -44,7 +44,7 @@ async function getList() {
     })
     .limit(size)
     .skip(size * page.value)
-    .orderBy('updatedAt', 'asc')
+    .orderBy('updatedAt', 'desc')
     .get()
   tableData.value = data
 }
