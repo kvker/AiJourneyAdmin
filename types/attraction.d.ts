@@ -3,6 +3,12 @@ type LL = {
   longitude: number
   latitude: number
 }
+
+type CloudResponse<T> = {
+  data: T[]
+  requestId: string
+}
+
 type Lnglat = {
   longitude: number
   latitude: number
