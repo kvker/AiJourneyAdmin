@@ -41,7 +41,7 @@ export function useEditForm(form: Ref<AreaForm>, { uiStatus, obj, props, emit, v
       name: form.value.name,
       innerName: form.value.innerName,
       introduce: form.value.introduce,
-      lnglat: { latitude: +form.value.lnglat!.latitude, longitude: +form.value.lnglat!.longitude },
+      lnglat: { latitude: form.value.lnglat!.latitude, longitude: form.value.lnglat!.longitude },
       coverImageList,
     }
     try {

@@ -78,8 +78,8 @@ function onCloseStyleDialog() {
         </div>
         <div class="flex items-center mb-2">
           <button @click="onCheckLocation" class=" btn btn-neutral mr-2 required" type="button">定位</button>
-          <input class="input w-32" v-model.trim="form.lnglat.longitude" placeholder="经度" required minlength="2" />
-          <input class="input w-32 ml-4" v-model.trim="form.lnglat.latitude" placeholder="纬度" required minlength="2" />
+          <input class="input w-32" v-model.trim.number="form.lnglat.longitude" placeholder="经度" required minlength="2" />
+          <input class="input w-32 ml-4" v-model.trim.number="form.lnglat.latitude" placeholder="纬度" required minlength="2" />
         </div>
         <div class="flex items-center mb-2">
           <button class="btn btn-secondary mr-2" type="button" @click="onAddCoverImage">图片</button>
